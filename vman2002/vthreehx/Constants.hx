@@ -1,9 +1,11 @@
 class Constants {
     public static var REVISION = 176;
+
     /** Represents mouse buttons and interaction types in context of controls. **/
     public static var MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2, ROTATE: 0, DOLLY: 1, PAN: 2 };
     /** Represents touch interaction types in context of controls. **/
     public static var TOUCH = { ROTATE: 0, PAN: 1, DOLLY_PAN: 2, DOLLY_ROTATE: 3 };
+    
     /** Disables face culling. **/
     public static var CullFaceNone = 0;
     /** Culls back faces. **/
@@ -12,6 +14,7 @@ class Constants {
     public static var CullFaceFront = 2;
     /** Culls both front and back faces. **/
     public static var CullFaceFrontBack = 3;
+
     /** Gives unfiltered shadow maps - fastest, but lowest quality. **/
     public static var BasicShadowMap = 0;
     /** Filters shadow maps using the Percentage-Closer Filtering (PCF) algorithm. **/
@@ -20,12 +23,14 @@ class Constants {
     public static var PCFSoftShadowMap = 2;
     /** Filters shadow maps using the Variance Shadow Map (VSM) algorithm. When using VSMShadowMap all shadow receivers will also cast shadows. **/
     public static var VSMShadowMap = 3;
+
     /** Only front faces are rendered. **/
     public static var FrontSide = 0;
     /** Only back faces are rendered. **/
     public static var BackSide = 1;
     /** Both front and back faces are rendered. **/
     public static var DoubleSide = 2;
+
     /** No blending is performed which effectively disables alpha transparency. **/
     public static var NoBlending = 0;
     /** The default blending. **/

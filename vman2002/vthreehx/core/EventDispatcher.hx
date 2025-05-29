@@ -17,7 +17,6 @@ class EventDispatcher {
 	 */
 	public function addEventListener( type:String, listener:Listener ) {
 		if (this._listeners == null) this._listeners = new Map<String, Array<Listener>>();
-
 		var listeners = this._listeners;
 
 		if (!listeners.exists(type))
@@ -36,7 +35,6 @@ class EventDispatcher {
 	 */
 	public function hasEventListener( type:String, listener:Listener ) {
 		var listeners = this._listeners;
-
 		if (listeners == null) return false;
 
 		return listeners.exists(type) && listeners.get(type).contains(listener);
@@ -50,11 +48,9 @@ class EventDispatcher {
 	 */
 	public function removeEventListener( type:String, listener:Listener ) {
 		var listeners = this._listeners;
-
 		if (listeners == null) return;
 
 		var listenerArray = listeners.get(type);
-
 		if (listenerArray != null)
             listenerArray.remove(listener);
 	}
@@ -66,11 +62,9 @@ class EventDispatcher {
 	 */
 	public function dispatchEvent( event:Event ) {
 		var listeners = this._listeners;
-
 		if (listeners == null) return;
 
 		var listenerArray = listeners.get(event.type);
-
 		if (listenerArray != null) {
 			event.target = this;
 

@@ -2,45 +2,22 @@ package vman2002.vthreehx.core;
 
 import vman2002.vthreehx.math.Quaternion;
 import vman2002.vthreehx.math.Vector3;
-
-import { Matrix4 } from '../math/Matrix4.js';
-import { Euler } from '../math/Euler.js';
-import { Layers } from './Layers.js';
-import { Matrix3 } from '../math/Matrix3.js';
-import { generateUUID } from '../math/MathUtils.js';
+import vman2002.vthreehx.math.Matrix4;
+import vman2002.vthreehx.math.Euler;
+import vman2002.vthreehx.core.Layers;
+import vman2002.vthreehx.math.Matrix3;
+import vman2002.vthreehx.math.MathUtils.generateUUID in generateUUID;
 
 /** This is the base class for most objects in three.js and provides a set of properties and methods for manipulating objects in 3D space. **/
 class Object3D extends vman2002.vthreehx.core.EventDispatcher {
+	/** The default up direction for objects, also used as the default position for {@link DirectionalLight} and {@link HemisphereLight}. **/
+	public static var DEFAULT_UP = /*@__PURE__*/ new Vector3( 0, 1, 0 );
 
-/**
- * The default up direction for objects, also used as the default
- * position for {@link DirectionalLight} and {@link HemisphereLight}.
- *
- * @static
- * @type {Vector3}
- * @default (0,1,0)
- */
-Object3D.DEFAULT_UP = /*@__PURE__*/ new Vector3( 0, 1, 0 );
+	/** The default setting for {@link Object3D#matrixAutoUpdate} for newly created 3D objects. **/
+	public static var DEFAULT_MATRIX_AUTO_UPDATE = true;
 
-/**
- * The default setting for {@link Object3D#matrixAutoUpdate} for
- * newly created 3D objects.
- *
- * @static
- * @type {boolean}
- * @default true
- */
-Object3D.DEFAULT_MATRIX_AUTO_UPDATE = true;
-
-/**
- * The default setting for {@link Object3D#matrixWorldAutoUpdate} for
- * newly created 3D objects.
- *
- * @static
- * @type {boolean}
- * @default true
- */
-Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
+	/** The default setting for {@link Object3D#matrixWorldAutoUpdate} for newly created 3D objects. **/
+	public static var DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 	/** The ID of the 3D object. Don't modify. **/
 	public var id;
@@ -58,8 +35,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	public var parent = null;
 
 	/**
-	* Defines the `up` direction of the 3D object which influences
-	* the orientation via methods like {@link Object3D#lookAt}.
+	* Defines the `up` direction of the 3D object which influences the orientation via methods like {@link Object3D#lookAt}.
 	*
 	* The default values for all 3D objects is defined by `Object3D.DEFAULT_UP`.@type {Vector3}
 	*/
@@ -100,9 +76,6 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		rotation._onChange( onRotationChange );
 		quaternion._onChange( onQuaternionChange );
-
-		Object.defineProperties( this, {
-		} );
 
 		/**
 		 * Represents the object's transformation matrix in local space.
@@ -254,7 +227,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Material} depthMaterial - The depth material.
 	 * @param {Object} group - The geometry group data.
 	 */
-	onBeforeShadow( /* renderer, object, camera, shadowCamera, geometry, depthMaterial, group */ ) {}
+	public dynamic function onBeforeShadow( renderer, object, camera, shadowCamera, geometry, depthMaterial, group ) {}
 
 	/**
 	 * A callback that is executed immediately after a 3D object is rendered to a shadow map.
@@ -267,7 +240,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Material} depthMaterial - The depth material.
 	 * @param {Object} group - The geometry group data.
 	 */
-	onAfterShadow( /* renderer, object, camera, shadowCamera, geometry, depthMaterial, group */ ) {}
+	public dynamic function onAfterShadow( renderer, object, camera, shadowCamera, geometry, depthMaterial, group ) {}
 
 	/**
 	 * A callback that is executed immediately before a 3D object is rendered.
@@ -279,7 +252,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Material} material - The 3D object's material.
 	 * @param {Object} group - The geometry group data.
 	 */
-	onBeforeRender( /* renderer, scene, camera, geometry, material, group */ ) {}
+	public dynamic function onBeforeRender( renderer, scene, camera, geometry, material, group ) {}
 
 	/**
 	 * A callback that is executed immediately after a 3D object is rendered.
@@ -291,7 +264,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Material} material - The 3D object's material.
 	 * @param {Object} group - The geometry group data.
 	 */
-	onAfterRender( /* renderer, scene, camera, geometry, material, group */ ) {}
+	public dynamic function onAfterRender( renderer, scene, camera, geometry, material, group ) {}
 
 	/**
 	 * Applies the given transformation matrix to the object and updates the object's position,
@@ -299,7 +272,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 *
 	 * @param {Matrix4} matrix - The transformation matrix.
 	 */
-	applyMatrix4( matrix ) {
+	public function applyMatrix4( matrix ) {
 
 		if ( this.matrixAutoUpdate ) this.updateMatrix();
 
@@ -315,7 +288,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Quaternion} q - The quaternion.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	applyQuaternion( q ) {
+	public function applyQuaternion( q ) {
 
 		this.quaternion.premultiply( q );
 
@@ -329,7 +302,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Vector3} axis - The (normalized) axis vector.
 	 * @param {number} angle - The angle in radians.
 	 */
-	setRotationFromAxisAngle( axis, angle ) {
+	public function setRotationFromAxisAngle( axis, angle ) {
 
 		// assumes axis is normalized
 
@@ -342,7 +315,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 *
 	 * @param {Euler} euler - The Euler angles.
 	 */
-	setRotationFromEuler( euler ) {
+	public function setRotationFromEuler( euler ) {
 
 		this.quaternion.setFromEuler( euler, true );
 
@@ -354,7 +327,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Matrix4} m - Although a 4x4 matrix is expected, the upper 3x3 portion must be
 	 * a pure rotation matrix (i.e, unscaled).
 	 */
-	setRotationFromMatrix( m ) {
+	public function setRotationFromMatrix( m ) {
 
 		// assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
 
@@ -367,7 +340,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 *
 	 * @param {Quaternion} q - The Quaternion
 	 */
-	setRotationFromQuaternion( q ) {
+	public function setRotationFromQuaternion( q ) {
 
 		// assumes q is normalized
 
@@ -382,7 +355,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {number} angle - The angle in radians.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	rotateOnAxis( axis, angle ) {
+	public function rotateOnAxis( axis, angle ) {
 
 		// rotate object on axis in object space
 		// axis is assumed to be normalized
@@ -402,7 +375,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {number} angle - The angle in radians.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	rotateOnWorldAxis( axis, angle ) {
+	public function rotateOnWorldAxis( axis, angle ) {
 
 		// rotate object on axis in world space
 		// axis is assumed to be normalized
@@ -422,7 +395,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {number} angle - The angle in radians.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	rotateX( angle ) {
+	public function rotateX( angle ) {
 
 		return this.rotateOnAxis( _xAxis, angle );
 
@@ -434,7 +407,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {number} angle - The angle in radians.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	rotateY( angle ) {
+	public function rotateY( angle ) {
 
 		return this.rotateOnAxis( _yAxis, angle );
 
@@ -446,7 +419,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {number} angle - The angle in radians.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	rotateZ( angle ) {
+	public function rotateZ( angle ) {
 
 		return this.rotateOnAxis( _zAxis, angle );
 
@@ -459,7 +432,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {number} distance - The distance in world units.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	translateOnAxis( axis, distance ) {
+	public function translateOnAxis( axis, distance ) {
 
 		// translate object by distance along axis in object space
 		// axis is assumed to be normalized
@@ -478,7 +451,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {number} distance - The distance in world units.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	translateX( distance ) {
+	public function translateX( distance ) {
 
 		return this.translateOnAxis( _xAxis, distance );
 
@@ -490,7 +463,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {number} distance - The distance in world units.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	translateY( distance ) {
+	public function translateY( distance ) {
 
 		return this.translateOnAxis( _yAxis, distance );
 
@@ -502,7 +475,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {number} distance - The distance in world units.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	translateZ( distance ) {
+	public function translateZ( distance ) {
 
 		return this.translateOnAxis( _zAxis, distance );
 
@@ -514,7 +487,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Vector3} vector - The vector to convert.
 	 * @return {Vector3} The converted vector.
 	 */
-	localToWorld( vector ) {
+	public function localToWorld( vector ) {
 
 		this.updateWorldMatrix( true, false );
 
@@ -528,7 +501,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Vector3} vector - The vector to convert.
 	 * @return {Vector3} The converted vector.
 	 */
-	worldToLocal( vector ) {
+	public function worldToLocal( vector ) {
 
 		this.updateWorldMatrix( true, false );
 
@@ -545,7 +518,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {number} [y] - The y coordinate in world space.
 	 * @param {number} [z] - The z coordinate in world space.
 	 */
-	lookAt( x, y, z ) {
+	public function lookAt( x, y, z ) {
 
 		// This method does not support objects having non-uniformly-scaled parent(s)
 
@@ -559,7 +532,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		}
 
-		const parent = this.parent;
+		var parent = this.parent;
 
 		this.updateWorldMatrix( true, false );
 
@@ -597,11 +570,11 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Object3D} object - The 3D object to add.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	add( object ) {
+	public function add( object ) {
 
 		if ( arguments.length > 1 ) {
 
-			for ( let i = 0; i < arguments.length; i ++ ) {
+			for ( i in 0...arguments.length ) {
 
 				this.add( arguments[ i ] );
 
@@ -611,7 +584,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		}
 
-		if ( object === this ) {
+		if ( object == this ) {
 
 			console.error( 'THREE.Object3D.add: object can\'t be added as a child of itself.', object );
 			return this;
@@ -649,11 +622,11 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Object3D} object - The 3D object to remove.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	remove( object ) {
+	public function remove( object ) {
 
 		if ( arguments.length > 1 ) {
 
-			for ( let i = 0; i < arguments.length; i ++ ) {
+			for ( i in 0...arguments.length ) {
 
 				this.remove( arguments[ i ] );
 
@@ -663,9 +636,9 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		}
 
-		const index = this.children.indexOf( object );
+		var index = this.children.indexOf( object );
 
-		if ( index !== - 1 ) {
+		if ( index != - 1 ) {
 
 			object.parent = null;
 			this.children.splice( index, 1 );
@@ -689,11 +662,11 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @fires Object3D#childremoved
 	 * @return {Object3D} A reference to this instance.
 	 */
-	removeFromParent() {
+	public function removeFromParent() {
 
-		const parent = this.parent;
+		var parent = this.parent;
 
-		if ( parent !== null ) {
+		if ( parent != null ) {
 
 			parent.remove( this );
 
@@ -710,7 +683,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @fires Object3D#childremoved
 	 * @return {Object3D} A reference to this instance.
 	 */
-	clear() {
+	public function clear() {
 
 		return this.remove( ... this.children );
 
@@ -725,7 +698,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Object3D} object - The 3D object to attach.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	attach( object ) {
+	public function attach( object ) {
 
 		// adds object as a child of this, while maintaining the object's world transform
 
@@ -735,7 +708,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		_m1.copy( this.matrixWorld ).invert();
 
-		if ( object.parent !== null ) {
+		if ( object.parent != null ) {
 
 			object.parent.updateWorldMatrix( true, false );
 
@@ -768,7 +741,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {number} id - The id.
 	 * @return {Object3D|undefined} The found 3D object. Returns `undefined` if no 3D object has been found.
 	 */
-	getObjectById( id ) {
+	public function getObjectById( id ) {
 
 		return this.getObjectByProperty( 'id', id );
 
@@ -781,7 +754,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {string} name - The name.
 	 * @return {Object3D|undefined} The found 3D object. Returns `undefined` if no 3D object has been found.
 	 */
-	getObjectByName( name ) {
+	public function getObjectByName( name ) {
 
 		return this.getObjectByProperty( 'name', name );
 
@@ -795,16 +768,16 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {any} value - The value.
 	 * @return {Object3D|undefined} The found 3D object. Returns `undefined` if no 3D object has been found.
 	 */
-	getObjectByProperty( name, value ) {
+	public function getObjectByProperty( name, value ) {
 
-		if ( this[ name ] === value ) return this;
+		if ( this[ name ] == value ) return this;
 
-		for ( let i = 0, l = this.children.length; i < l; i ++ ) {
+		for ( i in 0...this.children.length ) {
 
-			const child = this.children[ i ];
-			const object = child.getObjectByProperty( name, value );
+			var child = this.children[ i ];
+			var object = child.getObjectByProperty( name, value );
 
-			if ( object !== undefined ) {
+			if ( object != undefined ) {
 
 				return object;
 
@@ -812,7 +785,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		}
 
-		return undefined;
+		return null;
 
 	}
 
@@ -825,13 +798,13 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Array<Object3D>} result - The method stores the result in this array.
 	 * @return {Array<Object3D>} The found 3D objects.
 	 */
-	getObjectsByProperty( name, value, result = [] ) {
+	public function getObjectsByProperty( name, value, result = [] ) {
 
-		if ( this[ name ] === value ) result.push( this );
+		if ( this[ name ] == value ) result.push( this );
 
-		const children = this.children;
+		var children = this.children;
 
-		for ( let i = 0, l = children.length; i < l; i ++ ) {
+		for ( i in 0...children.length ) {
 
 			children[ i ].getObjectsByProperty( name, value, result );
 
@@ -847,7 +820,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Vector3} target - The target vector the result is stored to.
 	 * @return {Vector3} The 3D object's position in world space.
 	 */
-	getWorldPosition( target ) {
+	public function getWorldPosition( target ) {
 
 		this.updateWorldMatrix( true, false );
 
@@ -861,7 +834,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Quaternion} target - The target Quaternion the result is stored to.
 	 * @return {Quaternion} The 3D object's rotation in world space.
 	 */
-	getWorldQuaternion( target ) {
+	public function getWorldQuaternion( target ) {
 
 		this.updateWorldMatrix( true, false );
 
@@ -877,7 +850,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Vector3} target - The target vector the result is stored to.
 	 * @return {Vector3} The 3D object's scale in world space.
 	 */
-	getWorldScale( target ) {
+	public function getWorldScale( target ) {
 
 		this.updateWorldMatrix( true, false );
 
@@ -893,11 +866,11 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Vector3} target - The target vector the result is stored to.
 	 * @return {Vector3} The 3D object's direction in world space.
 	 */
-	getWorldDirection( target ) {
+	public function getWorldDirection( target ) {
 
 		this.updateWorldMatrix( true, false );
 
-		const e = this.matrixWorld.elements;
+		var e = this.matrixWorld.elements;
 
 		return target.set( e[ 8 ], e[ 9 ], e[ 10 ] ).normalize();
 
@@ -912,7 +885,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {Raycaster} raycaster - The raycaster.
 	 * @param {Array<Object>} intersects - An array holding the result of the method.
 	 */
-	raycast( /* raycaster, intersects */ ) {}
+	public dynamic function raycast( raycaster, intersects ) {}
 
 	/**
 	 * Executes the callback on this 3D object and all descendants.
@@ -921,13 +894,13 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 *
 	 * @param {Function} callback - A callback function that allows to process the current 3D object.
 	 */
-	traverse( callback ) {
+	public function traverse( callback ) {
 
 		callback( this );
 
-		const children = this.children;
+		var children = this.children;
 
-		for ( let i = 0, l = children.length; i < l; i ++ ) {
+		for ( i in 0...children.length ) {
 
 			children[ i ].traverse( callback );
 
@@ -943,15 +916,15 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 *
 	 * @param {Function} callback - A callback function that allows to process the current 3D object.
 	 */
-	traverseVisible( callback ) {
+	public function traverseVisible( callback ) {
 
-		if ( this.visible === false ) return;
+		if ( this.visible == false ) return;
 
 		callback( this );
 
-		const children = this.children;
+		var children = this.children;
 
-		for ( let i = 0, l = children.length; i < l; i ++ ) {
+		for ( i in 0...children.length ) {
 
 			children[ i ].traverseVisible( callback );
 
@@ -966,11 +939,11 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 *
 	 * @param {Function} callback - A callback function that allows to process the current 3D object.
 	 */
-	traverseAncestors( callback ) {
+	public function traverseAncestors( callback ) {
 
-		const parent = this.parent;
+		var parent = this.parent;
 
-		if ( parent !== null ) {
+		if ( parent != null ) {
 
 			callback( parent );
 
@@ -984,7 +957,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * Updates the transformation matrix in local space by computing it from the current
 	 * position, rotation and scale values.
 	 */
-	updateMatrix() {
+	public function updateMatrix() {
 
 		this.matrix.compose( this.position, this.quaternion, this.scale );
 
@@ -1003,15 +976,15 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {boolean} [force=false] - When set to `true`, a recomputation of world matrices is forced even
 	 * when {@link Object3D#matrixWorldAutoUpdate} is set to `false`.
 	 */
-	updateMatrixWorld( force ) {
+	public function updateMatrixWorld( force ) {
 
 		if ( this.matrixAutoUpdate ) this.updateMatrix();
 
 		if ( this.matrixWorldNeedsUpdate || force ) {
 
-			if ( this.matrixWorldAutoUpdate === true ) {
+			if ( this.matrixWorldAutoUpdate == true ) {
 
-				if ( this.parent === null ) {
+				if ( this.parent == null ) {
 
 					this.matrixWorld.copy( this.matrix );
 
@@ -1031,11 +1004,11 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		// make sure descendants are updated if required
 
-		const children = this.children;
+		var children = this.children;
 
-		for ( let i = 0, l = children.length; i < l; i ++ ) {
+		for ( i in 0...children.length ) {
 
-			const child = children[ i ];
+			var child = children[ i ];
 
 			child.updateMatrixWorld( force );
 
@@ -1050,11 +1023,11 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {boolean} [updateParents=false] Whether ancestor nodes should be updated or not.
 	 * @param {boolean} [updateChildren=false] Whether descendant nodes should be updated or not.
 	 */
-	updateWorldMatrix( updateParents, updateChildren ) {
+	public function updateWorldMatrix( updateParents, updateChildren ) {
 
-		const parent = this.parent;
+		var parent = this.parent;
 
-		if ( updateParents === true && parent !== null ) {
+		if ( updateParents == true && parent != null ) {
 
 			parent.updateWorldMatrix( true, false );
 
@@ -1062,9 +1035,9 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		if ( this.matrixAutoUpdate ) this.updateMatrix();
 
-		if ( this.matrixWorldAutoUpdate === true ) {
+		if ( this.matrixWorldAutoUpdate == true ) {
 
-			if ( this.parent === null ) {
+			if ( this.parent == null ) {
 
 				this.matrixWorld.copy( this.matrix );
 
@@ -1078,13 +1051,13 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		// make sure descendants are updated
 
-		if ( updateChildren === true ) {
+		if ( updateChildren == true ) {
 
-			const children = this.children;
+			var children = this.children;
 
-			for ( let i = 0, l = children.length; i < l; i ++ ) {
+			for ( i in 0...children.length ) {
 
-				const child = children[ i ];
+				var child = children[ i ];
 
 				child.updateWorldMatrix( false, true );
 
@@ -1101,12 +1074,12 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @return {Object} A JSON object representing the serialized 3D object.
 	 * @see {@link ObjectLoader#parse}
 	 */
-	toJSON( meta ) {
+	public function toJSON( meta ) {
 
 		// meta is a string when called from JSON.stringify
-		const isRootObject = ( meta === undefined || typeof meta === 'string' );
+		var isRootObject = ( meta == undefined || Std.isOfType(meta, String) );
 
-		const output = {};
+		var output = {};
 
 		// meta is a hash used to collect geometries, materials.
 		// not providing it implies that this is the root object
@@ -1135,24 +1108,24 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		// standard Object3D serialization
 
-		const object = {};
+		var object = {};
 
 		object.uuid = this.uuid;
 		object.type = this.type;
 
-		if ( this.name !== '' ) object.name = this.name;
-		if ( this.castShadow === true ) object.castShadow = true;
-		if ( this.receiveShadow === true ) object.receiveShadow = true;
-		if ( this.visible === false ) object.visible = false;
-		if ( this.frustumCulled === false ) object.frustumCulled = false;
-		if ( this.renderOrder !== 0 ) object.renderOrder = this.renderOrder;
+		if ( this.name != '' ) object.name = this.name;
+		if ( this.castShadow == true ) object.castShadow = true;
+		if ( this.receiveShadow == true ) object.receiveShadow = true;
+		if ( this.visible == false ) object.visible = false;
+		if ( this.frustumCulled == false ) object.frustumCulled = false;
+		if ( this.renderOrder != 0 ) object.renderOrder = this.renderOrder;
 		if ( Object.keys( this.userData ).length > 0 ) object.userData = this.userData;
 
 		object.layers = this.layers.mask;
 		object.matrix = this.matrix.toArray();
 		object.up = this.up.toArray();
 
-		if ( this.matrixAutoUpdate === false ) object.matrixAutoUpdate = false;
+		if ( this.matrixAutoUpdate == false ) object.matrixAutoUpdate = false;
 
 		// object specific properties
 
@@ -1161,7 +1134,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 			object.type = 'InstancedMesh';
 			object.count = this.count;
 			object.instanceMatrix = this.instanceMatrix.toJSON();
-			if ( this.instanceColor !== null ) object.instanceColor = this.instanceColor.toJSON();
+			if ( this.instanceColor != null ) object.instanceColor = this.instanceColor.toJSON();
 
 		}
 
@@ -1174,21 +1147,24 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 			object.drawRanges = this._drawRanges;
 			object.reservedRanges = this._reservedRanges;
 
-			object.geometryInfo = this._geometryInfo.map( info => ( {
-				...info,
-				boundingBox: info.boundingBox ? {
+			object.geometryInfo = this._geometryInfo.map(function(info) {
+				var obj = Reflect.copy(obj);
+				obj.boundingBox = info.boundingBox ? {
 					min: info.boundingBox.min.toArray(),
 					max: info.boundingBox.max.toArray()
-				} : undefined,
-				boundingSphere: info.boundingSphere ? {
+				} : null;
+				obj.boundingSphere = info.boundingSphere ? {
 					radius: info.boundingSphere.radius,
 					center: info.boundingSphere.center.toArray()
-				} : undefined
-			} ) );
-			object.instanceInfo = this._instanceInfo.map( info => ( { ...info } ) );
+				} : null;
+				return obj;
+			});
+			object.instanceInfo = this._instanceInfo.map(function(info) {
+				return Reflect.copy(info);
+			});
 
-			object.availableInstanceIds = this._availableInstanceIds.slice();
-			object.availableGeometryIds = this._availableGeometryIds.slice();
+			object.availableInstanceIds = this._availableInstanceIds.copy();
+			object.availableGeometryIds = this._availableGeometryIds.copy();
 
 			object.nextIndexStart = this._nextIndexStart;
 			object.nextVertexStart = this._nextVertexStart;
@@ -1204,13 +1180,13 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 			object.indirectTexture = this._indirectTexture.toJSON( meta );
 
-			if ( this._colorsTexture !== null ) {
+			if ( this._colorsTexture != null ) {
 
 				object.colorsTexture = this._colorsTexture.toJSON( meta );
 
 			}
 
-			if ( this.boundingSphere !== null ) {
+			if ( this.boundingSphere != null ) {
 
 				object.boundingSphere = {
 					center: this.boundingSphere.center.toArray(),
@@ -1219,7 +1195,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 			}
 
-			if ( this.boundingBox !== null ) {
+			if ( this.boundingBox != null ) {
 
 				object.boundingBox = {
 					min: this.boundingBox.min.toArray(),
@@ -1234,7 +1210,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		function serialize( library, element ) {
 
-			if ( library[ element.uuid ] === undefined ) {
+			if ( library[ element.uuid ] == undefined ) {
 
 				library[ element.uuid ] = element.toJSON( meta );
 
@@ -1260,7 +1236,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 			}
 
-			if ( this.environment && this.environment.isTexture && this.environment.isRenderTargetTexture !== true ) {
+			if ( this.environment && this.environment.isTexture && this.environment.isRenderTargetTexture != true ) {
 
 				object.environment = this.environment.toJSON( meta ).uuid;
 
@@ -1270,17 +1246,17 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 			object.geometry = serialize( meta.geometries, this.geometry );
 
-			const parameters = this.geometry.parameters;
+			var parameters = this.geometry.parameters;
 
-			if ( parameters !== undefined && parameters.shapes !== undefined ) {
+			if ( parameters != undefined && parameters.shapes != undefined ) {
 
-				const shapes = parameters.shapes;
+				var shapes = parameters.shapes;
 
 				if ( Array.isArray( shapes ) ) {
 
-					for ( let i = 0, l = shapes.length; i < l; i ++ ) {
+					for ( i in 0...shapes.length ) {
 
-						const shape = shapes[ i ];
+						var shape = shapes[ i ];
 
 						serialize( meta.shapes, shape );
 
@@ -1301,7 +1277,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 			object.bindMode = this.bindMode;
 			object.bindMatrix = this.bindMatrix.toArray();
 
-			if ( this.skeleton !== undefined ) {
+			if ( this.skeleton != undefined ) {
 
 				serialize( meta.skeletons, this.skeleton );
 
@@ -1311,13 +1287,13 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		}
 
-		if ( this.material !== undefined ) {
+		if ( this.material != undefined ) {
 
 			if ( Array.isArray( this.material ) ) {
 
-				const uuids = [];
+				var uuids = [];
 
-				for ( let i = 0, l = this.material.length; i < l; i ++ ) {
+				for ( i in 0...this.material.length ) {
 
 					uuids.push( serialize( meta.materials, this.material[ i ] ) );
 
@@ -1339,7 +1315,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 			object.children = [];
 
-			for ( let i = 0; i < this.children.length; i ++ ) {
+			for ( i in 0...this.children.length ) {
 
 				object.children.push( this.children[ i ].toJSON( meta ).object );
 
@@ -1353,9 +1329,9 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 			object.animations = [];
 
-			for ( let i = 0; i < this.animations.length; i ++ ) {
+			for ( i in 0...this.animations.length ) {
 
-				const animation = this.animations[ i ];
+				var animation = this.animations[ i ];
 
 				object.animations.push( serialize( meta.animations, animation ) );
 
@@ -1365,14 +1341,32 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		if ( isRootObject ) {
 
-			const geometries = extractFromCache( meta.geometries );
-			const materials = extractFromCache( meta.materials );
-			const textures = extractFromCache( meta.textures );
-			const images = extractFromCache( meta.images );
-			const shapes = extractFromCache( meta.shapes );
-			const skeletons = extractFromCache( meta.skeletons );
-			const animations = extractFromCache( meta.animations );
-			const nodes = extractFromCache( meta.nodes );
+			// extract data from the cache hash
+			// remove metadata on each item
+			// and return as array
+			function extractFromCache( cache ) {
+
+				var values = [];
+				for ( key in Reflect.fields(cache) ) {
+
+					var data = cache[ key ];
+					Reflect.deleteField(data, "metadata");
+					values.push( data );
+
+				}
+
+				return values;
+
+			}
+
+			var geometries = extractFromCache( meta.geometries );
+			var materials = extractFromCache( meta.materials );
+			var textures = extractFromCache( meta.textures );
+			var images = extractFromCache( meta.images );
+			var shapes = extractFromCache( meta.shapes );
+			var skeletons = extractFromCache( meta.skeletons );
+			var animations = extractFromCache( meta.animations );
+			var nodes = extractFromCache( meta.nodes );
 
 			if ( geometries.length > 0 ) output.geometries = geometries;
 			if ( materials.length > 0 ) output.materials = materials;
@@ -1389,24 +1383,6 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		return output;
 
-		// extract data from the cache hash
-		// remove metadata on each item
-		// and return as array
-		function extractFromCache( cache ) {
-
-			const values = [];
-			for ( const key in cache ) {
-
-				const data = cache[ key ];
-				delete data.metadata;
-				values.push( data );
-
-			}
-
-			return values;
-
-		}
-
 	}
 
 	/**
@@ -1416,7 +1392,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @return A clone of this instance.
 	 */
 	public function clone(recursive:Bool = true) {
-		return new this.constructor().copy( this, recursive );
+		return new Object3D().copy( this, recursive );
 	}
 
 	/**
@@ -1426,7 +1402,7 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	 * @param {boolean} [recursive=true] - When set to `true`, descendants of the 3D object are cloned.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	copy( source, recursive = true ) {
+	public function copy( source, recursive = true ) {
 
 		this.name = source.name;
 
@@ -1458,11 +1434,11 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 		this.userData = JSON.parse( JSON.stringify( source.userData ) );
 
-		if ( recursive === true ) {
+		if ( recursive == true ) {
 
-			for ( let i = 0; i < source.children.length; i ++ ) {
+			for ( i in 0...source.children.length ) {
 
-				const child = source.children[ i ];
+				var child = source.children[ i ];
 				this.add( child.clone() );
 
 			}
@@ -1500,5 +1476,3 @@ Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 	static var _yAxis = /*@__PURE__*/ new Vector3( 0, 1, 0 );
 	static var _zAxis = /*@__PURE__*/ new Vector3( 0, 0, 1 );
 }
-
-export { Object3D };
