@@ -1,3 +1,5 @@
+package vman2002.vthreehx;
+
 class Constants {
     public static var REVISION = 176;
 
@@ -5,7 +7,7 @@ class Constants {
     public static var MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2, ROTATE: 0, DOLLY: 1, PAN: 2 };
     /** Represents touch interaction types in context of controls. **/
     public static var TOUCH = { ROTATE: 0, PAN: 1, DOLLY_PAN: 2, DOLLY_ROTATE: 3 };
-    
+
     /** Disables face culling. **/
     public static var CullFaceNone = 0;
     /** Culls back faces. **/

@@ -214,7 +214,7 @@ class Vector3 {
 	 * @param s The factor that scales `v`.
 	 * @return A reference to this vector.
 	 */
-	public function addScaledVector( v:Vector3, s ) {
+	public function addScaledVector( v:Vector3, s:Float ) {
 		this.x += v.x * s;
 		this.y += v.y * s;
 		this.z += v.z * s;
@@ -242,7 +242,7 @@ class Vector3 {
 	 * @param s The scalar to subtract.
 	 * @return A reference to this vector.
 	 */
-	public function subScalar( s ) {
+	public function subScalar( s:Float ) {
 		this.x -= s;
 		this.y -= s;
 		this.z -= s;
@@ -257,7 +257,7 @@ class Vector3 {
 	 * @param b The second vector.
 	 * @return A reference to this vector.
 	 */
-	public function subVectors( a, b ) {
+	public function subVectors( a:Vector3, b:Vector3 ) {
 		this.x = a.x - b.x;
 		this.y = a.y - b.y;
 		this.z = a.z - b.z;
@@ -271,7 +271,7 @@ class Vector3 {
 	 * @param v The vector to multiply.
 	 * @return A reference to this vector.
 	 */
-	public function multiply( v ) {
+	public function multiply( v:Vector3 ) {
 		this.x *= v.x;
 		this.y *= v.y;
 		this.z *= v.z;
@@ -285,7 +285,7 @@ class Vector3 {
 	 * @param scalar The scalar to multiply.
 	 * @return A reference to this vector.
 	 */
-	public function multiplyScalar( scalar ) {
+	public function multiplyScalar( scalar:Float ) {
 		this.x *= scalar;
 		this.y *= scalar;
 		this.z *= scalar;
@@ -300,7 +300,7 @@ class Vector3 {
 	 * @param b The second vector.
 	 * @return A reference to this vector.
 	 */
-	public function multiplyVectors( a, b ) {
+	public function multiplyVectors( a:Vector3, b:Vector3 ) {
 		this.x = a.x * b.x;
 		this.y = a.y * b.y;
 		this.z = a.z * b.z;
@@ -314,28 +314,28 @@ class Vector3 {
 	 * @param {Euler} euler - The Euler angles.
 	 * @return {Vector3} A reference to this vector.
 	 */
-	public function applyEuler( euler ) {
+	public function applyEuler( euler:Euler ) {
 		return this.applyQuaternion( _quaternion.setFromEuler( euler ) );
 	}
 
 	/**
 	 * Applies a rotation specified by an axis and an angle to this vector.
 	 *
-	 * @param {Vector3} axis - A normalized vector representing the rotation axis.
-	 * @param {number} angle - The angle in radians.
-	 * @return {Vector3} A reference to this vector.
+	 * @param axis A normalized vector representing the rotation axis.
+	 * @param angle The angle in radians.
+	 * @return A reference to this vector.
 	 */
-	public function applyAxisAngle( axis, angle ) {
+	public function applyAxisAngle( axis:Vector3, angle:Float ) {
 		return this.applyQuaternion( _quaternion.setFromAxisAngle( axis, angle ) );
 	}
 
 	/**
 	 * Multiplies this vector with the given 3x3 matrix.
 	 *
-	 * @param {Matrix3} m - The 3x3 matrix.
-	 * @return {Vector3} A reference to this vector.
+	 * @param m The 3x3 matrix.
+	 * @return A reference to this vector.
 	 */
-	public function applyMatrix3( m ) {
+	public function applyMatrix3( m:Matrix3 ) {
 		var x = this.x, y = this.y, z = this.z;
 		var e = m.elements;
 
@@ -350,10 +350,10 @@ class Vector3 {
 	 * Multiplies this vector by the given normal matrix and normalizes
 	 * the result.
 	 *
-	 * @param {Matrix3} m - The normal matrix.
-	 * @return {Vector3} A reference to this vector.
+	 * @param m The normal matrix.
+	 * @return A reference to this vector.
 	 */
-	public inline function applyNormalMatrix( m ) {
+	public inline function applyNormalMatrix( m:Matrix3 ) {
 		return this.applyMatrix3( m ).normalize();
 	}
 
@@ -361,10 +361,10 @@ class Vector3 {
 	 * Multiplies this vector (with an implicit 1 in the 4th dimension) by m, and
 	 * divides by perspective.
 	 *
-	 * @param {Matrix4} m - The matrix to apply.
-	 * @return {Vector3} A reference to this vector.
+	 * @param m The matrix to apply.
+	 * @return A reference to this vector.
 	 */
-	public function applyMatrix4( m ) {
+	public function applyMatrix4( m:Matrix4 ) {
 		var x = this.x, y = this.y, z = this.z;
 		var e = m.elements;
 
@@ -380,10 +380,10 @@ class Vector3 {
 	/**
 	 * Applies the given Quaternion to this vector.
 	 *
-	 * @param {Quaternion} q - The Quaternion.
-	 * @return {Vector3} A reference to this vector.
+	 * @param q The Quaternion.
+	 * @return A reference to this vector.
 	 */
-	public function applyQuaternion( q ) {
+	public function applyQuaternion( q:Quaternion ) {
 		// quaternion q is assumed to have unit length
 
 		var vx = this.x, vy = this.y, vz = this.z;

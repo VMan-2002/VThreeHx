@@ -16,11 +16,11 @@ Required for example scene
         - Quaternion
             - MathUtils✅
         - Vector3✅
-        - Matrix4
+        - Matrix4✅
         - EventDispatcher✅
         - Euler✅
         - Layers
-        - Matrix3
+        - Matrix3✅
 - PerspectiveCamera
 - WebGLRenderer
 - BoxGeometry
