@@ -12,6 +12,8 @@ typedef Int8Array = Array<Int>;
 class Common {
     //Custom common things
 
+    public static final EPSILON:Float = 0.0000001;
+
     /** Sends warning to the console. **/
     public static function warn(t:String) {
         trace(t);
@@ -25,9 +27,19 @@ class Common {
     /** https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign **/
     public static function assign(trg:Dynamic, src:Dynamic) {
         for (k in Reflect.fields(src)) {
-            Reflect.setField(k, Reflect.field(src, k));
+            Reflect.setField(trg, k, Reflect.field(src, k));
         }
         return trg;
+    }
+
+    public static function trunc(n:Float) {
+        return n > 0 ? Math.floor(n) : Math.ceil(n);
+    }
+
+    /** Copy a field if it exists on both objects **/
+    public static function copyField(dst:Dynamic, src:Dynamic, name:String) {
+        if (Reflect.hasField(src, name) && Reflect.hasField(dst, name))
+            Reflect.setField(dst, name, Reflect.field(src, name));
     }
 
     /** Whether or not `describe` is enabled **/

@@ -10,6 +10,8 @@ Based on ThreeJs version [r176](https://github.com/mrdoob/three.js/tree/r176)
 
 literally just starting out, implementing as i go
 
+checkmarks do not mean it's fully working
+
 Required for example scene
 - Scene
     - Object3D✅
@@ -19,7 +21,7 @@ Required for example scene
         - Matrix4✅
         - EventDispatcher✅
         - Euler✅
-        - Layers
+        - Layers✅
         - Matrix3✅
 - PerspectiveCamera
 - WebGLRenderer

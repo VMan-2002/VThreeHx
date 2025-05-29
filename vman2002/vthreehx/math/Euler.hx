@@ -44,11 +44,11 @@ class Euler {
 	 * @param z The angle of the z axis in radians.
 	 * @param order A string representing the order that the rotations are applied.
 	 */
-	public function new( x = 0, y = 0, z = 0, order = Euler.DEFAULT_ORDER ) {
+	public function new( x = 0, y = 0, z = 0, ?order ) {
 		this._x = x;
 		this._y = y;
 		this._z = z;
-		this._order = order;
+		this._order = order ?? DEFAULT_ORDER;
 	}
 
 	/**
@@ -60,11 +60,12 @@ class Euler {
 	 * @param order - A string representing the order that the rotations are applied.
 	 * @return A reference to this Euler instance.
 	 */
-	public inline function set( x, y, z, order = this._order ) {
+	public inline function set( x, y, z, ?order ) {
 		this._x = x;
 		this._y = y;
 		this._z = z;
-		this._order = order;
+		if (order != null)
+			this._order = order;
 		this._onChangeCallback();
 
 		return this;
@@ -104,11 +105,14 @@ class Euler {
 	 * @param update Whether the internal `onChange` callback should be executed or not.
 	 * @return A reference to this Euler instance.
 	 */
-	public function setFromRotationMatrix( m:Matrix4, order:String = this._order, update:Bool = true ) {
+	public function setFromRotationMatrix( m:Matrix4, ?order:String, update:Bool = true ) {
 		var te = m.elements;
 		var m11 = te[ 0 ], m12 = te[ 4 ], m13 = te[ 8 ];
 		var m21 = te[ 1 ], m22 = te[ 5 ], m23 = te[ 9 ];
 		var m31 = te[ 2 ], m32 = te[ 6 ], m33 = te[ 10 ];
+
+		if (order == null)
+			order = this._order;
 
 		switch ( order ) {
 
@@ -128,8 +132,6 @@ class Euler {
 
 				}
 
-				break;
-
 			case 'YXZ':
 
 				this._x = Math.asin( - clamp( m23, - 1, 1 ) );
@@ -145,8 +147,6 @@ class Euler {
 					this._z = 0;
 
 				}
-
-				break;
 
 			case 'ZXY':
 
@@ -164,8 +164,6 @@ class Euler {
 
 				}
 
-				break;
-
 			case 'ZYX':
 
 				this._y = Math.asin( - clamp( m31, - 1, 1 ) );
@@ -181,8 +179,6 @@ class Euler {
 					this._z = Math.atan2( - m12, m22 );
 
 				}
-
-				break;
 
 			case 'YZX':
 
@@ -200,8 +196,6 @@ class Euler {
 
 				}
 
-				break;
-
 			case 'XZY':
 
 				this._z = Math.asin( - clamp( m12, - 1, 1 ) );
@@ -217,8 +211,6 @@ class Euler {
 					this._y = 0;
 
 				}
-
-				break;
 
 			default:
 				Common.warn( 'THREE.Euler: .setFromRotationMatrix() encountered an unknown order: ' + order );
@@ -239,7 +231,7 @@ class Euler {
 	 * @param {boolean} [update=true] - Whether the internal `onChange` callback should be executed or not.
 	 * @return {Euler} A reference to this Euler instance.
 	 */
-	public function setFromQuaternion( q, order, update ) {
+	public function setFromQuaternion( q:Quaternion, order:String, update:Bool = true ) {
 		_matrix.makeRotationFromQuaternion( q );
 
 		return this.setFromRotationMatrix( _matrix, order, update );
@@ -252,8 +244,8 @@ class Euler {
 	 * @param {string} [order] - A string representing the order that the rotations are applied.
 	 * @return {Euler} A reference to this Euler instance.
 	 */
-	public inline function setFromVector3( v, order = this._order ) {
-		return this.set( v.x, v.y, v.z, order );
+	public inline function setFromVector3( v:Vector3, ?order ) {
+		return this.set( v.x, v.y, v.z, order ?? this._order );
 	}
 
 	/**
@@ -266,7 +258,7 @@ class Euler {
 	 * @param {string} [newOrder] - A string representing the new order that the rotations are applied.
 	 * @return {Euler} A reference to this Euler instance.
 	 */
-	public function reorder( newOrder ) {
+	public function reorder( newOrder:String ) {
 		_quaternion.setFromEuler( this );
 
 		return this.setFromQuaternion( _quaternion, newOrder );
@@ -341,18 +333,22 @@ class Euler {
 	function set_x( value ) {
 		this._x = value;
 		this._onChangeCallback();
+		return value;
 	}
 	function set_y( value ) {
 		this._y = value;
 		this._onChangeCallback();
+		return value;
 	}
 	function set_z( value ) {
 		this._z = value;
 		this._onChangeCallback();
+		return value;
 	}
 	function set_order( value ) {
 		this._order = value;
 		this._onChangeCallback();
+		return value;
 	}
 
     var _x:Float;

@@ -7,6 +7,7 @@ import vman2002.vthreehx.math.Euler;
 import vman2002.vthreehx.core.Layers;
 import vman2002.vthreehx.math.Matrix3;
 import vman2002.vthreehx.math.MathUtils.generateUUID in generateUUID;
+import haxe.Json in JSON;
 
 /** This is the base class for most objects in three.js and provides a set of properties and methods for manipulating objects in 3D space. **/
 class Object3D extends vman2002.vthreehx.core.EventDispatcher {
@@ -59,6 +60,143 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	/** Represents the object's normal matrix. **/
 	public var normalMatrix = new Matrix3();
 
+	/**
+		* Represents the object's transformation matrix in local space.
+		*
+		* @type {Matrix4}
+		*/
+	public var matrix = new Matrix4();
+
+	/**
+		* Represents the object's transformation matrix in world space.
+		* If the 3D object has no parent, then it's identical to the local transformation matrix
+		*
+		* @type {Matrix4}
+		*/
+	public var matrixWorld = new Matrix4();
+
+	/**
+		* When set to `true`, the engine automatically computes the local matrix from position,
+		* rotation and scale every frame.
+		*
+		* The default values for all 3D objects is defined by `Object3D.DEFAULT_MATRIX_AUTO_UPDATE`.
+		*
+		* @type {boolean}
+		* @default true
+		*/
+	public var matrixAutoUpdate = Object3D.DEFAULT_MATRIX_AUTO_UPDATE;
+
+	/**
+		* When set to `true`, the engine automatically computes the world matrix from the current local
+		* matrix and the object's transformation hierarchy.
+		*
+		* The default values for all 3D objects is defined by `Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE`.
+		*
+		* @type {boolean}
+		* @default true
+		*/
+	public var matrixWorldAutoUpdate = Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE; // checked by the renderer
+
+	/**
+		* When set to `true`, it calculates the world matrix in that frame and resets this property
+		* to `false`.
+		*
+		* @type {boolean}
+		* @default false
+		*/
+	public var matrixWorldNeedsUpdate = false;
+
+	/**
+		* The layer membership of the 3D object. The 3D object is only visible if it has
+		* at least one layer in common with the camera in use. This property can also be
+		* used to filter out unwanted objects in ray-intersection tests when using {@link Raycaster}.
+		*
+		* @type {Layers}
+		*/
+	public var layers = new Layers();
+
+	/**
+		* When set to `true`, the 3D object gets rendered.
+		*
+		* @type {boolean}
+		* @default true
+		*/
+	public var visible = true;
+
+	/**
+		* When set to `true`, the 3D object gets rendered into shadow maps.
+		*
+		* @type {boolean}
+		* @default false
+		*/
+	public var castShadow = false;
+
+	/**
+		* When set to `true`, the 3D object is affected by shadows in the scene.
+		*
+		* @type {boolean}
+		* @default false
+		*/
+	public var receiveShadow = false;
+
+	/**
+		* When set to `true`, the 3D object is honored by view frustum culling.
+		*
+		* @type {boolean}
+		* @default true
+		*/
+	public var frustumCulled = true;
+
+	/**
+		* This value allows the default rendering order of scene graph objects to be
+		* overridden although opaque and transparent objects remain sorted independently.
+		* When this property is set for an instance of {@link Group},all descendants
+		* objects will be sorted and rendered together. Sorting is from lowest to highest
+		* render order.
+		*
+		* @type {number}
+		* @default 0
+		*/
+	public var renderOrder = 0;
+
+	/**
+		* An array holding the animation clips of the 3D object.
+		*
+		* @type {Array<AnimationClip>}
+		*/
+	public var animations = [];
+
+	/**
+		* Custom depth material to be used when rendering to the depth map. Can only be used
+		* in context of meshes. When shadow-casting with a {@link DirectionalLight} or {@link SpotLight},
+		* if you are modifying vertex positions in the vertex shader you must specify a custom depth
+		* material for proper shadows.
+		*
+		* Only relevant in context of {@link WebGLRenderer}.
+		*
+		* @type {(Material|null)}
+		* @default null
+		*/
+	public var customDepthMaterial = null;
+
+	/**
+		* Same as {@link Object3D#customDepthMaterial}, but used with {@link PointLight}.
+		*
+		* Only relevant in context of {@link WebGLRenderer}.
+		*
+		* @type {(Material|null)}
+		* @default null
+		*/
+	public var customDistanceMaterial = null;
+
+	/**
+		* An object that can be used to store custom data about the 3D object. It
+		* should not hold references to functions as these will not be cloned.
+		*
+		* @type {Object}
+		*/
+	public var userData = {};
+
 	/** Constructs a new 3D object. **/
 	public function new() {
 		super();
@@ -71,149 +209,11 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 		}
 
 		function onQuaternionChange() {
-			rotation.setFromQuaternion( quaternion, undefined, false );
+			rotation.setFromQuaternion( quaternion, null, false );
 		}
 
 		rotation._onChange( onRotationChange );
 		quaternion._onChange( onQuaternionChange );
-
-		/**
-		 * Represents the object's transformation matrix in local space.
-		 *
-		 * @type {Matrix4}
-		 */
-		this.matrix = new Matrix4();
-
-		/**
-		 * Represents the object's transformation matrix in world space.
-		 * If the 3D object has no parent, then it's identical to the local transformation matrix
-		 *
-		 * @type {Matrix4}
-		 */
-		this.matrixWorld = new Matrix4();
-
-		/**
-		 * When set to `true`, the engine automatically computes the local matrix from position,
-		 * rotation and scale every frame.
-		 *
-		 * The default values for all 3D objects is defined by `Object3D.DEFAULT_MATRIX_AUTO_UPDATE`.
-		 *
-		 * @type {boolean}
-		 * @default true
-		 */
-		this.matrixAutoUpdate = Object3D.DEFAULT_MATRIX_AUTO_UPDATE;
-
-		/**
-		 * When set to `true`, the engine automatically computes the world matrix from the current local
-		 * matrix and the object's transformation hierarchy.
-		 *
-		 * The default values for all 3D objects is defined by `Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE`.
-		 *
-		 * @type {boolean}
-		 * @default true
-		 */
-		this.matrixWorldAutoUpdate = Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE; // checked by the renderer
-
-		/**
-		 * When set to `true`, it calculates the world matrix in that frame and resets this property
-		 * to `false`.
-		 *
-		 * @type {boolean}
-		 * @default false
-		 */
-		this.matrixWorldNeedsUpdate = false;
-
-		/**
-		 * The layer membership of the 3D object. The 3D object is only visible if it has
-		 * at least one layer in common with the camera in use. This property can also be
-		 * used to filter out unwanted objects in ray-intersection tests when using {@link Raycaster}.
-		 *
-		 * @type {Layers}
-		 */
-		this.layers = new Layers();
-
-		/**
-		 * When set to `true`, the 3D object gets rendered.
-		 *
-		 * @type {boolean}
-		 * @default true
-		 */
-		this.visible = true;
-
-		/**
-		 * When set to `true`, the 3D object gets rendered into shadow maps.
-		 *
-		 * @type {boolean}
-		 * @default false
-		 */
-		this.castShadow = false;
-
-		/**
-		 * When set to `true`, the 3D object is affected by shadows in the scene.
-		 *
-		 * @type {boolean}
-		 * @default false
-		 */
-		this.receiveShadow = false;
-
-		/**
-		 * When set to `true`, the 3D object is honored by view frustum culling.
-		 *
-		 * @type {boolean}
-		 * @default true
-		 */
-		this.frustumCulled = true;
-
-		/**
-		 * This value allows the default rendering order of scene graph objects to be
-		 * overridden although opaque and transparent objects remain sorted independently.
-		 * When this property is set for an instance of {@link Group},all descendants
-		 * objects will be sorted and rendered together. Sorting is from lowest to highest
-		 * render order.
-		 *
-		 * @type {number}
-		 * @default 0
-		 */
-		this.renderOrder = 0;
-
-		/**
-		 * An array holding the animation clips of the 3D object.
-		 *
-		 * @type {Array<AnimationClip>}
-		 */
-		this.animations = [];
-
-		/**
-		 * Custom depth material to be used when rendering to the depth map. Can only be used
-		 * in context of meshes. When shadow-casting with a {@link DirectionalLight} or {@link SpotLight},
-		 * if you are modifying vertex positions in the vertex shader you must specify a custom depth
-		 * material for proper shadows.
-		 *
-		 * Only relevant in context of {@link WebGLRenderer}.
-		 *
-		 * @type {(Material|undefined)}
-		 * @default undefined
-		 */
-		this.customDepthMaterial = undefined;
-
-		/**
-		 * Same as {@link Object3D#customDepthMaterial}, but used with {@link PointLight}.
-		 *
-		 * Only relevant in context of {@link WebGLRenderer}.
-		 *
-		 * @type {(Material|undefined)}
-		 * @default undefined
-		 */
-		this.customDistanceMaterial = undefined;
-
-		/**
-		 * An object that can be used to store custom data about the 3D object. It
-		 * should not hold references to functions as these will not be cloned.
-		 *
-		 * @type {Object}
-		 */
-		this.userData = {};
-
 	}
 
 	/**
@@ -522,7 +522,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 
 		// This method does not support objects having non-uniformly-scaled parent(s)
 
-		if ( x.isVector3 ) {
+		if ( false ) { //TODO: x.isVector3
 
 			_target.copy( x );
 
@@ -538,7 +538,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 
 		_position.setFromMatrixPosition( this.matrixWorld );
 
-		if ( this.isCamera || this.isLight ) {
+		if ( false ) { //TODO: this.isCamera || this.isLight
 
 			_m1.lookAt( _position, _target, this.up );
 
@@ -573,26 +573,19 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	public function add( object ) {
 
 		if ( arguments.length > 1 ) {
-
 			for ( i in 0...arguments.length ) {
-
 				this.add( arguments[ i ] );
-
 			}
 
 			return this;
-
 		}
 
 		if ( object == this ) {
-
 			console.error( 'THREE.Object3D.add: object can\'t be added as a child of itself.', object );
 			return this;
-
 		}
 
-		if ( object && object.isObject3D ) {
-
+		if ( true ) { //TODO: object && object.isObject3D
 			object.removeFromParent();
 			object.parent = this;
 			this.children.push( object );
@@ -602,11 +595,8 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 			_childaddedEvent.child = object;
 			this.dispatchEvent( _childaddedEvent );
 			_childaddedEvent.child = null;
-
 		} else {
-
 			console.error( 'THREE.Object3D.add: object not an instance of THREE.Object3D.', object );
-
 		}
 
 		return this;
@@ -720,7 +710,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * itself, and returns the first with a matching ID.
 	 *
 	 * @param {number} id - The id.
-	 * @return {Object3D|undefined} The found 3D object. Returns `undefined` if no 3D object has been found.
+	 * @return {Object3D|null} The found 3D object. Returns `null` if no 3D object has been found.
 	 */
 	public function getObjectById( id ) {
 		return this.getObjectByProperty( 'id', id );
@@ -731,7 +721,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * itself, and returns the first with a matching name.
 	 *
 	 * @param {string} name - The name.
-	 * @return {Object3D|undefined} The found 3D object. Returns `undefined` if no 3D object has been found.
+	 * @return {Object3D|null} The found 3D object. Returns `null` if no 3D object has been found.
 	 */
 	public function getObjectByName( name ) {
 		return this.getObjectByProperty( 'name', name );
@@ -743,16 +733,16 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 *
 	 * @param {string} name - The name of the property.
 	 * @param {any} value - The value.
-	 * @return {Object3D|undefined} The found 3D object. Returns `undefined` if no 3D object has been found.
+	 * @return {Object3D|null} The found 3D object. Returns `null` if no 3D object has been found.
 	 */
-	public function getObjectByProperty( name, value ) {
+	public function getObjectByProperty( name:String, value ) {
 		if ( this[ name ] == value ) return this;
 
 		for ( i in 0...this.children.length ) {
 			var child = this.children[ i ];
 			var object = child.getObjectByProperty( name, value );
 
-			if ( object != undefined )
+			if ( object != null )
 				return object;
 		}
 
@@ -988,9 +978,19 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 */
 	public function toJSON( ?meta:Dynamic ) {
 		// meta is a string when called from JSON.stringify
-		var isRootObject = ( meta == undefined || Std.isOfType(meta, String) );
+		var isRootObject = ( meta == null || Std.isOfType(meta, String) );
 
-		var output = {};
+		var output = {
+			object: null,
+			animations: null,
+			nodes: null,
+			shapes: null,
+			images: null,
+			textures: null,
+			materials: null,
+			geometries: null,
+			skeletons: null
+		};
 
 		// meta is a hash used to collect geometries, materials.
 		// not providing it implies that this is the root object
@@ -1017,10 +1017,13 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 
 		// standard Object3D serialization
 
-		var object = {};
-
-		object.uuid = this.uuid;
-		object.type = this.type;
+		var object = {
+			uuid: this.uuid,
+			type: this.type,
+			layers: null,
+			matrix: null,
+			up:null
+		};
 
 		if ( this.name != '' ) object.name = this.name;
 		if ( this.castShadow == true ) object.castShadow = true;
@@ -1103,13 +1106,12 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 					max: this.boundingBox.max.toArray()
 				};
 			}
-
 		}
 
 		//
 
 		function serialize( library, element ) {
-			if ( library[ element.uuid ] == undefined ) {
+			if ( library[ element.uuid ] == null ) {
 				library[ element.uuid ] = element.toJSON( meta );
 			}
 
@@ -1129,11 +1131,11 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 				object.environment = this.environment.toJSON( meta ).uuid;
 			}
 
-		} else if ( this.isMesh || this.isLine || this.isPoints ) {
+		} else if ( false ) { //TODO: this.isMesh || this.isLine || this.isPoints
 			object.geometry = serialize( meta.geometries, this.geometry );
 			var parameters = this.geometry.parameters;
 
-			if ( parameters != undefined && parameters.shapes != undefined ) {
+			if ( parameters != null && parameters.shapes != null ) {
 				var shapes = parameters.shapes;
 
 				if ( Array.isArray( shapes ) ) {
@@ -1148,17 +1150,17 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 			}
 		}
 
-		if ( this.isSkinnedMesh ) {
+		if ( false ) { //TODO: isSkinnedMesh
 			object.bindMode = this.bindMode;
 			object.bindMatrix = this.bindMatrix.toArray();
 
-			if ( this.skeleton != undefined ) {
+			if ( this.skeleton != null ) {
 				serialize( meta.skeletons, this.skeleton );
 				object.skeleton = this.skeleton.uuid;
 			}
 		}
 
-		if ( this.material != undefined ) {
+		if ( this.material != null ) {
 			if ( Array.isArray( this.material ) ) {
 				var uuids = [];
 				for ( i in 0...this.material.length )
@@ -1194,10 +1196,10 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 			// extract data from the cache hash
 			// remove metadata on each item
 			// and return as array
-			function extractFromCache( cache ) {
+			function extractFromCache( cache:Dynamic ) {
 				var values = [];
 				for ( key in Reflect.fields(cache) ) {
-					var data = cache[ key ];
+					var data = Reflect.field(cache, key);
 					Reflect.deleteField(data, "metadata");
 					values.push( data );
 				}
@@ -1235,7 +1237,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @param When set to `true`, descendants of the 3D object are also cloned.
 	 * @return A clone of this instance.
 	 */
-	public function clone(recursive:Bool = true) {
+	public function clone(recursive:Bool = true):Object3D {
 		return new Object3D().copy( this, recursive );
 	}
 
@@ -1246,7 +1248,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @param {boolean} [recursive=true] - When set to `true`, descendants of the 3D object are cloned.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	public function copy( source, recursive = true ) {
+	public function copy( source:Object3D, recursive = true ) {
 		this.name = source.name;
 
 		this.up.copy( source.up );
@@ -1273,7 +1275,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 		this.frustumCulled = source.frustumCulled;
 		this.renderOrder = source.renderOrder;
 
-		this.animations = source.animations.slice();
+		this.animations = source.animations.copy();
 
 		this.userData = JSON.parse( JSON.stringify( source.userData ) );
 

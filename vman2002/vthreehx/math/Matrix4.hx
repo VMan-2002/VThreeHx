@@ -71,7 +71,7 @@ class Matrix4 {
 	 * @param {number} [n43] - 4-3 matrix element.
 	 * @param {number} [n44] - 4-4 matrix element.
 	 */
-	public function new( n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44 ) {
+	public function new( ?n11, ?n12, ?n13, ?n14, ?n21, ?n22, ?n23, ?n24, ?n31, ?n32, ?n33, ?n34, ?n41, ?n42, ?n43, ?n44 ) {
 		if ( n11 != null )
 			this.set( n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44 );
 	}
@@ -403,7 +403,7 @@ class Matrix4 {
 	 * @param {Quaternion} q - The Quaternion.
 	 * @return {Matrix4} A reference to this matrix.
 	 */
-	public function makeRotationFromQuaternion( q ) {
+	public function makeRotationFromQuaternion( q:Quaternion ) {
 		return this.compose( _zero, q, _one );
 	}
 
@@ -416,7 +416,7 @@ class Matrix4 {
 	 * @param {Vector3} up - The up vector.
 	 * @return {Matrix4} A reference to this matrix.
 	 */
-	public function lookAt( eye, target, up ) {
+	public function lookAt( eye:Vector3, target:Vector3, up:Vector3 ) {
 
 		var te = this.elements;
 
@@ -491,7 +491,7 @@ class Matrix4 {
 	 * @param {Matrix4} b - The second matrix.
 	 * @return {Matrix4} A reference to this matrix.
 	 */
-	public function multiplyMatrices( a, b ) {
+	public function multiplyMatrices( a:Matrix4, b:Matrix4 ) {
 		var ae = a.elements;
 		var be = b.elements;
 		var te = this.elements;
@@ -632,22 +632,18 @@ class Matrix4 {
 	 * @param {number} z - The z component of the vector.
 	 * @return {Matrix4} A reference to this matrix.
 	 */
-	public function setPosition( x, y, z ) {
+	public function setPosition( x, y:Float, z:Float ) {
 
 		var te = this.elements;
 
-		if ( x.isVector3 ) {
-
+		if ( Std.isOfType(x, Vector3) ) {
 			te[ 12 ] = x.x;
 			te[ 13 ] = x.y;
 			te[ 14 ] = x.z;
-
 		} else {
-
 			te[ 12 ] = x;
 			te[ 13 ] = y;
 			te[ 14 ] = z;
-
 		}
 
 		return this;
@@ -945,11 +941,11 @@ class Matrix4 {
 	 * @param {Vector3} scale - The scale vector.
 	 * @return {Matrix4} A reference to this matrix.
 	 */
-	public function compose( position, quaternion, scale ) {
+	public function compose( position:Vector3, quaternion:Quaternion, scale:Vector3 ) {
 
 		var te = this.elements;
 
-		var x = quaternion._x, y = quaternion._y, z = quaternion._z, w = quaternion._w;
+		var x = quaternion.x, y = quaternion.y, z = quaternion.z, w = quaternion.w;
 		var x2 = x + x,	y2 = y + y, z2 = z + z;
 		var xx = x * x2, xy = x * y2, xz = x * z2;
 		var yy = y * y2, yz = y * z2, zz = z * z2;
@@ -1101,7 +1097,7 @@ class Matrix4 {
 	 * @param {(WebGLCoordinateSystem|WebGPUCoordinateSystem)} [coordinateSystem=WebGLCoordinateSystem] - The coordinate system.
 	 * @return {Matrix4} A reference to this matrix.
 	 */
-	public function makeOrthographic( left, right, top, bottom, near, far, coordinateSystem = WebGLCoordinateSystem ) {
+	public function makeOrthographic( left, right, top, bottom, near, far, ?coordinateSystem:Int ) {
 
 		var te = this.elements;
 		var w = 1.0 / ( right - left );
@@ -1113,7 +1109,7 @@ class Matrix4 {
 
 		var z, zInv;
 
-		if ( coordinateSystem == WebGLCoordinateSystem ) {
+		if ( coordinateSystem == WebGLCoordinateSystem || coordinateSystem == null ) {
 
 			z = ( far + near ) * p;
 			zInv = - 2 * p;
@@ -1186,7 +1182,9 @@ class Matrix4 {
 	 * @param {number} [offset=0] - Index of the first element in the array.
 	 * @return {Array<number>} The matrix elements in column-major order.
 	 */
-	public function toArray( array = [], offset = 0 ) {
+	public function toArray( ?array:Array<Float>, offset = 0 ) {
+		if (array == null)
+			array = [];
 
 		var te = this.elements;
 

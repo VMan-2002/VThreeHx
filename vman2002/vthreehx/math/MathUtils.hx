@@ -19,10 +19,10 @@ class MathUtils {
     public static function generateUUID() {
         // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/21963136#21963136
 
-        var d0 = Math.random() * 0xffffffff | 0;
-        var d1 = Math.random() * 0xffffffff | 0;
-        var d2 = Math.random() * 0xffffffff | 0;
-        var d3 = Math.random() * 0xffffffff | 0;
+        var d0:Int = Math.floor(Math.random() * 0xffffffff) | 0;
+        var d1:Int = Math.floor(Math.random() * 0xffffffff) | 0;
+        var d2:Int = Math.floor(Math.random() * 0xffffffff) | 0;
+        var d3:Int = Math.floor(Math.random() * 0xffffffff) | 0;
         var uuid = _lut[ d0 & 0xff ] + _lut[ d0 >> 8 & 0xff ] + _lut[ d0 >> 16 & 0xff ] + _lut[ d0 >> 24 & 0xff ] + '-' +
                 _lut[ d1 & 0xff ] + _lut[ d1 >> 8 & 0xff ] + '-' + _lut[ d1 >> 16 & 0x0f | 0x40 ] + _lut[ d1 >> 24 & 0xff ] + '-' +
                 _lut[ d2 & 0x3f | 0x80 ] + _lut[ d2 >> 8 & 0xff ] + '-' + _lut[ d2 >> 16 & 0xff ] + _lut[ d2 >> 24 & 0xff ] +
@@ -97,7 +97,7 @@ class MathUtils {
     * @param t The interpolation factor in the closed interval `[0, 1]`.
     * @return The interpolated value.
     */
-    public static function lerp( x, y, t ) {
+    public static function lerp( x:Float, y:Float, t:Float ) {
         return ( 1 - t ) * x + t * y;
     }
 
@@ -139,7 +139,7 @@ class MathUtils {
     * @param max The max value. Any x value above max will be `1`.
     * @return The alternated value.
     */
-    public static function smoothstep( x, min, max ) {
+    public static function smoothstep( x:Float, min:Float, max:Float ):Float {
         if ( x <= min ) return 0;
         if ( x >= max ) return 1;
 
@@ -157,7 +157,7 @@ class MathUtils {
     * @param max The max value. Any x value above max will be `1`.
     * @return The alternated value.
     */
-    public static function smootherstep( x, min, max ) {
+    public static function smootherstep( x:Float, min:Float, max:Float ):Float {
         if ( x <= min ) return 0;
         if ( x >= max ) return 1;
 
@@ -204,8 +204,8 @@ class MathUtils {
     * @param s The integer seed.
     * @return A random float.
     */
-    public static function seededRandom( s ) {
-        if ( s != undefined ) _seed = s;
+    public static function seededRandom( ?s:Int ):Float {
+        if ( s != null ) _seed = s;
 
         // Mulberry32 generator
         var t = _seed += 0x6D2B79F5;
@@ -296,24 +296,18 @@ class MathUtils {
         switch ( order ) {
             case 'XYX':
                 q.set( c2 * s13, s2 * c1_3, s2 * s1_3, c2 * c13 );
-                break;
             case 'YZY':
                 q.set( s2 * s1_3, c2 * s13, s2 * c1_3, c2 * c13 );
-                break;
             case 'ZXZ':
                 q.set( s2 * c1_3, s2 * s1_3, c2 * s13, c2 * c13 );
-                break;
             case 'XZX':
                 q.set( c2 * s13, s2 * s3_1, s2 * c3_1, c2 * c13 );
-                break;
             case 'YXY':
                 q.set( s2 * c3_1, c2 * s13, s2 * s3_1, c2 * c13 );
-                break;
             case 'ZYZ':
                 q.set( s2 * s3_1, s2 * c3_1, c2 * s13, c2 * c13 );
-                break;
             default:
-                console.warn( 'THREE.MathUtils: .setQuaternionFromProperEuler() encountered an unknown order: ' + order );
+                Common.warn( 'THREE.MathUtils: .setQuaternionFromProperEuler() encountered an unknown order: ' + order );
         }
     }
 
@@ -324,7 +318,7 @@ class MathUtils {
     * @param array The typed array that defines the data type of the value.
     * @return The denormalize (float) value in the range `[0,1]`.
     */
-    public static function denormalize( value, array ) {
+    public static function denormalize( value, array ):Float {
         switch (Type.getClass(array)) {
             case Float32Array:
                 return value;

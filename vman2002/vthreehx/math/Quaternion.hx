@@ -26,6 +26,8 @@ class Quaternion {
 
 	/** The z value of this quaternion. **/
     public var z(default, set):Float;
+	
+	/** The w value of this quaternion. **/
     public var w(default, set):Float;
 
 	/**
@@ -36,7 +38,7 @@ class Quaternion {
 	 * @param z The z value of this quaternion.
 	 * @param w The w value of this quaternion.
 	 */
-	public function new( x = 0, y = 0, z = 0, w = 1 ) {
+	public function new( x:Float = 0, y:Float = 0, z:Float = 0, w:Float = 1 ) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -56,7 +58,7 @@ class Quaternion {
 	 * @param {number} t - The interpolation factor in the range `[0,1]`.
 	 * @see {@link Quaternion#slerp}
 	 */
-	static function slerpFlat( dst:Array<Float>, dstOffset:Float, src0:Array<Float>, srcOffset0:Float, src1:Array<Float>, srcOffset1:Float, t:Float ) {
+	static function slerpFlat( dst:Array<Float>, dstOffset:Int, src0:Array<Float>, srcOffset0:Int, src1:Array<Float>, srcOffset1:Int, t:Float ) {
 
 		// fuzz-free, array-based Quaternion SLERP operation
 
@@ -98,7 +100,7 @@ class Quaternion {
 				sqrSin = 1 - cos * cos;
 
 			// Skip the Slerp for tiny steps to avoid numeric problems:
-			if ( sqrSin > Number.EPSILON ) {
+			if ( sqrSin > Common.EPSILON ) {
 
 				var sin = Math.sqrt( sqrSin ),
 					len = Math.atan2( sin, cos * dir );
@@ -177,6 +179,7 @@ class Quaternion {
 	public function set_x( value ) {
 		this._x = value;
 		this._onChangeCallback();
+		return value;
 	}
 
 	public function get_y() {
@@ -186,6 +189,7 @@ class Quaternion {
 	public function set_y( value ) {
 		this._y = value;
 		this._onChangeCallback();
+		return value;
 	}
 
 	public function get_z() {
@@ -195,6 +199,7 @@ class Quaternion {
 	public function set_z( value ) {
 		this._z = value;
 		this._onChangeCallback();
+		return value;
 	}
 
 	/**
@@ -210,6 +215,7 @@ class Quaternion {
 	public function set_w( value ) {
 		this._w = value;
 		this._onChangeCallback();
+		return value;
 	}
 
 	/**
@@ -251,7 +257,7 @@ class Quaternion {
 	 * @param {Quaternion} quaternion - The quaternion to copy.
 	 * @return {Quaternion} A reference to this quaternion.
 	 */
-	public function copy( quaternion ) {
+	public function copy( quaternion:Quaternion ) {
 
 		this._x = quaternion.x;
 		this._y = quaternion.y;
@@ -272,9 +278,8 @@ class Quaternion {
 	 * @param {boolean} [update=true] - Whether the internal `onChange` callback should be executed or not.
 	 * @return {Quaternion} A reference to this quaternion.
 	 */
-	public function setFromEuler( euler, update = true ) {
-
-		var x = euler._x, y = euler._y, z = euler._z, order = euler._order;
+	public function setFromEuler( euler:Euler, update = true ) {
+		var x = euler.x, y = euler.y, z = euler.z, order = euler.order;
 
 		// http://www.mathworks.com/matlabcentral/fileexchange/
 		// 	20696-function-to-convert-between-dcm-euler-angles-quaternions-and-euler-vectors/
@@ -298,45 +303,39 @@ class Quaternion {
 				this._y = c1 * s2 * c3 - s1 * c2 * s3;
 				this._z = c1 * c2 * s3 + s1 * s2 * c3;
 				this._w = c1 * c2 * c3 - s1 * s2 * s3;
-				break;
 
 			case 'YXZ':
 				this._x = s1 * c2 * c3 + c1 * s2 * s3;
 				this._y = c1 * s2 * c3 - s1 * c2 * s3;
 				this._z = c1 * c2 * s3 - s1 * s2 * c3;
 				this._w = c1 * c2 * c3 + s1 * s2 * s3;
-				break;
 
 			case 'ZXY':
 				this._x = s1 * c2 * c3 - c1 * s2 * s3;
 				this._y = c1 * s2 * c3 + s1 * c2 * s3;
 				this._z = c1 * c2 * s3 + s1 * s2 * c3;
 				this._w = c1 * c2 * c3 - s1 * s2 * s3;
-				break;
 
 			case 'ZYX':
 				this._x = s1 * c2 * c3 - c1 * s2 * s3;
 				this._y = c1 * s2 * c3 + s1 * c2 * s3;
 				this._z = c1 * c2 * s3 - s1 * s2 * c3;
 				this._w = c1 * c2 * c3 + s1 * s2 * s3;
-				break;
 
 			case 'YZX':
 				this._x = s1 * c2 * c3 + c1 * s2 * s3;
 				this._y = c1 * s2 * c3 + s1 * c2 * s3;
 				this._z = c1 * c2 * s3 - s1 * s2 * c3;
 				this._w = c1 * c2 * c3 - s1 * s2 * s3;
-				break;
 
 			case 'XZY':
 				this._x = s1 * c2 * c3 - c1 * s2 * s3;
 				this._y = c1 * s2 * c3 - s1 * c2 * s3;
 				this._z = c1 * c2 * s3 + s1 * s2 * c3;
 				this._w = c1 * c2 * c3 + s1 * s2 * s3;
-				break;
 
 			default:
-				console.warn( 'THREE.Quaternion: .setFromEuler() encountered an unknown order: ' + order );
+				Common.warn( 'THREE.Quaternion: .setFromEuler() encountered an unknown order: ' + order );
 
 		}
 
@@ -353,7 +352,7 @@ class Quaternion {
 	 * @param {number} angle - The angle in radians.
 	 * @return {Quaternion} A reference to this quaternion.
 	 */
-	public function setFromAxisAngle( axis, angle ) {
+	public function setFromAxisAngle( axis:Vector3, angle:Float ) {
 
 		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm
 
@@ -448,7 +447,7 @@ class Quaternion {
 
 		var r = vFrom.dot( vTo ) + 1;
 
-		if ( r < Number.EPSILON ) {
+		if ( r < Common.EPSILON ) {
 
 			// vFrom and vTo point in opposite directions
 
@@ -491,7 +490,7 @@ class Quaternion {
 	 * @param {Quaternion} q - The quaternion to compute the angle with.
 	 * @return {number} The angle in radians.
 	 */
-	public function angleTo( q ) {
+	public function angleTo( q:Quaternion ) {
 
 		return 2 * Math.acos( Math.abs( clamp( this.dot( q ), - 1, 1 ) ) );
 
@@ -505,9 +504,9 @@ class Quaternion {
 	 * @param {number} step - The angular step in radians.
 	 * @return {Quaternion} A reference to this quaternion.
 	 */
-	public function rotateTowards( q, step ) {
+	public function rotateTowards( q:Quaternion, step:Float ) {
 
-		var angle = this.angleTo( q );
+		var angle:Float = this.angleTo( q );
 
 		if ( angle == 0 ) return this;
 
@@ -568,7 +567,7 @@ class Quaternion {
 	 * @param {Quaternion} v - The quaternion to compute the dot product with.
 	 * @return {number} The result of the dot product.
 	 */
-	public function dot( v ) {
+	public function dot( v:Quaternion ) {
 
 		return this._x * v._x + this._y * v._y + this._z * v._z + this._w * v._w;
 
@@ -665,7 +664,7 @@ class Quaternion {
 	 * @param {Quaternion} b - The second quaternion.
 	 * @return {Quaternion} A reference to this quaternion.
 	 */
-	public function multiplyQuaternions( a, b ) {
+	public function multiplyQuaternions( a:Quaternion, b:Quaternion ) {
 
 		// from http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/code/index.htm
 
@@ -690,7 +689,7 @@ class Quaternion {
 	 * @param {number} t - The interpolation factor in the closed interval `[0, 1]`.
 	 * @return {Quaternion} A reference to this quaternion.
 	 */
-	public function slerp( qb, t ) {
+	public function slerp( qb:Quaternion, t:Float ) {
 
 		if ( t == 0 ) return this;
 		if ( t == 1 ) return this.copy( qb );
@@ -729,7 +728,7 @@ class Quaternion {
 
 		var sqrSinHalfTheta = 1.0 - cosHalfTheta * cosHalfTheta;
 
-		if ( sqrSinHalfTheta <= Number.EPSILON ) {
+		if ( sqrSinHalfTheta <= Common.EPSILON ) {
 
 			var s = 1 - t;
 			this._w = s * w + t * this._w;
@@ -841,8 +840,9 @@ class Quaternion {
 	 * @param {number} [offset=0] - Index of the first element in the array.
 	 * @return {Array<number>} The quaternion components.
 	 */
-	public function toArray( array = [], offset = 0 ) {
-
+	public function toArray( ?array, offset = 0 ) {
+		if (array == null)
+			array = [];
 		array[ offset ] = this._x;
 		array[ offset + 1 ] = this._y;
 		array[ offset + 2 ] = this._z;
@@ -897,4 +897,9 @@ class Quaternion {
 	public function iterator() {
         return [this._x, this._y, this._z, this._w].iterator();   
     }
+
+	var _x:Float;
+	var _y:Float;
+	var _z:Float;
+	var _w:Float;
 }

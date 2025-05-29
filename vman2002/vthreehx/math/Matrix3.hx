@@ -55,8 +55,8 @@ class Matrix3 {
 	 * @param {number} [n32] - 3-2 matrix element.
 	 * @param {number} [n33] - 3-3 matrix element.
 	 */
-	public function new( n11, n12, n13, n21, n22, n23, n31, n32, n33 ) {
-		if ( n11 != undefined )
+	public function new( ?n11, ?n12, ?n13, ?n21, ?n22, ?n23, ?n31, ?n32, ?n33 ) {
+		if ( n11 != null )
 			this.set( n11, n12, n13, n21, n22, n23, n31, n32, n33 );
 	}
 
@@ -167,10 +167,8 @@ class Matrix3 {
 	 * @param {Matrix3} m - The matrix to multiply with.
 	 * @return {Matrix3} A reference to this matrix.
 	 */
-	public function multiply( m ) {
-
+	public function multiply( m:Matrix3 ) {
 		return this.multiplyMatrices( this, m );
-
 	}
 
 	/**
@@ -179,10 +177,8 @@ class Matrix3 {
 	 * @param {Matrix3} m - The matrix to multiply with.
 	 * @return {Matrix3} A reference to this matrix.
 	 */
-	public function premultiply( m ) {
-
+	public function premultiply( m:Matrix3 ) {
 		return this.multiplyMatrices( m, this );
-
 	}
 
 	/**
@@ -194,7 +190,6 @@ class Matrix3 {
 	 * @return {Matrix3} A reference to this matrix.
 	 */
 	public function multiplyMatrices( a, b ) {
-
 		var ae = a.elements;
 		var be = b.elements;
 		var te = this.elements;
@@ -220,7 +215,6 @@ class Matrix3 {
 		te[ 8 ] = a31 * b13 + a32 * b23 + a33 * b33;
 
 		return this;
-
 	}
 
 	/**
@@ -230,7 +224,6 @@ class Matrix3 {
 	 * @return {Matrix3} A reference to this matrix.
 	 */
 	public function multiplyScalar( s ) {
-
 		var te = this.elements;
 
 		te[ 0 ] *= s; te[ 3 ] *= s; te[ 6 ] *= s;
@@ -238,7 +231,6 @@ class Matrix3 {
 		te[ 2 ] *= s; te[ 5 ] *= s; te[ 8 ] *= s;
 
 		return this;
-
 	}
 
 	/**
@@ -247,7 +239,6 @@ class Matrix3 {
 	 * @return {number} The determinant.
 	 */
 	public function determinant() {
-
 		var te = this.elements;
 
 		var a = te[ 0 ], b = te[ 1 ], c = te[ 2 ],
@@ -255,7 +246,6 @@ class Matrix3 {
 			g = te[ 6 ], h = te[ 7 ], i = te[ 8 ];
 
 		return a * e * i - a * f * h - b * d * i + b * f * g + c * d * h - c * e * g;
-
 	}
 
 	/**
@@ -266,7 +256,6 @@ class Matrix3 {
 	 * @return {Matrix3} A reference to this matrix.
 	 */
 	public function invert() {
-
 		var te = this.elements,
 
 			n11 = te[ 0 ], n21 = te[ 1 ], n31 = te[ 2 ],
@@ -296,7 +285,6 @@ class Matrix3 {
 		te[ 8 ] = ( n22 * n11 - n21 * n12 ) * detInv;
 
 		return this;
-
 	}
 
 	/**
@@ -305,7 +293,6 @@ class Matrix3 {
 	 * @return {Matrix3} A reference to this matrix.
 	 */
 	public function transpose() {
-
 		var tmp;
 		var m = this.elements;
 
@@ -314,7 +301,6 @@ class Matrix3 {
 		tmp = m[ 5 ]; m[ 5 ] = m[ 7 ]; m[ 7 ] = tmp;
 
 		return this;
-
 	}
 
 	/**
@@ -325,9 +311,7 @@ class Matrix3 {
 	 * @return {Matrix3} A reference to this matrix.
 	 */
 	public function getNormalMatrix( matrix4 ) {
-
 		return this.setFromMatrix4( matrix4 ).invert().transpose();
-
 	}
 
 	/**
@@ -337,7 +321,6 @@ class Matrix3 {
 	 * @return {Matrix3} A reference to this matrix.
 	 */
 	public function transposeIntoArray( r ) {
-
 		var m = this.elements;
 
 		r[ 0 ] = m[ 0 ];
@@ -351,7 +334,6 @@ class Matrix3 {
 		r[ 8 ] = m[ 8 ];
 
 		return this;
-
 	}
 
 	/**
@@ -367,7 +349,6 @@ class Matrix3 {
 	 * @return {Matrix3} A reference to this matrix.
 	 */
 	public function setUvTransform( tx, ty, sx, sy, rotation, cx, cy ) {
-
 		var c = Math.cos( rotation );
 		var s = Math.sin( rotation );
 
@@ -378,7 +359,6 @@ class Matrix3 {
 		);
 
 		return this;
-
 	}
 
 	/**
@@ -411,7 +391,7 @@ class Matrix3 {
 	 * @param {number} ty - The amount to translate in the Y axis.
 	 * @return {Matrix3} A reference to this matrix.
 	 */
-	public function translate( tx, ty ) {
+	public function translate( tx:Float, ty:Float ) {
 		this.premultiply( _m3.makeTranslation( tx, ty ) );
 		return this;
 	}
@@ -425,7 +405,7 @@ class Matrix3 {
 	 * @param {number} y - The amount to translate in the Y axis.
 	 * @return {Matrix3} A reference to this matrix.
 	 */
-	public function makeTranslation( x, y ) {
+	public function makeTranslation( x:Dynamic, y:Float ) {
 		if ( x.isVector2 ) {
 			this.set(
 				1, 0, x.x,

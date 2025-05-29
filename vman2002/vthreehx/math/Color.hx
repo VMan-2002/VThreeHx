@@ -880,6 +880,24 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 		return this.getHex();
 	}
 
+	#if flixel
+	/**
+		@param alpha Alpha value for the output FlxColor, on a scale from 0 to 1
+		@return FlxColor converted from this THREE.Color
+	**/
+	public function toFlxColor(?alpha:Float = 1) {
+		return flixel.util.FlxColor.fromRGBFloat(r, g, b, alpha);
+	}
+
+	/**
+		Set this color from an FlxColor.
+		@return A reference to this color.
+	**/
+	public function setFromFlxColor(col:flixel.util.FlxColor) {
+		return setRGB(col.redFloat, col.greenFloat, col.blueFloat);
+	}
+	#end
+
     public function iterator() {
         return [this.r, this.g, this.b].iterator();
     }

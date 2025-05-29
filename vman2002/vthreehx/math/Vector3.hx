@@ -1,6 +1,6 @@
 package vman2002.vthreehx.math;
 
-import vman2002.vthreehx.math.MathUtils.clamp in clamp;
+import vman2002.vthreehx.math.MathUtils;
 import vman2002.vthreehx.math.Quaternion;
 
 /**
@@ -22,13 +22,13 @@ import vman2002.vthreehx.math.Quaternion;
  */
 class Vector3 {
 	/** The x value of this vector. **/
-	public var x = 0;
+	public var x:Float = 0;
 
 	/** The y value of this vector. **/
-	public var y = 0;
+	public var y:Float = 0;
 
 	/** The z value of this vector. **/
-	public var z = 0;
+	public var z:Float = 0;
 
 	/**
 	 * Constructs a new 3D vector.
@@ -37,7 +37,7 @@ class Vector3 {
 	 * @param y The y value of this vector.
 	 * @param z The z value of this vector.
 	 */
-	public function new( ?x = 0, ?y = 0, ?z = 0 ) {
+	public function new( ?x:Float = 0, ?y:Float = 0, ?z:Float = 0 ) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -51,7 +51,7 @@ class Vector3 {
 	 * @param z The value of the z component.
 	 * @return A reference to this vector.
 	 */
-	public function set( x, y, ?z = null ) {
+	public function set( x:Float, y:Float, ?z:Null<Float> = null ) {
 		this.x = x;
 		this.y = y;
         if (z != null) // sprite.scale.set(x,y)
@@ -78,7 +78,7 @@ class Vector3 {
 	 * @param x The value to set.
 	 * @return A reference to this vector.
 	 */
-	public function setX( x ) {
+	public function setX( x:Float ) {
 		this.x = x;
 
 		return this;
@@ -90,7 +90,7 @@ class Vector3 {
 	 * @param y The value to set.
 	 * @return A reference to this vector.
 	 */
-	public function setY( y ) {
+	public function setY( y:Float ) {
 		this.y = y;
 
 		return this;
@@ -102,7 +102,7 @@ class Vector3 {
 	 * @param z The value to set.
 	 * @return A reference to this vector.
 	 */
-	public function setZ( z ) {
+	public function setZ( z:Float ) {
 		this.z = z;
 
 		return this;
@@ -115,11 +115,11 @@ class Vector3 {
 	 * @param value The value to set.
 	 * @return A reference to this vector.
 	 */
-	public function setComponent( index, value ) {
+	public function setComponent( index:Int, value:Float ) {
 		switch ( index ) {
-			case 0: this.x = value; break;
-			case 1: this.y = value; break;
-			case 2: this.z = value; break;
+			case 0: this.x = value;
+			case 1: this.y = value;
+			case 2: this.z = value;
 			default: throw( 'index is out of range: ' + index );
 		}
 
@@ -132,7 +132,7 @@ class Vector3 {
 	 * @param index The component index. `0` equals to x, `1` equals to y, `2` equals to z.
 	 * @return A vector component value.
 	 */
-	public function getComponent( index ) {
+	public function getComponent( index:Int ) {
 		switch ( index ) {
 			case 0: return this.x;
 			case 1: return this.y;
@@ -170,7 +170,7 @@ class Vector3 {
 	 * @param v The vector to add.
 	 * @return A reference to this vector.
 	 */
-	public function add( v ) {
+	public function add( v:Vector3 ) {
 		this.x += v.x;
 		this.y += v.y;
 		this.z += v.z;
@@ -184,7 +184,7 @@ class Vector3 {
 	 * @param s The scalar to add.
 	 * @return A reference to this vector.
 	 */
-	public function addScalar( s ) {
+	public function addScalar( s:Float ) {
 		this.x += s;
 		this.y += s;
 		this.z += s;
@@ -465,7 +465,7 @@ class Vector3 {
 	 * @param {number} scalar - The scalar to divide.
 	 * @return {Vector3} A reference to this vector.
 	 */
-	public function divideScalar( scalar ) {
+	public function divideScalar( scalar:Float ) {
 		return this.multiplyScalar( 1 / scalar );
 	}
 
@@ -509,12 +509,12 @@ class Vector3 {
 	 * @param {Vector3} max - The maximum x, y and z values in the desired range.
 	 * @return {Vector3} A reference to this vector.
 	 */
-	public function clamp( min, max ) {
+	public function clamp( min:Vector3, max:Vector3 ) {
 		// assumes min < max, componentwise
 
-		this.x = clamp( this.x, min.x, max.x );
-		this.y = clamp( this.y, min.y, max.y );
-		this.z = clamp( this.z, min.z, max.z );
+		this.x = MathUtils.clamp( this.x, min.x, max.x );
+		this.y = MathUtils.clamp( this.y, min.y, max.y );
+		this.z = MathUtils.clamp( this.z, min.z, max.z );
 
 		return this;
 	}
@@ -530,9 +530,9 @@ class Vector3 {
 	 * @return {Vector3} A reference to this vector.
 	 */
 	public function clampScalar( minVal, maxVal ) {
-		this.x = clamp( this.x, minVal, maxVal );
-		this.y = clamp( this.y, minVal, maxVal );
-		this.z = clamp( this.z, minVal, maxVal );
+		this.x = MathUtils.clamp( this.x, minVal, maxVal );
+		this.y = MathUtils.clamp( this.y, minVal, maxVal );
+		this.z = MathUtils.clamp( this.z, minVal, maxVal );
 
 		return this;
 	}
@@ -550,7 +550,7 @@ class Vector3 {
 	public function clampLength( min, max ) {
 		var length = this.length();
 
-		return this.divideScalar( length || 1 ).multiplyScalar( clamp( length, min, max ) );
+		return this.divideScalar( length != 0 ? length : 1 ).multiplyScalar( MathUtils.clamp( length, min, max ) );
 	}
 
 	/**
@@ -599,9 +599,9 @@ class Vector3 {
 	 * @return {Vector3} A reference to this vector.
 	 */
 	public function roundToZero() {
-		this.x = Math.trunc( this.x );
-		this.y = Math.trunc( this.y );
-		this.z = Math.trunc( this.z );
+		this.x = Common.trunc( this.x );
+		this.y = Common.trunc( this.y );
+		this.z = Common.trunc( this.z );
 
 		return this;
 	}
@@ -625,7 +625,7 @@ class Vector3 {
 	 * @param {Vector3} v - The vector to compute the dot product with.
 	 * @return {number} The result of the dot product.
 	 */
-	public function dot( v ) {
+	public function dot( v:Vector3 ) {
 		return this.x * v.x + this.y * v.y + this.z * v.z;
 	}
 
@@ -722,7 +722,7 @@ class Vector3 {
 	 * @param {Vector3} v - The vector to compute the cross product with.
 	 * @return {Vector3} The result of the cross product.
 	 */
-	public inline function cross( v ) {
+	public inline function cross( v:Vector3 ) {
 		return this.crossVectors( this, v );
 	}
 
@@ -734,7 +734,7 @@ class Vector3 {
 	 * @param {Vector3} b - The second vector.
 	 * @return {Vector3} A reference to this vector.
 	 */
-	public function crossVectors( a, b ) {
+	public function crossVectors( a:Vector3, b:Vector3 ) {
 		var ax = a.x, ay = a.y, az = a.z;
 		var bx = b.x, by = b.y, bz = b.z;
 
@@ -751,7 +751,7 @@ class Vector3 {
 	 * @param {Vector3} v - The vector to project to.
 	 * @return {Vector3} A reference to this vector.
 	 */
-	public function projectOnVector( v ) {
+	public function projectOnVector( v:Vector3 ) {
 		var denominator = v.lengthSq();
 
 		if ( denominator == 0 ) return this.set( 0, 0, 0 );
@@ -768,7 +768,7 @@ class Vector3 {
 	 * @param {Vector3} planeNormal - The plane normal.
 	 * @return {Vector3} A reference to this vector.
 	 */
-	public function projectOnPlane( planeNormal ) {
+	public function projectOnPlane( planeNormal:Vector3 ) {
 		_vector.copy( this ).projectOnVector( planeNormal );
 
 		return this.sub( _vector );
@@ -780,7 +780,7 @@ class Vector3 {
 	 * @param {Vector3} normal - The (normalized) normal vector.
 	 * @return {Vector3} A reference to this vector.
 	 */
-	public function reflect( normal ) {
+	public function reflect( normal:Vector3 ) {
 		return this.sub( _vector.copy( normal ).multiplyScalar( 2 * this.dot( normal ) ) );
 	}
 	/**
@@ -789,7 +789,7 @@ class Vector3 {
 	 * @param {Vector3} v - The vector to compute the angle with.
 	 * @return {number} The angle in radians.
 	 */
-	public function angleTo( v ) {
+	public function angleTo( v:Vector3 ) {
 		var denominator = Math.sqrt( this.lengthSq() * v.lengthSq() );
 
 		if ( denominator == 0 ) return Math.PI / 2;
@@ -798,7 +798,7 @@ class Vector3 {
 
 		// clamp, to handle numerical problems
 
-		return Math.acos( clamp( theta, - 1, 1 ) );
+		return Math.acos( MathUtils.clamp( theta, - 1, 1 ) );
 	}
 
 	/**
@@ -1008,7 +1008,9 @@ class Vector3 {
 	 * @param {number} [offset=0] - Index of the first element in the array.
 	 * @return {Array<number>} The vector components.
 	 */
-	public function toArray( array = [], offset = 0 ) {
+	public function toArray( ?array, offset = 0 ) {
+		if (array == null)
+			array = [];
 		array[ offset ] = this.x;
 		array[ offset + 1 ] = this.y;
 		array[ offset + 2 ] = this.z;

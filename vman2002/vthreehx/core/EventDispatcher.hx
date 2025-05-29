@@ -9,6 +9,8 @@ typedef Event = Dynamic;
 class EventDispatcher {
     public var _listeners:Map<String, Array<Listener>> = null;
 
+	public function new() {}
+
 	/**
 	 * Adds the given event listener to the given event type.
 	 *
