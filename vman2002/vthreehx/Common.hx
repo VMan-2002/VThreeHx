@@ -22,6 +22,14 @@ class Common {
 		return n ? 1 : 0;
 	}
 
+    /** https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign **/
+    public static function assign(trg:Dynamic, src:Dynamic) {
+        for (k in Reflect.fields(src)) {
+            Reflect.setField(k, Reflect.field(src, k));
+        }
+        return trg;
+    }
+
     /** Whether or not `describe` is enabled **/
     public static var describeEnabled = #if debug true; #else false; #end
 

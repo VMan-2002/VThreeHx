@@ -105,10 +105,10 @@ class Euler {
 	 * @return A reference to this Euler instance.
 	 */
 	public function setFromRotationMatrix( m:Matrix4, order:String = this._order, update:Bool = true ) {
-		const te = m.elements;
-		const m11 = te[ 0 ], m12 = te[ 4 ], m13 = te[ 8 ];
-		const m21 = te[ 1 ], m22 = te[ 5 ], m23 = te[ 9 ];
-		const m31 = te[ 2 ], m32 = te[ 6 ], m33 = te[ 10 ];
+		var te = m.elements;
+		var m11 = te[ 0 ], m12 = te[ 4 ], m13 = te[ 8 ];
+		var m21 = te[ 1 ], m22 = te[ 5 ], m23 = te[ 9 ];
+		var m31 = te[ 2 ], m32 = te[ 6 ], m33 = te[ 10 ];
 
 		switch ( order ) {
 
@@ -226,7 +226,7 @@ class Euler {
 
 		this._order = order;
 
-		if ( update === true ) this._onChangeCallback();
+		if ( update == true ) this._onChangeCallback();
 
 		return this;
 	}
@@ -285,7 +285,7 @@ class Euler {
 	 * @return {boolean} Whether this Euler instance is equal with the given one.
 	 */
 	public function equals( euler:Euler ) {
-		return ( euler._x === this._x ) && ( euler._y === this._y ) && ( euler._z === this._z ) && ( euler._order === this._order );
+		return ( euler._x == this._x ) && ( euler._y == this._y ) && ( euler._z == this._z ) && ( euler._order == this._order );
 	}
 
 	/**

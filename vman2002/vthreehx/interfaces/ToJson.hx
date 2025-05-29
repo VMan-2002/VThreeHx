@@ -1,5 +1,5 @@
-package vman2002.vthreehx.implements;
+package vman2002.vthreehx.interfaces;
 
-public interface ToJson {
+interface ToJson {
     public function toJSON():String;
 }

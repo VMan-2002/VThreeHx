@@ -1,7 +1,7 @@
 package vman2002.vthreehx.math;
 
-import { clamp } from './MathUtils.js';
-import { Quaternion } from './Quaternion.js';
+import vman2002.vthreehx.math.MathUtils.clamp in clamp;
+import vman2002.vthreehx.math.Quaternion;
 
 /**
  * Class representing a 3D vector. A 3D vector is an ordered triplet of numbers
@@ -54,7 +54,7 @@ class Vector3 {
 	public function set( x, y, ?z = null ) {
 		this.x = x;
 		this.y = y;
-        if (z != null); // sprite.scale.set(x,y)
+        if (z != null) // sprite.scale.set(x,y)
 		    this.z = z;
 
 		return this;
@@ -341,8 +341,8 @@ class Vector3 {
 	 */
 	public function applyMatrix3( m ) {
 
-		const x = this.x, y = this.y, z = this.z;
-		const e = m.elements;
+		var x = this.x, y = this.y, z = this.z;
+		var e = m.elements;
 
 		this.x = e[ 0 ] * x + e[ 3 ] * y + e[ 6 ] * z;
 		this.y = e[ 1 ] * x + e[ 4 ] * y + e[ 7 ] * z;
@@ -374,10 +374,10 @@ class Vector3 {
 	 */
 	public function applyMatrix4( m ) {
 
-		const x = this.x, y = this.y, z = this.z;
-		const e = m.elements;
+		var x = this.x, y = this.y, z = this.z;
+		var e = m.elements;
 
-		const w = 1 / ( e[ 3 ] * x + e[ 7 ] * y + e[ 11 ] * z + e[ 15 ] );
+		var w = 1 / ( e[ 3 ] * x + e[ 7 ] * y + e[ 11 ] * z + e[ 15 ] );
 
 		this.x = ( e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z + e[ 12 ] ) * w;
 		this.y = ( e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z + e[ 13 ] ) * w;
@@ -397,13 +397,13 @@ class Vector3 {
 
 		// quaternion q is assumed to have unit length
 
-		const vx = this.x, vy = this.y, vz = this.z;
-		const qx = q.x, qy = q.y, qz = q.z, qw = q.w;
+		var vx = this.x, vy = this.y, vz = this.z;
+		var qx = q.x, qy = q.y, qz = q.z, qw = q.w;
 
 		// t = 2 * cross( q.xyz, v );
-		const tx = 2 * ( qy * vz - qz * vy );
-		const ty = 2 * ( qz * vx - qx * vz );
-		const tz = 2 * ( qx * vy - qy * vx );
+		var tx = 2 * ( qy * vz - qz * vy );
+		var ty = 2 * ( qz * vx - qx * vz );
+		var tz = 2 * ( qx * vy - qy * vx );
 
 		// v + q.w * t + cross( q.xyz, t );
 		this.x = vx + qw * tx + qy * tz - qz * ty;
@@ -452,8 +452,8 @@ class Vector3 {
 		// input: THREE.Matrix4 affine matrix
 		// vector interpreted as a direction
 
-		const x = this.x, y = this.y, z = this.z;
-		const e = m.elements;
+		var x = this.x, y = this.y, z = this.z;
+		var e = m.elements;
 
 		this.x = e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z;
 		this.y = e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z;
@@ -579,7 +579,7 @@ class Vector3 {
 	 */
 	public function clampLength( min, max ) {
 
-		const length = this.length();
+		var length = this.length();
 
 		return this.divideScalar( length || 1 ).multiplyScalar( clamp( length, min, max ) );
 
@@ -796,8 +796,8 @@ class Vector3 {
 	 */
 	public function crossVectors( a, b ) {
 
-		const ax = a.x, ay = a.y, az = a.z;
-		const bx = b.x, by = b.y, bz = b.z;
+		var ax = a.x, ay = a.y, az = a.z;
+		var bx = b.x, by = b.y, bz = b.z;
 
 		this.x = ay * bz - az * by;
 		this.y = az * bx - ax * bz;
@@ -815,11 +815,11 @@ class Vector3 {
 	 */
 	public function projectOnVector( v ) {
 
-		const denominator = v.lengthSq();
+		var denominator = v.lengthSq();
 
-		if ( denominator === 0 ) return this.set( 0, 0, 0 );
+		if ( denominator == 0 ) return this.set( 0, 0, 0 );
 
-		const scalar = v.dot( this ) / denominator;
+		var scalar = v.dot( this ) / denominator;
 
 		return this.copy( v ).multiplyScalar( scalar );
 
@@ -859,11 +859,11 @@ class Vector3 {
 	 */
 	public function angleTo( v ) {
 
-		const denominator = Math.sqrt( this.lengthSq() * v.lengthSq() );
+		var denominator = Math.sqrt( this.lengthSq() * v.lengthSq() );
 
-		if ( denominator === 0 ) return Math.PI / 2;
+		if ( denominator == 0 ) return Math.PI / 2;
 
-		const theta = this.dot( v ) / denominator;
+		var theta = this.dot( v ) / denominator;
 
 		// clamp, to handle numerical problems
 
@@ -893,7 +893,7 @@ class Vector3 {
 	 */
 	public function distanceToSquared( v ) {
 
-		const dx = this.x - v.x, dy = this.y - v.y, dz = this.z - v.z;
+		var dx = this.x - v.x, dy = this.y - v.y, dz = this.z - v.z;
 
 		return dx * dx + dy * dy + dz * dz;
 
@@ -933,7 +933,7 @@ class Vector3 {
 	 */
 	public function setFromSphericalCoords( radius, phi, theta ) {
 
-		const sinPhiRadius = Math.sin( phi ) * radius;
+		var sinPhiRadius = Math.sin( phi ) * radius;
 
 		this.x = sinPhiRadius * Math.sin( theta );
 		this.y = Math.cos( phi ) * radius;
@@ -982,7 +982,7 @@ class Vector3 {
 	 */
 	public function setFromMatrixPosition( m ) {
 
-		const e = m.elements;
+		var e = m.elements;
 
 		this.x = e[ 12 ];
 		this.y = e[ 13 ];
@@ -1001,9 +1001,9 @@ class Vector3 {
 	 */
 	public function setFromMatrixScale( m ) {
 
-		const sx = this.setFromMatrixColumn( m, 0 ).length();
-		const sy = this.setFromMatrixColumn( m, 1 ).length();
-		const sz = this.setFromMatrixColumn( m, 2 ).length();
+		var sx = this.setFromMatrixColumn( m, 0 ).length();
+		var sy = this.setFromMatrixColumn( m, 1 ).length();
+		var sz = this.setFromMatrixColumn( m, 2 ).length();
 
 		this.x = sx;
 		this.y = sy;
@@ -1080,7 +1080,7 @@ class Vector3 {
 	 */
 	public function equals( v ) {
 
-		return ( ( v.x === this.x ) && ( v.y === this.y ) && ( v.z === this.z ) );
+		return ( ( v.x == this.x ) && ( v.y == this.y ) && ( v.z == this.z ) );
 
 	}
 
@@ -1162,9 +1162,9 @@ class Vector3 {
 
 		// https://mathworld.wolfram.com/SpherePointPicking.html
 
-		const theta = Math.random() * Math.PI * 2;
-		const u = Math.random() * 2 - 1;
-		const c = Math.sqrt( 1 - u * u );
+		var theta = Math.random() * Math.PI * 2;
+		var u = Math.random() * 2 - 1;
+		var c = Math.sqrt( 1 - u * u );
 
 		this.x = c * Math.cos( theta );
 		this.y = u;

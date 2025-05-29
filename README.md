@@ -28,6 +28,6 @@ Required for example scene
 - Mesh
 
 Other
-- Color
-- ColorManagement
+- Color✅
+- ColorManagement✅
 - Constants✅

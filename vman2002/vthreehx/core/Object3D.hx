@@ -1070,12 +1070,11 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	/**
 	 * Serializes the 3D object into JSON.
 	 *
-	 * @param {?(Object|string)} meta - An optional value holding meta information about the serialization.
-	 * @return {Object} A JSON object representing the serialized 3D object.
+	 * @param meta An optional value holding meta information about the serialization.
+	 * @return A JSON object representing the serialized 3D object.
 	 * @see {@link ObjectLoader#parse}
 	 */
-	public function toJSON( meta ) {
-
+	public function toJSON( ?meta:Dynamic ) {
 		// meta is a string when called from JSON.stringify
 		var isRootObject = ( meta == undefined || Std.isOfType(meta, String) );
 
@@ -1085,7 +1084,6 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 		// not providing it implies that this is the root object
 		// being serialized.
 		if ( isRootObject ) {
-
 			// initialize meta obj
 			meta = {
 				geometries: {},
@@ -1103,7 +1101,6 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 				type: 'Object',
 				generator: 'Object3D.toJSON'
 			};
-
 		}
 
 		// standard Object3D serialization
@@ -1130,16 +1127,13 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 		// object specific properties
 
 		if ( this.isInstancedMesh ) {
-
 			object.type = 'InstancedMesh';
 			object.count = this.count;
 			object.instanceMatrix = this.instanceMatrix.toJSON();
 			if ( this.instanceColor != null ) object.instanceColor = this.instanceColor.toJSON();
-
 		}
 
 		if ( this.isBatchedMesh ) {
-
 			object.type = 'BatchedMesh';
 			object.perObjectFrustumCulled = this.perObjectFrustumCulled;
 			object.sortObjects = this.sortObjects;
@@ -1181,27 +1175,21 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 			object.indirectTexture = this._indirectTexture.toJSON( meta );
 
 			if ( this._colorsTexture != null ) {
-
 				object.colorsTexture = this._colorsTexture.toJSON( meta );
-
 			}
 
 			if ( this.boundingSphere != null ) {
-
 				object.boundingSphere = {
 					center: this.boundingSphere.center.toArray(),
 					radius: this.boundingSphere.radius
 				};
-
 			}
 
 			if ( this.boundingBox != null ) {
-
 				object.boundingBox = {
 					min: this.boundingBox.min.toArray(),
 					max: this.boundingBox.max.toArray()
 				};
-
 			}
 
 		}
@@ -1209,154 +1197,100 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 		//
 
 		function serialize( library, element ) {
-
 			if ( library[ element.uuid ] == undefined ) {
-
 				library[ element.uuid ] = element.toJSON( meta );
-
 			}
 
 			return element.uuid;
-
 		}
 
-		if ( this.isScene ) {
-
+		if ( Std.isOfType(this, Scene) ) {
 			if ( this.background ) {
-
 				if ( this.background.isColor ) {
-
 					object.background = this.background.toJSON();
-
 				} else if ( this.background.isTexture ) {
-
 					object.background = this.background.toJSON( meta ).uuid;
-
 				}
-
 			}
 
 			if ( this.environment && this.environment.isTexture && this.environment.isRenderTargetTexture != true ) {
-
 				object.environment = this.environment.toJSON( meta ).uuid;
-
 			}
 
 		} else if ( this.isMesh || this.isLine || this.isPoints ) {
-
 			object.geometry = serialize( meta.geometries, this.geometry );
-
 			var parameters = this.geometry.parameters;
 
 			if ( parameters != undefined && parameters.shapes != undefined ) {
-
 				var shapes = parameters.shapes;
 
 				if ( Array.isArray( shapes ) ) {
-
 					for ( i in 0...shapes.length ) {
-
 						var shape = shapes[ i ];
 
 						serialize( meta.shapes, shape );
-
 					}
-
 				} else {
-
 					serialize( meta.shapes, shapes );
-
 				}
-
 			}
-
 		}
 
 		if ( this.isSkinnedMesh ) {
-
 			object.bindMode = this.bindMode;
 			object.bindMatrix = this.bindMatrix.toArray();
 
 			if ( this.skeleton != undefined ) {
-
 				serialize( meta.skeletons, this.skeleton );
-
 				object.skeleton = this.skeleton.uuid;
-
 			}
-
 		}
 
 		if ( this.material != undefined ) {
-
 			if ( Array.isArray( this.material ) ) {
-
 				var uuids = [];
-
-				for ( i in 0...this.material.length ) {
-
+				for ( i in 0...this.material.length )
 					uuids.push( serialize( meta.materials, this.material[ i ] ) );
-
-				}
-
+				
 				object.material = uuids;
-
 			} else {
-
 				object.material = serialize( meta.materials, this.material );
-
 			}
-
 		}
 
 		//
 
 		if ( this.children.length > 0 ) {
-
 			object.children = [];
-
 			for ( i in 0...this.children.length ) {
-
 				object.children.push( this.children[ i ].toJSON( meta ).object );
-
 			}
-
 		}
 
 		//
 
 		if ( this.animations.length > 0 ) {
-
 			object.animations = [];
 
 			for ( i in 0...this.animations.length ) {
-
 				var animation = this.animations[ i ];
-
 				object.animations.push( serialize( meta.animations, animation ) );
-
 			}
-
 		}
 
 		if ( isRootObject ) {
-
 			// extract data from the cache hash
 			// remove metadata on each item
 			// and return as array
 			function extractFromCache( cache ) {
-
 				var values = [];
 				for ( key in Reflect.fields(cache) ) {
-
 					var data = cache[ key ];
 					Reflect.deleteField(data, "metadata");
 					values.push( data );
-
 				}
 
 				return values;
-
 			}
 
 			var geometries = extractFromCache( meta.geometries );
@@ -1376,13 +1310,11 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 			if ( skeletons.length > 0 ) output.skeletons = skeletons;
 			if ( animations.length > 0 ) output.animations = animations;
 			if ( nodes.length > 0 ) output.nodes = nodes;
-
 		}
 
 		output.object = object;
 
 		return output;
-
 	}
 
 	/**
@@ -1403,7 +1335,6 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Object3D} A reference to this instance.
 	 */
 	public function copy( source, recursive = true ) {
-
 		this.name = source.name;
 
 		this.up.copy( source.up );
@@ -1434,19 +1365,14 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 
 		this.userData = JSON.parse( JSON.stringify( source.userData ) );
 
-		if ( recursive == true ) {
-
+		if ( recursive ) {
 			for ( i in 0...source.children.length ) {
-
 				var child = source.children[ i ];
 				this.add( child.clone() );
-
 			}
-
 		}
 
 		return this;
-
 	}
 
 	/** Fires when the object has been added to its parent object. **/

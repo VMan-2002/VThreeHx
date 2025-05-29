@@ -82,7 +82,7 @@ class MathUtils {
     public static function inverseLerp( x, y, value ) {
         // https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/inverse-lerp-a-super-useful-yet-often-overlooked-function-r5230/
 
-        if ( x !== y ) {
+        if ( x != y ) {
             return ( value - x ) / ( y - x );
         } else {
             return 0;
@@ -208,7 +208,7 @@ class MathUtils {
         if ( s != undefined ) _seed = s;
 
         // Mulberry32 generator
-        let t = _seed += 0x6D2B79F5;
+        var t = _seed += 0x6D2B79F5;
         t = Math.imul( t ^ t >>> 15, t | 1 );
         t ^= t + Math.imul( t ^ t >>> 7, t | 61 );
         return ( ( t ^ t >>> 14 ) >>> 0 ) / 4294967296;
@@ -241,7 +241,7 @@ class MathUtils {
     * @return Whether the given number is a power of two or not.
     */
     public static function isPowerOfTwo( value ) {
-        return ( value & ( value - 1 ) ) === 0 && value !== 0;
+        return ( value & ( value - 1 ) ) == 0 && value != 0;
     }
 
     /**
