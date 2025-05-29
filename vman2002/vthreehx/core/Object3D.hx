@@ -1,14 +1,16 @@
-import { Quaternion } from '../math/Quaternion.js';
-import { Vector3 } from '../math/Vector3.js';
+package vman2002.vthreehx.core;
+
+import vman2002.vthreehx.math.Quaternion;
+import vman2002.vthreehx.math.Vector3;
+
 import { Matrix4 } from '../math/Matrix4.js';
-import { EventDispatcher } from './EventDispatcher.js';
 import { Euler } from '../math/Euler.js';
 import { Layers } from './Layers.js';
 import { Matrix3 } from '../math/Matrix3.js';
 import { generateUUID } from '../math/MathUtils.js';
 
 /** This is the base class for most objects in three.js and provides a set of properties and methods for manipulating objects in 3D space. **/
-class Object3D extends EventDispatcher {
+class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 
 /**
  * The default up direction for objects, also used as the default

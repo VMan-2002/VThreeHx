@@ -16,7 +16,7 @@ class MathUtils {
     *
     * @return The UUID.
     */
-    function generateUUID() {
+    public static function generateUUID() {
         // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/21963136#21963136
 
         var d0 = Math.random() * 0xffffffff | 0;
@@ -40,7 +40,7 @@ class MathUtils {
     * @param max The max value.
     * @return The clamped value.
     */
-    public function clamp( value, min, max ) {
+    public static function clamp( value, min, max ) {
         return Math.max( min, Math.min( max, value ) );
     }
 
@@ -51,7 +51,7 @@ class MathUtils {
     * @param m The second parameter.
     * @return The Euclidean modulo.
     */
-    public function euclideanModulo( n, m ) {
+    public static function euclideanModulo( n, m ) {
         // https://en.wikipedia.org/wiki/Modulo_operation
 
         return ( ( n % m ) + m ) % m;
@@ -67,7 +67,7 @@ class MathUtils {
     * @param b2 Maximum value for range B.
     * @return The mapped value.
     */
-    public function mapLinear( x, a1, a2, b1, b2 ) {
+    public static function mapLinear( x, a1, a2, b1, b2 ) {
         return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );
     }
 
@@ -79,7 +79,7 @@ class MathUtils {
     * @param value A value between start and end.
     * @return The interpolation factor.
     */
-    public function inverseLerp( x, y, value ) {
+    public static function inverseLerp( x, y, value ) {
         // https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/inverse-lerp-a-super-useful-yet-often-overlooked-function-r5230/
 
         if ( x !== y ) {
@@ -97,7 +97,7 @@ class MathUtils {
     * @param t The interpolation factor in the closed interval `[0, 1]`.
     * @return The interpolated value.
     */
-    public function lerp( x, y, t ) {
+    public static function lerp( x, y, t ) {
         return ( 1 - t ) * x + t * y;
     }
 
@@ -112,7 +112,7 @@ class MathUtils {
     * @param dt Delta time in seconds.
     * @return The interpolated value.
     */
-    public function damp( x, y, lambda, dt ) {
+    public static function damp( x, y, lambda, dt ) {
         return lerp( x, y, 1 - Math.exp( - lambda * dt ) );
     }
 
@@ -123,7 +123,7 @@ class MathUtils {
     * @param length The positive value the function will pingpong to.
     * @return The alternated value.
     */
-    public function pingpong( x, length = 1 ) {
+    public static function pingpong( x, length = 1 ) {
         // https://www.desmos.com/calculator/vcsjnyz7x4
 
         return length - Math.abs( euclideanModulo( x, length * 2 ) - length );
@@ -139,7 +139,7 @@ class MathUtils {
     * @param max The max value. Any x value above max will be `1`.
     * @return The alternated value.
     */
-    public function smoothstep( x, min, max ) {
+    public static function smoothstep( x, min, max ) {
         if ( x <= min ) return 0;
         if ( x >= max ) return 1;
 
@@ -157,7 +157,7 @@ class MathUtils {
     * @param max The max value. Any x value above max will be `1`.
     * @return The alternated value.
     */
-    public function smootherstep( x, min, max ) {
+    public static function smootherstep( x, min, max ) {
         if ( x <= min ) return 0;
         if ( x >= max ) return 1;
 
@@ -173,7 +173,7 @@ class MathUtils {
     * @param high The upper value boundary
     * @return A random integer.
     */
-    public function randInt( low, high ) {
+    public static function randInt( low, high ) {
         return low + Math.floor( Math.random() * ( high - low + 1 ) );
     }
 
@@ -184,7 +184,7 @@ class MathUtils {
     * @param high The upper value boundary
     * @return A random float.
     */
-    public function randFloat( low, high ) {
+    public static function randFloat( low, high ) {
         return low + Math.random() * ( high - low );
     }
 
@@ -194,7 +194,7 @@ class MathUtils {
     * @param range Defines the value range.
     * @return A random float.
     */
-    function randFloatSpread( range ) {
+    public static function randFloatSpread( range ) {
         return range * ( 0.5 - Math.random() );
     }
 
@@ -204,7 +204,7 @@ class MathUtils {
     * @param s The integer seed.
     * @return A random float.
     */
-    function seededRandom( s ) {
+    public static function seededRandom( s ) {
         if ( s != undefined ) _seed = s;
 
         // Mulberry32 generator
@@ -220,7 +220,7 @@ class MathUtils {
     * @param degrees A value in degrees.
     * @return The converted value in radians.
     */
-    function degToRad( degrees ) {
+    public static function degToRad( degrees ) {
         return degrees * DEG2RAD;
     }
 
@@ -230,7 +230,7 @@ class MathUtils {
     * @param radians A value in radians.
     * @return The converted value in degrees.
     */
-    function radToDeg( radians ) {
+    public static function radToDeg( radians ) {
         return radians * RAD2DEG;
     }
 
@@ -240,7 +240,7 @@ class MathUtils {
     * @param value The value to check.
     * @return Whether the given number is a power of two or not.
     */
-    function isPowerOfTwo( value ) {
+    public static function isPowerOfTwo( value ) {
         return ( value & ( value - 1 ) ) === 0 && value !== 0;
     }
 
@@ -250,7 +250,7 @@ class MathUtils {
     * @param value The value to find a POT for.
     * @return The smallest power of two that is greater than or equal to the given number.
     */
-    function ceilPowerOfTwo( value ) {
+    public static function ceilPowerOfTwo( value ) {
         return Math.pow( 2, Math.ceil( Math.log( value ) / LN2 ) );
     }
 
@@ -260,7 +260,7 @@ class MathUtils {
     * @param value The value to find a POT for.
     * @return The largest power of two that is less than or equal to the given number.
     */
-    function floorPowerOfTwo( value ) {
+    public static function floorPowerOfTwo( value ) {
         return Math.pow( 2, Math.floor( Math.log( value ) / LN2 ) );
     }
 
@@ -277,7 +277,7 @@ class MathUtils {
     * @param c The rotation applied to the third axis, in radians.
     * @param order A string specifying the axes order (any of `'XYX', 'XZX', 'YXY', 'YZY', 'ZXZ', 'ZYZ'`).
     */
-    function setQuaternionFromProperEuler( q:Quaternion, a, b, c, order ) {
+    public static function setQuaternionFromProperEuler( q:Quaternion, a, b, c, order ) {
         var cos = Math.cos;
         var sin = Math.sin;
 
@@ -324,7 +324,7 @@ class MathUtils {
     * @param array The typed array that defines the data type of the value.
     * @return The denormalize (float) value in the range `[0,1]`.
     */
-    public function denormalize( value, array ) {
+    public static function denormalize( value, array ) {
         switch (Type.getClass(array)) {
             case Float32Array:
                 return value;
@@ -352,7 +352,7 @@ class MathUtils {
     * @param array The typed array that defines the data type of the value.
     * @return The normalize value.
     */
-    public function normalize( value, array ) {
+    public static function normalize( value, array ) {
         switch ( Type.getClass(array) ) {
             case Float32Array:
                 return value;

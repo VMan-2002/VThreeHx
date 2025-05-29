@@ -21,7 +21,6 @@ import { Quaternion } from './Quaternion.js';
  * the corresponding order.
  */
 class Vector3 {
-
 	/** The x value of this vector. **/
 	public var x = 0;
 
