@@ -69,9 +69,7 @@ class Constants {
     public static var DstColorFactor = 208;
     /** Multiplies all colors by `1` minus each destination color. **/
     public static var OneMinusDstColorFactor = 209;
-    /**
-    * Multiplies the RGB colors by the smaller of either the source alpha value or the value of `1` minus the destination alpha value. The alpha value is multiplied by `1`.
-    **/
+    /** Multiplies the RGB colors by the smaller of either the source alpha value or the value of `1` minus the destination alpha value. The alpha value is multiplied by `1`. **/
     public static var SrcAlphaSaturateFactor = 210;
     /** Multiplies all colors by a constant color. **/
     public static var ConstantColorFactor = 211;
