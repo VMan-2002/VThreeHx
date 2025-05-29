@@ -49,25 +49,14 @@ class EventDispatcher {
 	 * @param listener The listener to remove.
 	 */
 	public function removeEventListener( type:String, listener:Listener ) {
+		var listeners = this._listeners;
 
-		const listeners = this._listeners;
+		if (listeners == null) return;
 
-		if ( listeners === undefined ) return;
+		var listenerArray = listeners.get(type);
 
-		const listenerArray = listeners[ type ];
-
-		if ( listenerArray !== undefined ) {
-
-			const index = listenerArray.indexOf( listener );
-
-			if ( index !== - 1 ) {
-
-				listenerArray.splice( index, 1 );
-
-			}
-
-		}
-
+		if (listenerArray != null)
+            listenerArray.remove(listener);
 	}
 
 	/**
