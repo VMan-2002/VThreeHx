@@ -1,6 +1,22 @@
 package vman2002.vthreehx;
 
-//TODO: this shouldnt work but i hope it does
+#if lime
+typedef Float32Array = lime.utils.Float32Array;
+typedef Uint32Array = lime.utils.UInt32Array;
+typedef Uint16Array = lime.utils.UInt16Array;
+typedef Uint8Array = lime.utils.UInt8Array;
+typedef Int32Array = lime.utils.Int32Array;
+typedef Int16Array = lime.utils.Int16Array;
+typedef Int8Array = lime.utils.Int8Array;
+#elseif js
+typedef Float32Array = js.lib.Float32Array;
+typedef Uint32Array = js.lib.UInt32Array;
+typedef Uint16Array = js.lib.UInt16Array;
+typedef Uint8Array = js.lib.UInt8Array;
+typedef Int32Array = js.lib.Int32Array;
+typedef Int16Array = js.lib.Int16Array;
+typedef Int8Array = js.lib.Int8Array;
+#else
 typedef Float32Array = Array<Float>;
 typedef Uint32Array = Array<Int>;
 typedef Uint16Array = Array<Int>;
@@ -8,6 +24,7 @@ typedef Uint8Array = Array<Int>;
 typedef Int32Array = Array<Int>;
 typedef Int16Array = Array<Int>;
 typedef Int8Array = Array<Int>;
+#end
 
 class Common {
     //Custom common things
