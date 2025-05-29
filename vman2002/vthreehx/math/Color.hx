@@ -896,6 +896,13 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 	public function setFromFlxColor(col:flixel.util.FlxColor) {
 		return setRGB(col.redFloat, col.greenFloat, col.blueFloat);
 	}
+
+	/**
+		@return FlxColor using color info from `Color.NAMES`
+	**/
+	public static function nameToFlxColor(name:String) {
+		return flixel.util.FlxColor.fromInt(NAMES.get(name));
+	}
 	#end
 
     public function iterator() {
