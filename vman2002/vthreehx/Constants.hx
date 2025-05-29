@@ -127,7 +127,7 @@ class Constants {
  * @type {string}
  * @constant
  */
-export const AttachedBindMode = 'attached';
+public static var AttachedBindMode = 'attached';
 
 /**
  * The skinned mesh does not share the same world space as the skeleton.
@@ -136,7 +136,7 @@ export const AttachedBindMode = 'attached';
  * @type {string}
  * @constant
  */
-export const DetachedBindMode = 'detached';
+public static var DetachedBindMode = 'detached';
 
 /**
  * Maps textures using the geometry's UV coordinates.
@@ -144,7 +144,7 @@ export const DetachedBindMode = 'detached';
  * @type {number}
  * @constant
  */
-export const UVMapping = 300;
+public static var UVMapping = 300;
 
 /**
  * Reflection mapping for cube textures.
@@ -152,7 +152,7 @@ export const UVMapping = 300;
  * @type {number}
  * @constant
  */
-export const CubeReflectionMapping = 301;
+public static var CubeReflectionMapping = 301;
 
 /**
  * Refraction mapping for cube textures.
@@ -160,7 +160,7 @@ export const CubeReflectionMapping = 301;
  * @type {number}
  * @constant
  */
-export const CubeRefractionMapping = 302;
+public static var CubeRefractionMapping = 302;
 
 /**
  * Reflection mapping for equirectangular textures.
@@ -168,7 +168,7 @@ export const CubeRefractionMapping = 302;
  * @type {number}
  * @constant
  */
-export const EquirectangularReflectionMapping = 303;
+public static var EquirectangularReflectionMapping = 303;
 
 /**
  * Refraction mapping for equirectangular textures.
@@ -176,7 +176,7 @@ export const EquirectangularReflectionMapping = 303;
  * @type {number}
  * @constant
  */
-export const EquirectangularRefractionMapping = 304;
+public static var EquirectangularRefractionMapping = 304;
 
 /**
  * Reflection mapping for PMREM textures.
@@ -184,7 +184,7 @@ export const EquirectangularRefractionMapping = 304;
  * @type {number}
  * @constant
  */
-export const CubeUVReflectionMapping = 306;
+public static var CubeUVReflectionMapping = 306;
 
 /**
  * The texture will simply repeat to infinity.
@@ -192,7 +192,7 @@ export const CubeUVReflectionMapping = 306;
  * @type {number}
  * @constant
  */
-export const RepeatWrapping = 1000;
+public static var RepeatWrapping = 1000;
 
 /**
  * The last pixel of the texture stretches to the edge of the mesh.
@@ -200,7 +200,7 @@ export const RepeatWrapping = 1000;
  * @type {number}
  * @constant
  */
-export const ClampToEdgeWrapping = 1001;
+public static var ClampToEdgeWrapping = 1001;
 
 /**
  * The texture will repeats to infinity, mirroring on each repeat.
@@ -208,7 +208,7 @@ export const ClampToEdgeWrapping = 1001;
  * @type {number}
  * @constant
  */
-export const MirroredRepeatWrapping = 1002;
+public static var MirroredRepeatWrapping = 1002;
 
 /**
  * Returns the value of the texture element that is nearest (in Manhattan distance)
@@ -217,7 +217,7 @@ export const MirroredRepeatWrapping = 1002;
  * @type {number}
  * @constant
  */
-export const NearestFilter = 1003;
+public static var NearestFilter = 1003;
 
 /**
  * Chooses the mipmap that most closely matches the size of the pixel being textured
@@ -227,8 +227,8 @@ export const NearestFilter = 1003;
  * @type {number}
  * @constant
  */
-export const NearestMipmapNearestFilter = 1004;
-export const NearestMipMapNearestFilter = 1004; // legacy
+public static var NearestMipmapNearestFilter = 1004;
+public static var NearestMipMapNearestFilter = 1004; // legacy
 
 /**
  * Chooses the two mipmaps that most closely match the size of the pixel being textured and
@@ -238,8 +238,8 @@ export const NearestMipMapNearestFilter = 1004; // legacy
  * @type {number}
  * @constant
  */
-export const NearestMipmapLinearFilter = 1005;
-export const NearestMipMapLinearFilter = 1005; // legacy
+public static var NearestMipmapLinearFilter = 1005;
+public static var NearestMipMapLinearFilter = 1005; // legacy
 
 /**
  * Returns the weighted average of the four texture elements that are closest to the specified
@@ -249,7 +249,7 @@ export const NearestMipMapLinearFilter = 1005; // legacy
  * @type {number}
  * @constant
  */
-export const LinearFilter = 1006;
+public static var LinearFilter = 1006;
 
 /**
  * Chooses the mipmap that most closely matches the size of the pixel being textured and uses
@@ -259,8 +259,8 @@ export const LinearFilter = 1006;
  * @type {number}
  * @constant
  */
-export const LinearMipmapNearestFilter = 1007;
-export const LinearMipMapNearestFilter = 1007; // legacy
+public static var LinearMipmapNearestFilter = 1007;
+public static var LinearMipMapNearestFilter = 1007; // legacy
 
 /**
  * Chooses the two mipmaps that most closely match the size of the pixel being textured and uses
@@ -270,8 +270,8 @@ export const LinearMipMapNearestFilter = 1007; // legacy
  * @type {number}
  * @constant
  */
-export const LinearMipmapLinearFilter = 1008;
-export const LinearMipMapLinearFilter = 1008; // legacy
+public static var LinearMipmapLinearFilter = 1008;
+public static var LinearMipMapLinearFilter = 1008; // legacy
 
 /**
  * An unsigned byte data type for textures.
@@ -279,7 +279,7 @@ export const LinearMipMapLinearFilter = 1008; // legacy
  * @type {number}
  * @constant
  */
-export const UnsignedByteType = 1009;
+public static var UnsignedByteType = 1009;
 
 /**
  * A byte data type for textures.
@@ -287,7 +287,7 @@ export const UnsignedByteType = 1009;
  * @type {number}
  * @constant
  */
-export const ByteType = 1010;
+public static var ByteType = 1010;
 
 /**
  * A short data type for textures.
@@ -295,7 +295,7 @@ export const ByteType = 1010;
  * @type {number}
  * @constant
  */
-export const ShortType = 1011;
+public static var ShortType = 1011;
 
 /**
  * An unsigned short data type for textures.
@@ -303,7 +303,7 @@ export const ShortType = 1011;
  * @type {number}
  * @constant
  */
-export const UnsignedShortType = 1012;
+public static var UnsignedShortType = 1012;
 
 /**
  * An int data type for textures.
@@ -311,7 +311,7 @@ export const UnsignedShortType = 1012;
  * @type {number}
  * @constant
  */
-export const IntType = 1013;
+public static var IntType = 1013;
 
 /**
  * An unsigned int data type for textures.
@@ -319,7 +319,7 @@ export const IntType = 1013;
  * @type {number}
  * @constant
  */
-export const UnsignedIntType = 1014;
+public static var UnsignedIntType = 1014;
 
 /**
  * A float data type for textures.
@@ -327,7 +327,7 @@ export const UnsignedIntType = 1014;
  * @type {number}
  * @constant
  */
-export const FloatType = 1015;
+public static var FloatType = 1015;
 
 /**
  * A half float data type for textures.
@@ -335,7 +335,7 @@ export const FloatType = 1015;
  * @type {number}
  * @constant
  */
-export const HalfFloatType = 1016;
+public static var HalfFloatType = 1016;
 
 /**
  * An unsigned short 4_4_4_4 (packed) data type for textures.
@@ -343,7 +343,7 @@ export const HalfFloatType = 1016;
  * @type {number}
  * @constant
  */
-export const UnsignedShort4444Type = 1017;
+public static var UnsignedShort4444Type = 1017;
 
 /**
  * An unsigned short 5_5_5_1 (packed) data type for textures.
@@ -351,7 +351,7 @@ export const UnsignedShort4444Type = 1017;
  * @type {number}
  * @constant
  */
-export const UnsignedShort5551Type = 1018;
+public static var UnsignedShort5551Type = 1018;
 
 /**
  * An unsigned int 24_8 data type for textures.
@@ -359,7 +359,7 @@ export const UnsignedShort5551Type = 1018;
  * @type {number}
  * @constant
  */
-export const UnsignedInt248Type = 1020;
+public static var UnsignedInt248Type = 1020;
 
 /**
  * An unsigned int 5_9_9_9 (packed) data type for textures.
@@ -367,7 +367,7 @@ export const UnsignedInt248Type = 1020;
  * @type {number}
  * @constant
  */
-export const UnsignedInt5999Type = 35902;
+public static var UnsignedInt5999Type = 35902;
 
 /**
  * Discards the red, green and blue components and reads just the alpha component.
@@ -375,7 +375,7 @@ export const UnsignedInt5999Type = 35902;
  * @type {number}
  * @constant
  */
-export const AlphaFormat = 1021;
+public static var AlphaFormat = 1021;
 
 /**
  * Discards the alpha component and reads the red, green and blue component.
@@ -383,7 +383,7 @@ export const AlphaFormat = 1021;
  * @type {number}
  * @constant
  */
-export const RGBFormat = 1022;
+public static var RGBFormat = 1022;
 
 /**
  * Reads the red, green, blue and alpha components.
@@ -391,7 +391,7 @@ export const RGBFormat = 1022;
  * @type {number}
  * @constant
  */
-export const RGBAFormat = 1023;
+public static var RGBAFormat = 1023;
 
 /**
  * Reads each element as a single depth value, converts it to floating point, and clamps to the range `[0,1]`.
@@ -399,7 +399,7 @@ export const RGBAFormat = 1023;
  * @type {number}
  * @constant
  */
-export const DepthFormat = 1026;
+public static var DepthFormat = 1026;
 
 /**
  * Reads each element is a pair of depth and stencil values. The depth component of the pair is interpreted as
@@ -408,7 +408,7 @@ export const DepthFormat = 1026;
  * @type {number}
  * @constant
  */
-export const DepthStencilFormat = 1027;
+public static var DepthStencilFormat = 1027;
 
 /**
  * Discards the green, blue and alpha components and reads just the red component.
@@ -416,7 +416,7 @@ export const DepthStencilFormat = 1027;
  * @type {number}
  * @constant
  */
-export const RedFormat = 1028;
+public static var RedFormat = 1028;
 
 /**
  * Discards the green, blue and alpha components and reads just the red component. The texels are read as integers instead of floating point.
@@ -424,7 +424,7 @@ export const RedFormat = 1028;
  * @type {number}
  * @constant
  */
-export const RedIntegerFormat = 1029;
+public static var RedIntegerFormat = 1029;
 
 /**
  * Discards the alpha, and blue components and reads the red, and green components.
@@ -432,7 +432,7 @@ export const RedIntegerFormat = 1029;
  * @type {number}
  * @constant
  */
-export const RGFormat = 1030;
+public static var RGFormat = 1030;
 
 /**
  * Discards the alpha, and blue components and reads the red, and green components. The texels are read as integers instead of floating point.
@@ -440,7 +440,7 @@ export const RGFormat = 1030;
  * @type {number}
  * @constant
  */
-export const RGIntegerFormat = 1031;
+public static var RGIntegerFormat = 1031;
 
 /**
  * Discards the alpha component and reads the red, green and blue component. The texels are read as integers instead of floating point.
@@ -448,7 +448,7 @@ export const RGIntegerFormat = 1031;
  * @type {number}
  * @constant
  */
-export const RGBIntegerFormat = 1032;
+public static var RGBIntegerFormat = 1032;
 
 /**
  * Reads the red, green, blue and alpha components. The texels are read as integers instead of floating point.
@@ -456,7 +456,7 @@ export const RGBIntegerFormat = 1032;
  * @type {number}
  * @constant
  */
-export const RGBAIntegerFormat = 1033;
+public static var RGBAIntegerFormat = 1033;
 
 /**
  * A DXT1-compressed image in an RGB image format.
@@ -464,7 +464,7 @@ export const RGBAIntegerFormat = 1033;
  * @type {number}
  * @constant
  */
-export const RGB_S3TC_DXT1_Format = 33776;
+public static var RGB_S3TC_DXT1_Format = 33776;
 
 /**
  * A DXT1-compressed image in an RGB image format with a simple on/off alpha value.
@@ -472,7 +472,7 @@ export const RGB_S3TC_DXT1_Format = 33776;
  * @type {number}
  * @constant
  */
-export const RGBA_S3TC_DXT1_Format = 33777;
+public static var RGBA_S3TC_DXT1_Format = 33777;
 
 /**
  * A DXT3-compressed image in an RGBA image format. Compared to a 32-bit RGBA texture, it offers 4:1 compression.
@@ -480,7 +480,7 @@ export const RGBA_S3TC_DXT1_Format = 33777;
  * @type {number}
  * @constant
  */
-export const RGBA_S3TC_DXT3_Format = 33778;
+public static var RGBA_S3TC_DXT3_Format = 33778;
 
 /**
  * A DXT5-compressed image in an RGBA image format. It also provides a 4:1 compression, but differs to the DXT3
@@ -489,7 +489,7 @@ export const RGBA_S3TC_DXT3_Format = 33778;
  * @type {number}
  * @constant
  */
-export const RGBA_S3TC_DXT5_Format = 33779;
+public static var RGBA_S3TC_DXT5_Format = 33779;
 
 /**
  * PVRTC RGB compression in 4-bit mode. One block for each 4×4 pixels.
@@ -497,7 +497,7 @@ export const RGBA_S3TC_DXT5_Format = 33779;
  * @type {number}
  * @constant
  */
-export const RGB_PVRTC_4BPPV1_Format = 35840;
+public static var RGB_PVRTC_4BPPV1_Format = 35840;
 
 /**
  * PVRTC RGB compression in 2-bit mode. One block for each 8×4 pixels.
@@ -505,7 +505,7 @@ export const RGB_PVRTC_4BPPV1_Format = 35840;
  * @type {number}
  * @constant
  */
-export const RGB_PVRTC_2BPPV1_Format = 35841;
+public static var RGB_PVRTC_2BPPV1_Format = 35841;
 
 /**
  * PVRTC RGBA compression in 4-bit mode. One block for each 4×4 pixels.
@@ -513,7 +513,7 @@ export const RGB_PVRTC_2BPPV1_Format = 35841;
  * @type {number}
  * @constant
  */
-export const RGBA_PVRTC_4BPPV1_Format = 35842;
+public static var RGBA_PVRTC_4BPPV1_Format = 35842;
 
 /**
  * PVRTC RGBA compression in 2-bit mode. One block for each 8×4 pixels.
@@ -521,7 +521,7 @@ export const RGBA_PVRTC_4BPPV1_Format = 35842;
  * @type {number}
  * @constant
  */
-export const RGBA_PVRTC_2BPPV1_Format = 35843;
+public static var RGBA_PVRTC_2BPPV1_Format = 35843;
 
 /**
  * ETC1 RGB format.
@@ -529,7 +529,7 @@ export const RGBA_PVRTC_2BPPV1_Format = 35843;
  * @type {number}
  * @constant
  */
-export const RGB_ETC1_Format = 36196;
+public static var RGB_ETC1_Format = 36196;
 
 /**
  * ETC2 RGB format.
@@ -537,7 +537,7 @@ export const RGB_ETC1_Format = 36196;
  * @type {number}
  * @constant
  */
-export const RGB_ETC2_Format = 37492;
+public static var RGB_ETC2_Format = 37492;
 
 /**
  * ETC2 RGBA format.
@@ -545,7 +545,7 @@ export const RGB_ETC2_Format = 37492;
  * @type {number}
  * @constant
  */
-export const RGBA_ETC2_EAC_Format = 37496;
+public static var RGBA_ETC2_EAC_Format = 37496;
 
 /**
  * ASTC RGBA 4x4 format.
@@ -553,7 +553,7 @@ export const RGBA_ETC2_EAC_Format = 37496;
  * @type {number}
  * @constant
  */
-export const RGBA_ASTC_4x4_Format = 37808;
+public static var RGBA_ASTC_4x4_Format = 37808;
 
 /**
  * ASTC RGBA 5x4 format.
@@ -561,7 +561,7 @@ export const RGBA_ASTC_4x4_Format = 37808;
  * @type {number}
  * @constant
  */
-export const RGBA_ASTC_5x4_Format = 37809;
+public static var RGBA_ASTC_5x4_Format = 37809;
 
 /**
  * ASTC RGBA 5x5 format.
@@ -569,7 +569,7 @@ export const RGBA_ASTC_5x4_Format = 37809;
  * @type {number}
  * @constant
  */
-export const RGBA_ASTC_5x5_Format = 37810;
+public static var RGBA_ASTC_5x5_Format = 37810;
 
 /**
  * ASTC RGBA 6x5 format.
@@ -577,7 +577,7 @@ export const RGBA_ASTC_5x5_Format = 37810;
  * @type {number}
  * @constant
  */
-export const RGBA_ASTC_6x5_Format = 37811;
+public static var RGBA_ASTC_6x5_Format = 37811;
 
 /**
  * ASTC RGBA 6x6 format.
@@ -585,7 +585,7 @@ export const RGBA_ASTC_6x5_Format = 37811;
  * @type {number}
  * @constant
  */
-export const RGBA_ASTC_6x6_Format = 37812;
+public static var RGBA_ASTC_6x6_Format = 37812;
 
 /**
  * ASTC RGBA 8x5 format.
@@ -593,7 +593,7 @@ export const RGBA_ASTC_6x6_Format = 37812;
  * @type {number}
  * @constant
  */
-export const RGBA_ASTC_8x5_Format = 37813;
+public static var RGBA_ASTC_8x5_Format = 37813;
 
 /**
  * ASTC RGBA 8x6 format.
@@ -601,7 +601,7 @@ export const RGBA_ASTC_8x5_Format = 37813;
  * @type {number}
  * @constant
  */
-export const RGBA_ASTC_8x6_Format = 37814;
+public static var RGBA_ASTC_8x6_Format = 37814;
 
 /**
  * ASTC RGBA 8x8 format.
@@ -609,7 +609,7 @@ export const RGBA_ASTC_8x6_Format = 37814;
  * @type {number}
  * @constant
  */
-export const RGBA_ASTC_8x8_Format = 37815;
+public static var RGBA_ASTC_8x8_Format = 37815;
 
 /**
  * ASTC RGBA 10x5 format.
@@ -617,7 +617,7 @@ export const RGBA_ASTC_8x8_Format = 37815;
  * @type {number}
  * @constant
  */
-export const RGBA_ASTC_10x5_Format = 37816;
+public static var RGBA_ASTC_10x5_Format = 37816;
 
 /**
  * ASTC RGBA 10x6 format.
@@ -625,7 +625,7 @@ export const RGBA_ASTC_10x5_Format = 37816;
  * @type {number}
  * @constant
  */
-export const RGBA_ASTC_10x6_Format = 37817;
+public static var RGBA_ASTC_10x6_Format = 37817;
 
 /**
  * ASTC RGBA 10x8 format.
@@ -633,7 +633,7 @@ export const RGBA_ASTC_10x6_Format = 37817;
  * @type {number}
  * @constant
  */
-export const RGBA_ASTC_10x8_Format = 37818;
+public static var RGBA_ASTC_10x8_Format = 37818;
 
 /**
  * ASTC RGBA 10x10 format.
@@ -641,7 +641,7 @@ export const RGBA_ASTC_10x8_Format = 37818;
  * @type {number}
  * @constant
  */
-export const RGBA_ASTC_10x10_Format = 37819;
+public static var RGBA_ASTC_10x10_Format = 37819;
 
 /**
  * ASTC RGBA 12x10 format.
@@ -649,7 +649,7 @@ export const RGBA_ASTC_10x10_Format = 37819;
  * @type {number}
  * @constant
  */
-export const RGBA_ASTC_12x10_Format = 37820;
+public static var RGBA_ASTC_12x10_Format = 37820;
 
 /**
  * ASTC RGBA 12x12 format.
@@ -657,7 +657,7 @@ export const RGBA_ASTC_12x10_Format = 37820;
  * @type {number}
  * @constant
  */
-export const RGBA_ASTC_12x12_Format = 37821;
+public static var RGBA_ASTC_12x12_Format = 37821;
 
 /**
  * BPTC RGBA format.
@@ -665,7 +665,7 @@ export const RGBA_ASTC_12x12_Format = 37821;
  * @type {number}
  * @constant
  */
-export const RGBA_BPTC_Format = 36492;
+public static var RGBA_BPTC_Format = 36492;
 
 /**
  * BPTC Signed RGB format.
@@ -673,7 +673,7 @@ export const RGBA_BPTC_Format = 36492;
  * @type {number}
  * @constant
  */
-export const RGB_BPTC_SIGNED_Format = 36494;
+public static var RGB_BPTC_SIGNED_Format = 36494;
 
 /**
  * BPTC Unsigned RGB format.
@@ -681,7 +681,7 @@ export const RGB_BPTC_SIGNED_Format = 36494;
  * @type {number}
  * @constant
  */
-export const RGB_BPTC_UNSIGNED_Format = 36495;
+public static var RGB_BPTC_UNSIGNED_Format = 36495;
 
 /**
  * RGTC1 Red format.
@@ -689,7 +689,7 @@ export const RGB_BPTC_UNSIGNED_Format = 36495;
  * @type {number}
  * @constant
  */
-export const RED_RGTC1_Format = 36283;
+public static var RED_RGTC1_Format = 36283;
 
 /**
  * RGTC1 Signed Red format.
@@ -697,7 +697,7 @@ export const RED_RGTC1_Format = 36283;
  * @type {number}
  * @constant
  */
-export const SIGNED_RED_RGTC1_Format = 36284;
+public static var SIGNED_RED_RGTC1_Format = 36284;
 
 /**
  * RGTC2 Red Green format.
@@ -705,7 +705,7 @@ export const SIGNED_RED_RGTC1_Format = 36284;
  * @type {number}
  * @constant
  */
-export const RED_GREEN_RGTC2_Format = 36285;
+public static var RED_GREEN_RGTC2_Format = 36285;
 
 /**
  * RGTC2 Signed Red Green format.
@@ -713,7 +713,7 @@ export const RED_GREEN_RGTC2_Format = 36285;
  * @type {number}
  * @constant
  */
-export const SIGNED_RED_GREEN_RGTC2_Format = 36286;
+public static var SIGNED_RED_GREEN_RGTC2_Format = 36286;
 
 /**
  * Animations are played once.
@@ -721,7 +721,7 @@ export const SIGNED_RED_GREEN_RGTC2_Format = 36286;
  * @type {number}
  * @constant
  */
-export const LoopOnce = 2200;
+public static var LoopOnce = 2200;
 
 /**
  * Animations are played with a chosen number of repetitions, each time jumping from
@@ -730,7 +730,7 @@ export const LoopOnce = 2200;
  * @type {number}
  * @constant
  */
-export const LoopRepeat = 2201;
+public static var LoopRepeat = 2201;
 
 /**
  * Animations are played with a chosen number of repetitions, alternately playing forward
@@ -739,7 +739,7 @@ export const LoopRepeat = 2201;
  * @type {number}
  * @constant
  */
-export const LoopPingPong = 2202;
+public static var LoopPingPong = 2202;
 
 /**
  * Discrete interpolation mode for keyframe tracks.
@@ -747,7 +747,7 @@ export const LoopPingPong = 2202;
  * @type {number}
  * @constant
  */
-export const InterpolateDiscrete = 2300;
+public static var InterpolateDiscrete = 2300;
 
 /**
  * Linear interpolation mode for keyframe tracks.
@@ -755,7 +755,7 @@ export const InterpolateDiscrete = 2300;
  * @type {number}
  * @constant
  */
-export const InterpolateLinear = 2301;
+public static var InterpolateLinear = 2301;
 
 /**
  * Smooth interpolation mode for keyframe tracks.
@@ -763,7 +763,7 @@ export const InterpolateLinear = 2301;
  * @type {number}
  * @constant
  */
-export const InterpolateSmooth = 2302;
+public static var InterpolateSmooth = 2302;
 
 /**
  * Zero curvature ending for animations.
@@ -771,7 +771,7 @@ export const InterpolateSmooth = 2302;
  * @type {number}
  * @constant
  */
-export const ZeroCurvatureEnding = 2400;
+public static var ZeroCurvatureEnding = 2400;
 
 /**
  * Zero slope ending for animations.
@@ -779,7 +779,7 @@ export const ZeroCurvatureEnding = 2400;
  * @type {number}
  * @constant
  */
-export const ZeroSlopeEnding = 2401;
+public static var ZeroSlopeEnding = 2401;
 
 /**
  * Wrap around ending for animations.
@@ -787,7 +787,7 @@ export const ZeroSlopeEnding = 2401;
  * @type {number}
  * @constant
  */
-export const WrapAroundEnding = 2402;
+public static var WrapAroundEnding = 2402;
 
 /**
  * Default animation blend mode.
@@ -795,7 +795,7 @@ export const WrapAroundEnding = 2402;
  * @type {number}
  * @constant
  */
-export const NormalAnimationBlendMode = 2500;
+public static var NormalAnimationBlendMode = 2500;
 
 /**
  * Additive animation blend mode. Can be used to layer motions on top of
@@ -804,7 +804,7 @@ export const NormalAnimationBlendMode = 2500;
  * @type {number}
  * @constant
  */
-export const AdditiveAnimationBlendMode = 2501;
+public static var AdditiveAnimationBlendMode = 2501;
 
 /**
  * For every three vertices draw a single triangle.
@@ -812,7 +812,7 @@ export const AdditiveAnimationBlendMode = 2501;
  * @type {number}
  * @constant
  */
-export const TrianglesDrawMode = 0;
+public static var TrianglesDrawMode = 0;
 
 /**
  * For each vertex draw a triangle from the last three vertices.
@@ -820,7 +820,7 @@ export const TrianglesDrawMode = 0;
  * @type {number}
  * @constant
  */
-export const TriangleStripDrawMode = 1;
+public static var TriangleStripDrawMode = 1;
 
 /**
  * For each vertex draw a triangle from the first vertex and the last two vertices.
@@ -828,7 +828,7 @@ export const TriangleStripDrawMode = 1;
  * @type {number}
  * @constant
  */
-export const TriangleFanDrawMode = 2;
+public static var TriangleFanDrawMode = 2;
 
 /**
  * Basic depth packing.
@@ -836,7 +836,7 @@ export const TriangleFanDrawMode = 2;
  * @type {number}
  * @constant
  */
-export const BasicDepthPacking = 3200;
+public static var BasicDepthPacking = 3200;
 
 /**
  * A depth value is packed into 32 bit RGBA.
@@ -844,7 +844,7 @@ export const BasicDepthPacking = 3200;
  * @type {number}
  * @constant
  */
-export const RGBADepthPacking = 3201;
+public static var RGBADepthPacking = 3201;
 
 /**
  * A depth value is packed into 24 bit RGB.
@@ -852,7 +852,7 @@ export const RGBADepthPacking = 3201;
  * @type {number}
  * @constant
  */
-export const RGBDepthPacking = 3202;
+public static var RGBDepthPacking = 3202;
 
 /**
  * A depth value is packed into 16 bit RG.
@@ -860,7 +860,7 @@ export const RGBDepthPacking = 3202;
  * @type {number}
  * @constant
  */
-export const RGDepthPacking = 3203;
+public static var RGDepthPacking = 3203;
 
 /**
  * Normal information is relative to the underlying surface.
@@ -868,7 +868,7 @@ export const RGDepthPacking = 3203;
  * @type {number}
  * @constant
  */
-export const TangentSpaceNormalMap = 0;
+public static var TangentSpaceNormalMap = 0;
 
 /**
  * Normal information is relative to the object orientation.
@@ -876,7 +876,7 @@ export const TangentSpaceNormalMap = 0;
  * @type {number}
  * @constant
  */
-export const ObjectSpaceNormalMap = 1;
+public static var ObjectSpaceNormalMap = 1;
 
 // Color space string identifiers, matching CSS Color Module Level 4 and WebGPU names where available.
 
@@ -886,7 +886,7 @@ export const ObjectSpaceNormalMap = 1;
  * @type {string}
  * @constant
  */
-export const NoColorSpace = '';
+public static var NoColorSpace = '';
 
 /**
  * sRGB color space.
@@ -894,7 +894,7 @@ export const NoColorSpace = '';
  * @type {string}
  * @constant
  */
-export const SRGBColorSpace = 'srgb';
+public static var SRGBColorSpace = 'srgb';
 
 /**
  * sRGB-linear color space.
@@ -902,7 +902,7 @@ export const SRGBColorSpace = 'srgb';
  * @type {string}
  * @constant
  */
-export const LinearSRGBColorSpace = 'srgb-linear';
+public static var LinearSRGBColorSpace = 'srgb-linear';
 
 /**
  * Linear transfer function.
@@ -910,7 +910,7 @@ export const LinearSRGBColorSpace = 'srgb-linear';
  * @type {string}
  * @constant
  */
-export const LinearTransfer = 'linear';
+public static var LinearTransfer = 'linear';
 
 /**
  * sRGB transfer function.
@@ -918,7 +918,7 @@ export const LinearTransfer = 'linear';
  * @type {string}
  * @constant
  */
-export const SRGBTransfer = 'srgb';
+public static var SRGBTransfer = 'srgb';
 
 /**
  * Sets the stencil buffer value to `0`.
@@ -926,7 +926,7 @@ export const SRGBTransfer = 'srgb';
  * @type {number}
  * @constant
  */
-export const ZeroStencilOp = 0;
+public static var ZeroStencilOp = 0;
 
 /**
  * Keeps the current value.
@@ -934,7 +934,7 @@ export const ZeroStencilOp = 0;
  * @type {number}
  * @constant
  */
-export const KeepStencilOp = 7680;
+public static var KeepStencilOp = 7680;
 
 /**
  * Sets the stencil buffer value to the specified reference value.
@@ -942,7 +942,7 @@ export const KeepStencilOp = 7680;
  * @type {number}
  * @constant
  */
-export const ReplaceStencilOp = 7681;
+public static var ReplaceStencilOp = 7681;
 
 /**
  * Increments the current stencil buffer value. Clamps to the maximum representable unsigned value.
@@ -950,7 +950,7 @@ export const ReplaceStencilOp = 7681;
  * @type {number}
  * @constant
  */
-export const IncrementStencilOp = 7682;
+public static var IncrementStencilOp = 7682;
 
 /**
  * Decrements the current stencil buffer value. Clamps to `0`.
@@ -958,7 +958,7 @@ export const IncrementStencilOp = 7682;
  * @type {number}
  * @constant
  */
-export const DecrementStencilOp = 7683;
+public static var DecrementStencilOp = 7683;
 
 /**
  * Increments the current stencil buffer value. Wraps stencil buffer value to zero when incrementing
@@ -967,7 +967,7 @@ export const DecrementStencilOp = 7683;
  * @type {number}
  * @constant
  */
-export const IncrementWrapStencilOp = 34055;
+public static var IncrementWrapStencilOp = 34055;
 
 /**
  * Decrements the current stencil buffer value. Wraps stencil buffer value to the maximum representable
@@ -976,7 +976,7 @@ export const IncrementWrapStencilOp = 34055;
  * @type {number}
  * @constant
  */
-export const DecrementWrapStencilOp = 34056;
+public static var DecrementWrapStencilOp = 34056;
 
 /**
  * Inverts the current stencil buffer value bitwise.
@@ -984,7 +984,7 @@ export const DecrementWrapStencilOp = 34056;
  * @type {number}
  * @constant
  */
-export const InvertStencilOp = 5386;
+public static var InvertStencilOp = 5386;
 
 /**
  * Will never return true.
@@ -992,7 +992,7 @@ export const InvertStencilOp = 5386;
  * @type {number}
  * @constant
  */
-export const NeverStencilFunc = 512;
+public static var NeverStencilFunc = 512;
 
 /**
  * Will return true if the stencil reference value is less than the current stencil value.
@@ -1000,7 +1000,7 @@ export const NeverStencilFunc = 512;
  * @type {number}
  * @constant
  */
-export const LessStencilFunc = 513;
+public static var LessStencilFunc = 513;
 
 /**
  * Will return true if the stencil reference value is equal to the current stencil value.
@@ -1008,7 +1008,7 @@ export const LessStencilFunc = 513;
  * @type {number}
  * @constant
  */
-export const EqualStencilFunc = 514;
+public static var EqualStencilFunc = 514;
 
 /**
  * Will return true if the stencil reference value is less than or equal to the current stencil value.
@@ -1016,7 +1016,7 @@ export const EqualStencilFunc = 514;
  * @type {number}
  * @constant
  */
-export const LessEqualStencilFunc = 515;
+public static var LessEqualStencilFunc = 515;
 
 /**
  * Will return true if the stencil reference value is greater than the current stencil value.
@@ -1024,7 +1024,7 @@ export const LessEqualStencilFunc = 515;
  * @type {number}
  * @constant
  */
-export const GreaterStencilFunc = 516;
+public static var GreaterStencilFunc = 516;
 
 /**
  * Will return true if the stencil reference value is not equal to the current stencil value.
@@ -1032,7 +1032,7 @@ export const GreaterStencilFunc = 516;
  * @type {number}
  * @constant
  */
-export const NotEqualStencilFunc = 517;
+public static var NotEqualStencilFunc = 517;
 
 /**
  * Will return true if the stencil reference value is greater than or equal to the current stencil value.
@@ -1040,7 +1040,7 @@ export const NotEqualStencilFunc = 517;
  * @type {number}
  * @constant
  */
-export const GreaterEqualStencilFunc = 518;
+public static var GreaterEqualStencilFunc = 518;
 
 /**
  * Will always return true.
@@ -1048,7 +1048,7 @@ export const GreaterEqualStencilFunc = 518;
  * @type {number}
  * @constant
  */
-export const AlwaysStencilFunc = 519;
+public static var AlwaysStencilFunc = 519;
 
 /**
  * Never pass.
@@ -1056,7 +1056,7 @@ export const AlwaysStencilFunc = 519;
  * @type {number}
  * @constant
  */
-export const NeverCompare = 512;
+public static var NeverCompare = 512;
 
 /**
  * Pass if the incoming value is less than the texture value.
@@ -1064,7 +1064,7 @@ export const NeverCompare = 512;
  * @type {number}
  * @constant
  */
-export const LessCompare = 513;
+public static var LessCompare = 513;
 
 /**
  * Pass if the incoming value equals the texture value.
@@ -1072,7 +1072,7 @@ export const LessCompare = 513;
  * @type {number}
  * @constant
  */
-export const EqualCompare = 514;
+public static var EqualCompare = 514;
 
 /**
  * Pass if the incoming value is less than or equal to the texture value.
@@ -1080,7 +1080,7 @@ export const EqualCompare = 514;
  * @type {number}
  * @constant
  */
-export const LessEqualCompare = 515;
+public static var LessEqualCompare = 515;
 
 /**
  * Pass if the incoming value is greater than the texture value.
@@ -1088,7 +1088,7 @@ export const LessEqualCompare = 515;
  * @type {number}
  * @constant
  */
-export const GreaterCompare = 516;
+public static var GreaterCompare = 516;
 
 /**
  * Pass if the incoming value is not equal to the texture value.
@@ -1096,7 +1096,7 @@ export const GreaterCompare = 516;
  * @type {number}
  * @constant
  */
-export const NotEqualCompare = 517;
+public static var NotEqualCompare = 517;
 
 /**
  * Pass if the incoming value is greater than or equal to the texture value.
@@ -1104,7 +1104,7 @@ export const NotEqualCompare = 517;
  * @type {number}
  * @constant
  */
-export const GreaterEqualCompare = 518;
+public static var GreaterEqualCompare = 518;
 
 /**
  * Always pass.
@@ -1112,7 +1112,7 @@ export const GreaterEqualCompare = 518;
  * @type {number}
  * @constant
  */
-export const AlwaysCompare = 519;
+public static var AlwaysCompare = 519;
 
 /**
  * The contents are intended to be specified once by the application, and used many
@@ -1121,7 +1121,7 @@ export const AlwaysCompare = 519;
  * @type {number}
  * @constant
  */
-export const StaticDrawUsage = 35044;
+public static var StaticDrawUsage = 35044;
 
 /**
  * The contents are intended to be respecified repeatedly by the application, and
@@ -1130,7 +1130,7 @@ export const StaticDrawUsage = 35044;
  * @type {number}
  * @constant
  */
-export const DynamicDrawUsage = 35048;
+public static var DynamicDrawUsage = 35048;
 
 /**
  * The contents are intended to be specified once by the application, and used at most
@@ -1139,7 +1139,7 @@ export const DynamicDrawUsage = 35048;
  * @type {number}
  * @constant
  */
-export const StreamDrawUsage = 35040;
+public static var StreamDrawUsage = 35040;
 
 /**
  * The contents are intended to be specified once by reading data from the 3D API, and queried
@@ -1148,7 +1148,7 @@ export const StreamDrawUsage = 35040;
  * @type {number}
  * @constant
  */
-export const StaticReadUsage = 35045;
+public static var StaticReadUsage = 35045;
 
 /**
  * The contents are intended to be respecified repeatedly by reading data from the 3D API, and queried
@@ -1157,7 +1157,7 @@ export const StaticReadUsage = 35045;
  * @type {number}
  * @constant
  */
-export const DynamicReadUsage = 35049;
+public static var DynamicReadUsage = 35049;
 
 /**
  * The contents are intended to be specified once by reading data from the 3D API, and queried at most
@@ -1166,7 +1166,7 @@ export const DynamicReadUsage = 35049;
  * @type {number}
  * @constant
  */
-export const StreamReadUsage = 35041;
+public static var StreamReadUsage = 35041;
 
 /**
  * The contents are intended to be specified once by reading data from the 3D API, and used many times as
@@ -1175,7 +1175,7 @@ export const StreamReadUsage = 35041;
  * @type {number}
  * @constant
  */
-export const StaticCopyUsage = 35046;
+public static var StaticCopyUsage = 35046;
 
 /**
  * The contents are intended to be respecified repeatedly by reading data from the 3D API, and used many times
@@ -1184,7 +1184,7 @@ export const StaticCopyUsage = 35046;
  * @type {number}
  * @constant
  */
-export const DynamicCopyUsage = 35050;
+public static var DynamicCopyUsage = 35050;
 
 /**
  * The contents are intended to be specified once by reading data from the 3D API, and used at most a few times
@@ -1193,7 +1193,7 @@ export const DynamicCopyUsage = 35050;
  * @type {number}
  * @constant
  */
-export const StreamCopyUsage = 35042;
+public static var StreamCopyUsage = 35042;
 
 /**
  * GLSL 1 shader code.
@@ -1201,7 +1201,7 @@ export const StreamCopyUsage = 35042;
  * @type {string}
  * @constant
  */
-export const GLSL1 = '100';
+public static var GLSL1 = '100';
 
 /**
  * GLSL 3 shader code.
@@ -1209,7 +1209,7 @@ export const GLSL1 = '100';
  * @type {string}
  * @constant
  */
-export const GLSL3 = '300 es';
+public static var GLSL3 = '300 es';
 
 /**
  * WebGL coordinate system.
@@ -1217,7 +1217,7 @@ export const GLSL3 = '300 es';
  * @type {number}
  * @constant
  */
-export const WebGLCoordinateSystem = 2000;
+public static var WebGLCoordinateSystem = 2000;
 
 /**
  * WebGPU coordinate system.
@@ -1225,7 +1225,7 @@ export const WebGLCoordinateSystem = 2000;
  * @type {number}
  * @constant
  */
-export const WebGPUCoordinateSystem = 2001;
+public static var WebGPUCoordinateSystem = 2001;
 
 /**
  * Represents the different timestamp query types.
@@ -1233,7 +1233,7 @@ export const WebGPUCoordinateSystem = 2001;
  * @type {ConstantsTimestampQuery}
  * @constant
  */
-export const TimestampQuery = {
+public static var TimestampQuery = {
 	COMPUTE: 'compute',
 	RENDER: 'render'
 };
@@ -1244,7 +1244,7 @@ export const TimestampQuery = {
  * @type {ConstantsInterpolationSamplingType}
  * @constant
  */
-export const InterpolationSamplingType = {
+public static var InterpolationSamplingType = {
 	PERSPECTIVE: 'perspective',
 	LINEAR: 'linear',
 	FLAT: 'flat'
@@ -1256,7 +1256,7 @@ export const InterpolationSamplingType = {
  * @type {ConstantsInterpolationSamplingMode}
  * @constant
  */
-export const InterpolationSamplingMode = {
+public static var InterpolationSamplingMode = {
 	NORMAL: 'normal',
 	CENTROID: 'centroid',
 	SAMPLE: 'sample',
