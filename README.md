@@ -13,7 +13,7 @@ literally just starting out, implementing as i go
 Required for example scene
 - Scene
     - Object3D✅
-        - Quaternion
+        - Quaternion✅
             - MathUtils✅
         - Vector3✅
         - Matrix4✅
