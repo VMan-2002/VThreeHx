@@ -51,11 +51,10 @@ class Vector3 {
 	 * @param z The value of the z component.
 	 * @return A reference to this vector.
 	 */
-	public function set( x:Float, y:Float, ?z:Null<Float> = null ) {
+	public function set( x:Float, y:Float, ?z:Float = null ) {
 		this.x = x;
 		this.y = y;
-        if (z != null) // sprite.scale.set(x,y)
-		    this.z = z;
+		this.z = z ?? this.z;
 
 		return this;
 	}

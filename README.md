@@ -13,7 +13,7 @@ literally just starting out, implementing as i go
 checkmarks do not mean it's fully working
 
 Required for example scene
-- Scene
+- Scene✅
     - Object3D✅
         - Quaternion✅
             - MathUtils✅
@@ -23,7 +23,9 @@ Required for example scene
         - Euler✅
         - Layers✅
         - Matrix3✅
-- PerspectiveCamera
+- PerspectiveCamera✅
+    - Camera✅
+    - Vector2✅
 - WebGLRenderer
 - BoxGeometry
 - MeshBasicMaterial

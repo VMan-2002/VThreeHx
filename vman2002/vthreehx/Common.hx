@@ -15,8 +15,13 @@ class Common {
     public static final EPSILON:Float = 0.0000001;
 
     /** Sends warning to the console. **/
-    public static function warn(t:String) {
-        trace(t);
+    public static function warn(...t:Dynamic) {
+        trace("[WARN] " + t.toArray().join(" "));
+    }
+
+    /** Sends no-halt error to the console. **/
+    public static function error(...t:Dynamic) {
+        trace("[ERROR] " + t.toArray().join(" "));
     }
 
     /** Converts `n` to an `Int` (`1` for `true`, `0` for `false`) **/
@@ -40,6 +45,24 @@ class Common {
     public static function copyField(dst:Dynamic, src:Dynamic, name:String) {
         if (Reflect.hasField(src, name) && Reflect.hasField(dst, name))
             Reflect.setField(dst, name, Reflect.field(src, name));
+    }
+
+    /**
+     * Imitates JavaScript's Math.imul in Haxe.
+     * Multiplies two 32-bit signed integers and returns the result as a 32-bit signed integer.
+     * Thanks copilot
+     * 
+     * @param a First integer
+     * @param b Second integer
+     * @return Product as 32-bit signed integer
+     */
+    public static function imul(a:Int, b:Int):Int {
+        var ah = (a >> 16) & 0xffff;
+        var al = a & 0xffff;
+        var bh = (b >> 16) & 0xffff;
+        var bl = b & 0xffff;
+        // The result needs to be kept within 32 bits.
+        return ((al * bl) + (((ah * bl + al * bh) << 16) >>> 0)) | 0;
     }
 
     /** Whether or not `describe` is enabled **/

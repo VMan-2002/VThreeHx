@@ -21,7 +21,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	public static var DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 	/** The ID of the 3D object. Don't modify. **/
-	public var id;
+	public var id:Int;
 
 	/** The UUID of the 3D object. Don't modify**/
 	public var uuid = generateUUID();
@@ -33,7 +33,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	public var name = '';
 
 	/** A reference to the parent object. **/
-	public var parent = null;
+	public var parent:Object3D = null;
 
 	/**
 	* Defines the `up` direction of the 3D object which influences the orientation via methods like {@link Object3D#lookAt}.
@@ -197,6 +197,8 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 		*/
 	public var userData = {};
 
+	public var type(get, never):String;
+
 	/** Constructs a new 3D object. **/
 	public function new() {
 		super();
@@ -214,6 +216,17 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 
 		rotation._onChange( onRotationChange );
 		quaternion._onChange( onQuaternionChange );
+	}
+
+	/** Whether or not this object's update function is called **/
+	public var active:Bool = true;
+
+	/** Update function. Called on all children too **/
+	public function update(elapsed:Float) {
+		for (thing in children) {
+			if (thing.active)
+				thing.update(elapsed);
+		}
 	}
 
 	/**
@@ -523,13 +536,9 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 		// This method does not support objects having non-uniformly-scaled parent(s)
 
 		if ( false ) { //TODO: x.isVector3
-
 			_target.copy( x );
-
 		} else {
-
-			_target.set( x, y, z );
-
+			_target.set( cast(x, Float), y, z );
 		}
 
 		var parent = this.parent;
@@ -550,7 +559,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 
 		this.quaternion.setFromRotationMatrix( _m1 );
 
-		if ( parent ) {
+		if ( parent != null ) {
 
 			_m1.extractRotation( parent.matrixWorld );
 			_q1.setFromRotationMatrix( _m1 );
@@ -570,18 +579,10 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @param {Object3D} object - The 3D object to add.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	public function add( object ) {
-
-		if ( arguments.length > 1 ) {
-			for ( i in 0...arguments.length ) {
-				this.add( arguments[ i ] );
-			}
-
-			return this;
-		}
+	public function add( object:Object3D, ...arguments:Object3D ) {
 
 		if ( object == this ) {
-			console.error( 'THREE.Object3D.add: object can\'t be added as a child of itself.', object );
+			Common.error( 'THREE.Object3D.add: object can\'t be added as a child of itself.', object );
 			return this;
 		}
 
@@ -596,7 +597,13 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 			this.dispatchEvent( _childaddedEvent );
 			_childaddedEvent.child = null;
 		} else {
-			console.error( 'THREE.Object3D.add: object not an instance of THREE.Object3D.', object );
+			Common.error( 'THREE.Object3D.add: object not an instance of THREE.Object3D.', object );
+		}
+
+		if ( arguments.length != 0 ) {
+			for ( i in 0...arguments.length ) {
+				this.add( arguments[ i ] );
+			}
 		}
 
 		return this;
@@ -612,8 +619,8 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @param {Object3D} object - The 3D object to remove.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	public function remove( object ) {
-		if ( arguments.length > 1 ) {
+	public function remove( object:Object3D, ...arguments:Object3D ) {
+		if ( arguments.length != 0 ) {
 			for ( i in 0...arguments.length ) {
 				this.remove( arguments[ i ] );
 			}
@@ -623,7 +630,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 
 		var index = this.children.indexOf( object );
 
-		if ( index != - 1 ) {
+		if ( index != -1 ) {
 			object.parent = null;
 			this.children.splice( index, 1 );
 
@@ -661,7 +668,9 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Object3D} A reference to this instance.
 	 */
 	public function clear() {
-		return this.remove( ... this.children );
+		for (thing in this.children)
+			this.remove( thing );
+		return this;
 	}
 
 	/**
@@ -736,7 +745,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Object3D|null} The found 3D object. Returns `null` if no 3D object has been found.
 	 */
 	public function getObjectByProperty( name:String, value ) {
-		if ( this[ name ] == value ) return this;
+		if ( Reflect.field(this, name) == value ) return this;
 
 		for ( i in 0...this.children.length ) {
 			var child = this.children[ i ];
@@ -758,8 +767,11 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @param {Array<Object3D>} result - The method stores the result in this array.
 	 * @return {Array<Object3D>} The found 3D objects.
 	 */
-	public function getObjectsByProperty( name, value, result = [] ) {
-		if ( this[ name ] == value ) result.push( this );
+	public function getObjectsByProperty( name:String, value:Dynamic, result:Null<Array<Object3D>> ) {
+		if (result == null)
+			result = [];
+
+		if ( Reflect.field(this, name) == value ) result.push( this );
 		var children = this.children;
 
 		for ( i in 0...children.length )
@@ -814,7 +826,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @param {Vector3} target - The target vector the result is stored to.
 	 * @return {Vector3} The 3D object's direction in world space.
 	 */
-	public function getWorldDirection( target ) {
+	public function getWorldDirection( target:Vector3 ):Vector3 {
 		this.updateWorldMatrix( true, false );
 
 		var e = this.matrixWorld.elements;
@@ -976,7 +988,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return A JSON object representing the serialized 3D object.
 	 * @see {@link ObjectLoader#parse}
 	 */
-	public function toJSON( ?meta:Dynamic ) {
+	public function toJSON( ?meta:Dynamic ):Dynamic {
 		// meta is a string when called from JSON.stringify
 		var isRootObject = ( meta == null || Std.isOfType(meta, String) );
 
@@ -989,7 +1001,8 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 			textures: null,
 			materials: null,
 			geometries: null,
-			skeletons: null
+			skeletons: null,
+			metadata: null
 		};
 
 		// meta is a hash used to collect geometries, materials.
@@ -1017,13 +1030,10 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 
 		// standard Object3D serialization
 
-		var object = {
-			uuid: this.uuid,
-			type: this.type,
-			layers: null,
-			matrix: null,
-			up:null
-		};
+		var object:Dynamic = {};
+
+		object.uuid = this.uuid;
+		object.type = this.type;
 
 		if ( this.name != '' ) object.name = this.name;
 		if ( this.castShadow == true ) object.castShadow = true;
@@ -1031,7 +1041,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 		if ( this.visible == false ) object.visible = false;
 		if ( this.frustumCulled == false ) object.frustumCulled = false;
 		if ( this.renderOrder != 0 ) object.renderOrder = this.renderOrder;
-		if ( Object.keys( this.userData ).length > 0 ) object.userData = this.userData;
+		if ( Reflect.fields( this.userData ).length > 0 ) object.userData = this.userData;
 
 		object.layers = this.layers.mask;
 		object.matrix = this.matrix.toArray();
@@ -1041,14 +1051,16 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 
 		// object specific properties
 
-		if ( this.isInstancedMesh ) {
+		//TODO:
+		/*if ( this.isInstancedMesh ) {
 			object.type = 'InstancedMesh';
 			object.count = this.count;
 			object.instanceMatrix = this.instanceMatrix.toJSON();
 			if ( this.instanceColor != null ) object.instanceColor = this.instanceColor.toJSON();
-		}
+		}*/
 
-		if ( this.isBatchedMesh ) {
+		//TODO:
+		/*if ( this.isBatchedMesh ) {
 			object.type = 'BatchedMesh';
 			object.perObjectFrustumCulled = this.perObjectFrustumCulled;
 			object.sortObjects = this.sortObjects;
@@ -1106,7 +1118,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 					max: this.boundingBox.max.toArray()
 				};
 			}
-		}
+		}*/
 
 		//
 
@@ -1118,8 +1130,8 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 			return element.uuid;
 		}
 
-		if ( Std.isOfType(this, Scene) ) {
-			if ( this.background ) {
+		if ( false /*Std.isOfType(this, Scene)*/ ) { //TODO: when we have Scene class
+			/*if ( this.background ) {
 				if ( this.background.isColor ) {
 					object.background = this.background.toJSON();
 				} else if ( this.background.isTexture ) {
@@ -1129,10 +1141,10 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 
 			if ( this.environment && this.environment.isTexture && this.environment.isRenderTargetTexture != true ) {
 				object.environment = this.environment.toJSON( meta ).uuid;
-			}
+			}*/
 
 		} else if ( false ) { //TODO: this.isMesh || this.isLine || this.isPoints
-			object.geometry = serialize( meta.geometries, this.geometry );
+			/*object.geometry = serialize( meta.geometries, this.geometry );
 			var parameters = this.geometry.parameters;
 
 			if ( parameters != null && parameters.shapes != null ) {
@@ -1147,20 +1159,21 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 				} else {
 					serialize( meta.shapes, shapes );
 				}
-			}
+			}*/
 		}
 
 		if ( false ) { //TODO: isSkinnedMesh
-			object.bindMode = this.bindMode;
+			/*object.bindMode = this.bindMode;
 			object.bindMatrix = this.bindMatrix.toArray();
 
 			if ( this.skeleton != null ) {
 				serialize( meta.skeletons, this.skeleton );
 				object.skeleton = this.skeleton.uuid;
-			}
+			}*/
 		}
 
-		if ( this.material != null ) {
+		//TODO: things with materials
+		/*if ( this.material != null ) {
 			if ( Array.isArray( this.material ) ) {
 				var uuids = [];
 				for ( i in 0...this.material.length )
@@ -1170,7 +1183,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 			} else {
 				object.material = serialize( meta.materials, this.material );
 			}
-		}
+		}*/
 
 		//
 
@@ -1237,8 +1250,8 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @param When set to `true`, descendants of the 3D object are also cloned.
 	 * @return A clone of this instance.
 	 */
-	public function clone(recursive:Bool = true):Object3D {
-		return new Object3D().copy( this, recursive );
+	public function clone(?recursive:Bool = true):Dynamic {
+		return Type.createInstance(Type.getClass(this), new Array<Dynamic>()).copy( this, recursive );
 	}
 
 	/**
@@ -1248,7 +1261,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @param {boolean} [recursive=true] - When set to `true`, descendants of the 3D object are cloned.
 	 * @return {Object3D} A reference to this instance.
 	 */
-	public function copy( source:Object3D, recursive = true ) {
+	public function copy( source:Dynamic, ?recursive:Bool = true ):Dynamic {
 		this.name = source.name;
 
 		this.up.copy( source.up );
@@ -1287,6 +1300,11 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 		}
 
 		return this;
+	}
+
+	function get_type() {
+		var a = Type.getClassName(Type.getClass(this));
+    	return a.substr(a.lastIndexOf(".") + 1);
 	}
 
 	/** Fires when the object has been added to its parent object. **/

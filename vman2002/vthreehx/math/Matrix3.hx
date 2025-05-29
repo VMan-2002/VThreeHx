@@ -189,7 +189,7 @@ class Matrix3 {
 	 * @param {Matrix3} b - The second matrix.
 	 * @return {Matrix3} A reference to this matrix.
 	 */
-	public function multiplyMatrices( a, b ) {
+	public function multiplyMatrices( a:Matrix3, b:Matrix3 ) {
 		var ae = a.elements;
 		var be = b.elements;
 		var te = this.elements;
@@ -499,7 +499,9 @@ class Matrix3 {
 	 * @param {number} [offset=0] - Index of the first element in the array.
 	 * @return {Array<number>} The matrix elements in column-major order.
 	 */
-	public function toArray( array = [], offset = 0 ) {
+	public function toArray( ?array:Null<Array<Float>>, ?offset = 0 ) {
+		if (array == null)
+			array = [];
 		var te = this.elements;
 
 		array[ offset ] = te[ 0 ];

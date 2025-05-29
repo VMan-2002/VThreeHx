@@ -641,7 +641,7 @@ class Matrix4 {
 			te[ 13 ] = x.y;
 			te[ 14 ] = x.z;
 		} else {
-			te[ 12 ] = x;
+			te[ 12 ] = cast x;
 			te[ 13 ] = y;
 			te[ 14 ] = z;
 		}
@@ -735,7 +735,7 @@ class Matrix4 {
 		var scaleYSq = te[ 4 ] * te[ 4 ] + te[ 5 ] * te[ 5 ] + te[ 6 ] * te[ 6 ];
 		var scaleZSq = te[ 8 ] * te[ 8 ] + te[ 9 ] * te[ 9 ] + te[ 10 ] * te[ 10 ];
 
-		return Math.sqrt( Math.max( scaleXSq, scaleYSq, scaleZSq ) );
+		return Math.sqrt( Math.max( Math.max(scaleXSq, scaleYSq), scaleZSq ) );
 
 	}
 
@@ -747,9 +747,9 @@ class Matrix4 {
 	 * @param {number} z - The amount to translate in the z axis.
 	 * @return {Matrix4} A reference to this matrix.
 	 */
-	public function makeTranslation( x, y, z ) {
+	public function makeTranslation( x:Dynamic, y:Float, z:Float ) {
 
-		if ( x.isVector3 ) {
+		if ( Std.isOfType(x, Vector3) ) {
 
 			this.set(
 
@@ -764,7 +764,7 @@ class Matrix4 {
 
 			this.set(
 
-				1, 0, 0, x,
+				1, 0, 0, cast x,
 				0, 1, 0, y,
 				0, 0, 1, z,
 				0, 0, 0, 1
@@ -990,7 +990,7 @@ class Matrix4 {
 	 * @param {Vector3} scale - The scale vector.
 	 * @return {Matrix4} A reference to this matrix.
 	 */
-	public function decompose( position, quaternion, scale ) {
+	public function decompose( position:Vector3, quaternion:Quaternion, scale:Vector3 ) {
 
 		var te = this.elements;
 
@@ -1048,7 +1048,7 @@ class Matrix4 {
 	 * @param {(WebGLCoordinateSystem|WebGPUCoordinateSystem)} [coordinateSystem=WebGLCoordinateSystem] - The coordinate system.
 	 * @return {Matrix4} A reference to this matrix.
 	 */
-	public function makePerspective( left, right, top, bottom, near, far, coordinateSystem = WebGLCoordinateSystem ) {
+	public function makePerspective( left:Float, right:Float, top:Float, bottom:Float, near:Float, far:Float, ?coordinateSystem:Int = null ) {
 
 		var te = this.elements;
 		var x = 2 * near / ( right - left );
@@ -1059,7 +1059,7 @@ class Matrix4 {
 
 		var c, d;
 
-		if ( coordinateSystem == WebGLCoordinateSystem ) {
+		if ( coordinateSystem == WebGLCoordinateSystem || coordinateSystem == null ) {
 
 			c = - ( far + near ) / ( far - near );
 			d = ( - 2 * far * near ) / ( far - near );

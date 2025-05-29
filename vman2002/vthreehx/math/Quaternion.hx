@@ -375,7 +375,7 @@ class Quaternion {
 	 * @param {Matrix4} m - A 4x4 matrix of which the upper 3x3 of matrix is a pure rotation matrix (i.e. unscaled).
 	 * @return {Quaternion} A reference to this quaternion.
 	 */
-	public function setFromRotationMatrix( m ) {
+	public function setFromRotationMatrix( m:Matrix4 ) {
 
 		// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
 

@@ -44,7 +44,7 @@ class Euler {
 	 * @param z The angle of the z axis in radians.
 	 * @param order A string representing the order that the rotations are applied.
 	 */
-	public function new( x = 0, y = 0, z = 0, ?order ) {
+	public function new( x:Float = 0, y:Float = 0, z:Float = 0, ?order:String ) {
 		this._x = x;
 		this._y = y;
 		this._z = z;
@@ -301,7 +301,9 @@ class Euler {
 	 * @param {number} [offset=0] - Index of the first element in the array.
 	 * @return {Array<number,number,number,string>} The Euler components.
 	 */
-	public function toArray( array = [], offset = 0 ) {
+	public function toArray( ?array:Array<Dynamic>, offset = 0 ) {
+		if (array == null)
+			array = [];
 		array[ offset ] = this._x;
 		array[ offset + 1 ] = this._y;
 		array[ offset + 2 ] = this._z;
@@ -319,7 +321,8 @@ class Euler {
 	public dynamic function _onChangeCallback() {}
 
     public function iterator() {
-        return [this._x, this._y, this._z, this._order].iterator();
+		var a:Array<Dynamic> = [this._x, this._y, this._z, this._order];
+        return a.iterator();
     }
 
 	function get_x()

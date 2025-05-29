@@ -1,6 +1,6 @@
 package vman2002.vthreehx.core;
 
-typedef Listener = Dynamic->Void;
+typedef Listener = (Dynamic, Event)->Void;
 typedef Event = Dynamic;
 
 /**
@@ -74,7 +74,7 @@ class EventDispatcher {
 			var array = listenerArray.copy();
 
 			for (thing in array)
-				thing.call( this, event );
+				thing( this, event );
 
 			event.target = null;
 		}
