@@ -7,221 +7,99 @@ import { Layers } from './Layers.js';
 import { Matrix3 } from '../math/Matrix3.js';
 import { generateUUID } from '../math/MathUtils.js';
 
-let _object3DId = 0;
-
-const _v1 = /*@__PURE__*/ new Vector3();
-const _q1 = /*@__PURE__*/ new Quaternion();
-const _m1 = /*@__PURE__*/ new Matrix4();
-const _target = /*@__PURE__*/ new Vector3();
-
-const _position = /*@__PURE__*/ new Vector3();
-const _scale = /*@__PURE__*/ new Vector3();
-const _quaternion = /*@__PURE__*/ new Quaternion();
-
-const _xAxis = /*@__PURE__*/ new Vector3( 1, 0, 0 );
-const _yAxis = /*@__PURE__*/ new Vector3( 0, 1, 0 );
-const _zAxis = /*@__PURE__*/ new Vector3( 0, 0, 1 );
-
-/**
- * Fires when the object has been added to its parent object.
- *
- * @event Object3D#added
- * @type {Object}
- */
-const _addedEvent = { type: 'added' };
-
-/**
- * Fires when the object has been removed from its parent object.
- *
- * @event Object3D#removed
- * @type {Object}
- */
-const _removedEvent = { type: 'removed' };
-
-/**
- * Fires when a new child object has been added.
- *
- * @event Object3D#childadded
- * @type {Object}
- */
-const _childaddedEvent = { type: 'childadded', child: null };
-
-/**
- * Fires when a new child object has been added.
- *
- * @event Object3D#childremoved
- * @type {Object}
- */
-const _childremovedEvent = { type: 'childremoved', child: null };
-
-/**
- * This is the base class for most objects in three.js and provides a set of
- * properties and methods for manipulating objects in 3D space.
- *
- * @augments EventDispatcher
- */
+/** This is the base class for most objects in three.js and provides a set of properties and methods for manipulating objects in 3D space. **/
 class Object3D extends EventDispatcher {
 
-	/**
-	 * Constructs a new 3D object.
-	 */
-	constructor() {
+/**
+ * The default up direction for objects, also used as the default
+ * position for {@link DirectionalLight} and {@link HemisphereLight}.
+ *
+ * @static
+ * @type {Vector3}
+ * @default (0,1,0)
+ */
+Object3D.DEFAULT_UP = /*@__PURE__*/ new Vector3( 0, 1, 0 );
 
+/**
+ * The default setting for {@link Object3D#matrixAutoUpdate} for
+ * newly created 3D objects.
+ *
+ * @static
+ * @type {boolean}
+ * @default true
+ */
+Object3D.DEFAULT_MATRIX_AUTO_UPDATE = true;
+
+/**
+ * The default setting for {@link Object3D#matrixWorldAutoUpdate} for
+ * newly created 3D objects.
+ *
+ * @static
+ * @type {boolean}
+ * @default true
+ */
+Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
+
+	/** The ID of the 3D object. Don't modify. **/
+	public var id;
+
+	/** The UUID of the 3D object. Don't modify**/
+	public var uuid = generateUUID();
+
+	/** An array holding the child 3D objects of this instance. **/
+	public var children = new Array<Object3D>();
+
+	/** The name of the 3D object. **/
+	public var name = '';
+
+	/** A reference to the parent object. **/
+	public var parent = null;
+
+	/**
+	* Defines the `up` direction of the 3D object which influences
+	* the orientation via methods like {@link Object3D#lookAt}.
+	*
+	* The default values for all 3D objects is defined by `Object3D.DEFAULT_UP`.@type {Vector3}
+	*/
+	public var up = Object3D.DEFAULT_UP.clone();
+
+	/** Represents the object's local position. **/
+	public var position = new Vector3();
+
+	/** Represents the object's local rotation as Euler angles, in radians. **/
+	public var rotation = new Euler();
+
+	/** Represents the object's local rotation as Quaternions. **/
+	public var quaternion = new Quaternion();
+	
+	/** Represents the object's local scale. **/
+	public var scale = new Vector3( 1, 1, 1 );
+
+	/** Represents the object's model-view matrix. **/
+	public var modelViewMatrix = new Matrix4();
+
+	/** Represents the object's normal matrix. **/
+	public var normalMatrix = new Matrix3();
+
+	/** Constructs a new 3D object. **/
+	public function new() {
 		super();
 
-		/**
-		 * This flag can be used for type testing.
-		 *
-		 * @type {boolean}
-		 * @readonly
-		 * @default true
-		 */
-		this.isObject3D = true;
-
-		/**
-		 * The ID of the 3D object.
-		 *
-		 * @name Object3D#id
-		 * @type {number}
-		 * @readonly
-		 */
-		Object.defineProperty( this, 'id', { value: _object3DId ++ } );
-
-		/**
-		 * The UUID of the 3D object.
-		 *
-		 * @type {string}
-		 * @readonly
-		 */
-		this.uuid = generateUUID();
-
-		/**
-		 * The name of the 3D object.
-		 *
-		 * @type {string}
-		 */
-		this.name = '';
-
-		/**
-		 * The type property is used for detecting the object type
-		 * in context of serialization/deserialization.
-		 *
-		 * @type {string}
-		 * @readonly
-		 */
-		this.type = 'Object3D';
-
-		/**
-		 * A reference to the parent object.
-		 *
-		 * @type {?Object3D}
-		 * @default null
-		 */
-		this.parent = null;
-
-		/**
-		 * An array holding the child 3D objects of this instance.
-		 *
-		 * @type {Array<Object3D>}
-		 */
-		this.children = [];
-
-		/**
-		 * Defines the `up` direction of the 3D object which influences
-		 * the orientation via methods like {@link Object3D#lookAt}.
-		 *
-		 * The default values for all 3D objects is defined by `Object3D.DEFAULT_UP`.
-		 *
-		 * @type {Vector3}
-		 */
-		this.up = Object3D.DEFAULT_UP.clone();
-
-		const position = new Vector3();
-		const rotation = new Euler();
-		const quaternion = new Quaternion();
-		const scale = new Vector3( 1, 1, 1 );
+		id = _object3DId;
+		_object3DId += 1;
 
 		function onRotationChange() {
-
 			quaternion.setFromEuler( rotation, false );
-
 		}
 
 		function onQuaternionChange() {
-
 			rotation.setFromQuaternion( quaternion, undefined, false );
-
 		}
 
 		rotation._onChange( onRotationChange );
 		quaternion._onChange( onQuaternionChange );
 
 		Object.defineProperties( this, {
-			/**
-			 * Represents the object's local position.
-			 *
-			 * @name Object3D#position
-			 * @type {Vector3}
-			 * @default (0,0,0)
-			 */
-			position: {
-				configurable: true,
-				enumerable: true,
-				value: position
-			},
-			/**
-			 * Represents the object's local rotation as Euler angles, in radians.
-			 *
-			 * @name Object3D#rotation
-			 * @type {Euler}
-			 * @default (0,0,0)
-			 */
-			rotation: {
-				configurable: true,
-				enumerable: true,
-				value: rotation
-			},
-			/**
-			 * Represents the object's local rotation as Quaternions.
-			 *
-			 * @name Object3D#quaternion
-			 * @type {Quaternion}
-			 */
-			quaternion: {
-				configurable: true,
-				enumerable: true,
-				value: quaternion
-			},
-			/**
-			 * Represents the object's local scale.
-			 *
-			 * @name Object3D#scale
-			 * @type {Vector3}
-			 * @default (1,1,1)
-			 */
-			scale: {
-				configurable: true,
-				enumerable: true,
-				value: scale
-			},
-			/**
-			 * Represents the object's model-view matrix.
-			 *
-			 * @name Object3D#modelViewMatrix
-			 * @type {Matrix4}
-			 */
-			modelViewMatrix: {
-				value: new Matrix4()
-			},
-			/**
-			 * Represents the object's normal matrix.
-			 *
-			 * @name Object3D#normalMatrix
-			 * @type {Matrix3}
-			 */
-			normalMatrix: {
-				value: new Matrix3()
-			}
 		} );
 
 		/**
@@ -1532,13 +1410,11 @@ class Object3D extends EventDispatcher {
 	/**
 	 * Returns a new 3D object with copied values from this instance.
 	 *
-	 * @param {boolean} [recursive=true] - When set to `true`, descendants of the 3D object are also cloned.
-	 * @return {Object3D} A clone of this instance.
+	 * @param When set to `true`, descendants of the 3D object are also cloned.
+	 * @return A clone of this instance.
 	 */
-	clone( recursive ) {
-
+	public function clone(recursive:Bool = true) {
 		return new this.constructor().copy( this, recursive );
-
 	}
 
 	/**
@@ -1595,36 +1471,32 @@ class Object3D extends EventDispatcher {
 
 	}
 
+	/** Fires when the object has been added to its parent object. **/
+	static var _addedEvent:Event = { type: 'added' };
+
+	/** Fires when the object has been removed from its parent object. **/
+	static var _removedEvent:Event = { type: 'removed' };
+
+	/** Fires when a new child object has been added. **/
+	static var _childaddedEvent:Event = { type: 'childadded', child: null };
+
+	/** Fires when a new child object has been added. **/
+	static var _childremovedEvent:Event = { type: 'childremoved', child: null };
+
+	static var _object3DId = 0;
+
+	static var _v1 = /*@__PURE__*/ new Vector3();
+	static var _q1 = /*@__PURE__*/ new Quaternion();
+	static var _m1 = /*@__PURE__*/ new Matrix4();
+	static var _target = /*@__PURE__*/ new Vector3();
+
+	static var _position = /*@__PURE__*/ new Vector3();
+	static var _scale = /*@__PURE__*/ new Vector3();
+	static var _quaternion = /*@__PURE__*/ new Quaternion();
+
+	static var _xAxis = /*@__PURE__*/ new Vector3( 1, 0, 0 );
+	static var _yAxis = /*@__PURE__*/ new Vector3( 0, 1, 0 );
+	static var _zAxis = /*@__PURE__*/ new Vector3( 0, 0, 1 );
 }
-
-/**
- * The default up direction for objects, also used as the default
- * position for {@link DirectionalLight} and {@link HemisphereLight}.
- *
- * @static
- * @type {Vector3}
- * @default (0,1,0)
- */
-Object3D.DEFAULT_UP = /*@__PURE__*/ new Vector3( 0, 1, 0 );
-
-/**
- * The default setting for {@link Object3D#matrixAutoUpdate} for
- * newly created 3D objects.
- *
- * @static
- * @type {boolean}
- * @default true
- */
-Object3D.DEFAULT_MATRIX_AUTO_UPDATE = true;
-
-/**
- * The default setting for {@link Object3D#matrixWorldAutoUpdate} for
- * newly created 3D objects.
- *
- * @static
- * @type {boolean}
- * @default true
- */
-Object3D.DEFAULT_MATRIX_WORLD_AUTO_UPDATE = true;
 
 export { Object3D };
