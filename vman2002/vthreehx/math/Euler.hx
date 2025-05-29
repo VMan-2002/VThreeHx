@@ -60,7 +60,7 @@ class Euler {
 	 * @param order - A string representing the order that the rotations are applied.
 	 * @return A reference to this Euler instance.
 	 */
-	public function set( x, y, z, order = this._order ) {
+	public inline function set( x, y, z, order = this._order ) {
 		this._x = x;
 		this._y = y;
 		this._z = z;
@@ -75,7 +75,7 @@ class Euler {
 	 *
 	 * @return A clone of this instance.
 	 */
-	public function clone() {
+	public inline function clone() {
 		return new Euler( this._x, this._y, this._z, this._order );
 	}
 
@@ -240,11 +240,9 @@ class Euler {
 	 * @return {Euler} A reference to this Euler instance.
 	 */
 	public function setFromQuaternion( q, order, update ) {
-
 		_matrix.makeRotationFromQuaternion( q );
 
 		return this.setFromRotationMatrix( _matrix, order, update );
-
 	}
 
 	/**
@@ -254,10 +252,8 @@ class Euler {
 	 * @param {string} [order] - A string representing the order that the rotations are applied.
 	 * @return {Euler} A reference to this Euler instance.
 	 */
-	public function setFromVector3( v, order = this._order ) {
-
+	public inline function setFromVector3( v, order = this._order ) {
 		return this.set( v.x, v.y, v.z, order );
-
 	}
 
 	/**
@@ -271,11 +267,9 @@ class Euler {
 	 * @return {Euler} A reference to this Euler instance.
 	 */
 	public function reorder( newOrder ) {
-
 		_quaternion.setFromEuler( this );
 
 		return this.setFromQuaternion( _quaternion, newOrder );
-
 	}
 
 	/**

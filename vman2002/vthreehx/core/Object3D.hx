@@ -623,23 +623,17 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Object3D} A reference to this instance.
 	 */
 	public function remove( object ) {
-
 		if ( arguments.length > 1 ) {
-
 			for ( i in 0...arguments.length ) {
-
 				this.remove( arguments[ i ] );
-
 			}
 
 			return this;
-
 		}
 
 		var index = this.children.indexOf( object );
 
 		if ( index != - 1 ) {
-
 			object.parent = null;
 			this.children.splice( index, 1 );
 
@@ -648,11 +642,9 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 			_childremovedEvent.child = object;
 			this.dispatchEvent( _childremovedEvent );
 			_childremovedEvent.child = null;
-
 		}
 
 		return this;
-
 	}
 
 	/**
@@ -663,17 +655,12 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Object3D} A reference to this instance.
 	 */
 	public function removeFromParent() {
-
 		var parent = this.parent;
 
-		if ( parent != null ) {
-
+		if ( parent != null )
 			parent.remove( this );
 
-		}
-
 		return this;
-
 	}
 
 	/**
@@ -684,9 +671,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Object3D} A reference to this instance.
 	 */
 	public function clear() {
-
 		return this.remove( ... this.children );
-
 	}
 
 	/**
@@ -699,7 +684,6 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Object3D} A reference to this instance.
 	 */
 	public function attach( object ) {
-
 		// adds object as a child of this, while maintaining the object's world transform
 
 		// Note: This method does not support scene graphs having non-uniformly-scaled nodes(s)
@@ -709,11 +693,9 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 		_m1.copy( this.matrixWorld ).invert();
 
 		if ( object.parent != null ) {
-
 			object.parent.updateWorldMatrix( true, false );
 
 			_m1.multiply( object.parent.matrixWorld );
-
 		}
 
 		object.applyMatrix4( _m1 );
@@ -731,7 +713,6 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 		_childaddedEvent.child = null;
 
 		return this;
-
 	}
 
 	/**
@@ -742,9 +723,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Object3D|undefined} The found 3D object. Returns `undefined` if no 3D object has been found.
 	 */
 	public function getObjectById( id ) {
-
 		return this.getObjectByProperty( 'id', id );
-
 	}
 
 	/**
@@ -755,9 +734,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Object3D|undefined} The found 3D object. Returns `undefined` if no 3D object has been found.
 	 */
 	public function getObjectByName( name ) {
-
 		return this.getObjectByProperty( 'name', name );
-
 	}
 
 	/**
@@ -769,24 +746,17 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Object3D|undefined} The found 3D object. Returns `undefined` if no 3D object has been found.
 	 */
 	public function getObjectByProperty( name, value ) {
-
 		if ( this[ name ] == value ) return this;
 
 		for ( i in 0...this.children.length ) {
-
 			var child = this.children[ i ];
 			var object = child.getObjectByProperty( name, value );
 
-			if ( object != undefined ) {
-
+			if ( object != undefined )
 				return object;
-
-			}
-
 		}
 
 		return null;
-
 	}
 
 	/**
@@ -799,19 +769,13 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Array<Object3D>} The found 3D objects.
 	 */
 	public function getObjectsByProperty( name, value, result = [] ) {
-
 		if ( this[ name ] == value ) result.push( this );
-
 		var children = this.children;
 
-		for ( i in 0...children.length ) {
-
+		for ( i in 0...children.length )
 			children[ i ].getObjectsByProperty( name, value, result );
 
-		}
-
 		return result;
-
 	}
 
 	/**
@@ -821,11 +785,9 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Vector3} The 3D object's position in world space.
 	 */
 	public function getWorldPosition( target ) {
-
 		this.updateWorldMatrix( true, false );
 
 		return target.setFromMatrixPosition( this.matrixWorld );
-
 	}
 
 	/**
@@ -835,13 +797,11 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Quaternion} The 3D object's rotation in world space.
 	 */
 	public function getWorldQuaternion( target ) {
-
 		this.updateWorldMatrix( true, false );
 
 		this.matrixWorld.decompose( _position, target, _scale );
 
 		return target;
-
 	}
 
 	/**
@@ -851,13 +811,11 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Vector3} The 3D object's scale in world space.
 	 */
 	public function getWorldScale( target ) {
-
 		this.updateWorldMatrix( true, false );
 
 		this.matrixWorld.decompose( _position, _quaternion, target );
 
 		return target;
-
 	}
 
 	/**
@@ -867,13 +825,11 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @return {Vector3} The 3D object's direction in world space.
 	 */
 	public function getWorldDirection( target ) {
-
 		this.updateWorldMatrix( true, false );
 
 		var e = this.matrixWorld.elements;
 
 		return target.set( e[ 8 ], e[ 9 ], e[ 10 ] ).normalize();
-
 	}
 
 	/**
@@ -895,17 +851,13 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @param {Function} callback - A callback function that allows to process the current 3D object.
 	 */
 	public function traverse( callback ) {
-
 		callback( this );
 
 		var children = this.children;
 
 		for ( i in 0...children.length ) {
-
 			children[ i ].traverse( callback );
-
 		}
-
 	}
 
 	/**
@@ -917,19 +869,14 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @param {Function} callback - A callback function that allows to process the current 3D object.
 	 */
 	public function traverseVisible( callback ) {
-
 		if ( this.visible == false ) return;
 
 		callback( this );
 
 		var children = this.children;
 
-		for ( i in 0...children.length ) {
-
+		for ( i in 0...children.length ) 
 			children[ i ].traverseVisible( callback );
-
-		}
-
 	}
 
 	/**
@@ -940,17 +887,13 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @param {Function} callback - A callback function that allows to process the current 3D object.
 	 */
 	public function traverseAncestors( callback ) {
-
 		var parent = this.parent;
 
 		if ( parent != null ) {
-
 			callback( parent );
 
 			parent.traverseAncestors( callback );
-
 		}
-
 	}
 
 	/**
@@ -958,11 +901,9 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * position, rotation and scale values.
 	 */
 	public function updateMatrix() {
-
 		this.matrix.compose( this.position, this.quaternion, this.scale );
 
 		this.matrixWorldNeedsUpdate = true;
-
 	}
 
 	/**
@@ -977,29 +918,19 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * when {@link Object3D#matrixWorldAutoUpdate} is set to `false`.
 	 */
 	public function updateMatrixWorld( force ) {
-
 		if ( this.matrixAutoUpdate ) this.updateMatrix();
 
 		if ( this.matrixWorldNeedsUpdate || force ) {
-
 			if ( this.matrixWorldAutoUpdate == true ) {
-
-				if ( this.parent == null ) {
-
+				if ( this.parent == null )
 					this.matrixWorld.copy( this.matrix );
-
-				} else {
-
+				else
 					this.matrixWorld.multiplyMatrices( this.parent.matrixWorld, this.matrix );
-
-				}
-
 			}
 
 			this.matrixWorldNeedsUpdate = false;
 
 			force = true;
-
 		}
 
 		// make sure descendants are updated if required
@@ -1007,13 +938,10 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 		var children = this.children;
 
 		for ( i in 0...children.length ) {
-
 			var child = children[ i ];
 
 			child.updateMatrixWorld( force );
-
 		}
-
 	}
 
 	/**
@@ -1024,47 +952,31 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @param {boolean} [updateChildren=false] Whether descendant nodes should be updated or not.
 	 */
 	public function updateWorldMatrix( updateParents, updateChildren ) {
-
 		var parent = this.parent;
 
-		if ( updateParents == true && parent != null ) {
-
+		if ( updateParents == true && parent != null )
 			parent.updateWorldMatrix( true, false );
-
-		}
 
 		if ( this.matrixAutoUpdate ) this.updateMatrix();
 
 		if ( this.matrixWorldAutoUpdate == true ) {
-
-			if ( this.parent == null ) {
-
+			if ( this.parent == null )
 				this.matrixWorld.copy( this.matrix );
-
-			} else {
-
+			else
 				this.matrixWorld.multiplyMatrices( this.parent.matrixWorld, this.matrix );
-
-			}
-
 		}
 
 		// make sure descendants are updated
 
 		if ( updateChildren == true ) {
-
 			var children = this.children;
 
 			for ( i in 0...children.length ) {
-
 				var child = children[ i ];
 
 				child.updateWorldMatrix( false, true );
-
 			}
-
 		}
-
 	}
 
 	/**
