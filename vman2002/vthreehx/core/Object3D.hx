@@ -1,5 +1,7 @@
 package vman2002.vthreehx.core;
 
+import vman2002.vthreehx.cameras.Camera;
+import vman2002.vthreehx.interfaces.GetType;
 import vman2002.vthreehx.math.Quaternion;
 import vman2002.vthreehx.math.Vector3;
 import vman2002.vthreehx.math.Matrix4;
@@ -10,7 +12,7 @@ import vman2002.vthreehx.math.MathUtils.generateUUID in generateUUID;
 import haxe.Json in JSON;
 
 /** This is the base class for most objects in three.js and provides a set of properties and methods for manipulating objects in 3D space. **/
-class Object3D extends vman2002.vthreehx.core.EventDispatcher {
+class Object3D extends vman2002.vthreehx.core.EventDispatcher implements GetType {
 	/** The default up direction for objects, also used as the default position for {@link DirectionalLight} and {@link HemisphereLight}. **/
 	public static var DEFAULT_UP = /*@__PURE__*/ new Vector3( 0, 1, 0 );
 
@@ -531,11 +533,11 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	 * @param {number} [y] - The y coordinate in world space.
 	 * @param {number} [z] - The z coordinate in world space.
 	 */
-	public function lookAt( x, y, z ) {
+	public function lookAt( x, ?y, ?z ) {
 
 		// This method does not support objects having non-uniformly-scaled parent(s)
 
-		if ( false ) { //TODO: x.isVector3
+		if ( Std.isOfType(x, Vector3) ) {
 			_target.copy( x );
 		} else {
 			_target.set( cast(x, Float), y, z );
@@ -547,7 +549,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 
 		_position.setFromMatrixPosition( this.matrixWorld );
 
-		if ( false ) { //TODO: this.isCamera || this.isLight
+		if ( Std.downcast(this, Camera) != null ) { //TODO: this.isCamera || this.isLight
 
 			_m1.lookAt( _position, _target, this.up );
 
@@ -1303,8 +1305,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher {
 	}
 
 	function get_type() {
-		var a = Type.getClassName(Type.getClass(this));
-    	return a.substr(a.lastIndexOf(".") + 1);
+		return Common.typeName(this);
 	}
 
 	/** Fires when the object has been added to its parent object. **/

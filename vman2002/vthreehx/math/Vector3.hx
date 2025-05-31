@@ -1,5 +1,6 @@
 package vman2002.vthreehx.math;
 
+import vman2002.vthreehx.core.BufferAttribute;
 import vman2002.vthreehx.math.MathUtils;
 import vman2002.vthreehx.math.Quaternion;
 
@@ -114,6 +115,7 @@ class Vector3 {
 	 * @param value The value to set.
 	 * @return A reference to this vector.
 	 */
+	@:arrayAccess
 	public function setComponent( index:Int, value:Float ) {
 		switch ( index ) {
 			case 0: this.x = value;
@@ -131,6 +133,7 @@ class Vector3 {
 	 * @param index The component index. `0` equals to x, `1` equals to y, `2` equals to z.
 	 * @return A vector component value.
 	 */
+	@:arrayAccess
 	public function getComponent( index:Int ) {
 		switch ( index ) {
 			case 0: return this.x;
@@ -806,7 +809,7 @@ class Vector3 {
 	 * @param {Vector3} v - The vector to compute the distance to.
 	 * @return {number} The distance.
 	 */
-	public inline function distanceTo( v ) {
+	public inline function distanceTo( v:Vector3 ) {
 		return Math.sqrt( this.distanceToSquared( v ) );
 	}
 
@@ -818,7 +821,7 @@ class Vector3 {
 	 * @param {Vector3} v - The vector to compute the squared distance to.
 	 * @return {number} The squared distance.
 	 */
-	public function distanceToSquared( v ) {
+	public function distanceToSquared( v:Vector3 ) {
 		var dx = this.x - v.x, dy = this.y - v.y, dz = this.z - v.z;
 
 		return dx * dx + dy * dy + dz * dz;
@@ -830,7 +833,7 @@ class Vector3 {
 	 * @param {Vector3} v - The vector to compute the Manhattan distance to.
 	 * @return {number} The Manhattan distance.
 	 */
-	public inline function manhattanDistanceTo( v ) {
+	public inline function manhattanDistanceTo( v:Vector3 ) {
 		return Math.abs( this.x - v.x ) + Math.abs( this.y - v.y ) + Math.abs( this.z - v.z );
 	}
 
@@ -852,7 +855,7 @@ class Vector3 {
 	 * @param {number} theta - The theta angle in radians.
 	 * @return {Vector3} A reference to this vector.
 	 */
-	public function setFromSphericalCoords( radius, phi, theta ) {
+	public function setFromSphericalCoords( radius:Float, phi:Float, theta:Float ) {
 		var sinPhiRadius = Math.sin( phi ) * radius;
 
 		this.x = sinPhiRadius * Math.sin( theta );
@@ -880,7 +883,7 @@ class Vector3 {
 	 * @param {number} y - The y value.
 	 * @return {Vector3} A reference to this vector.
 	 */
-	public function setFromCylindricalCoords( radius, theta, y ) {
+	public function setFromCylindricalCoords( radius:Float, theta:Float, y:Float ) {
 		this.x = radius * Math.sin( theta );
 		this.y = y;
 		this.z = radius * Math.cos( theta );
@@ -895,14 +898,8 @@ class Vector3 {
 	 * @param {Matrix4} m - The 4x4 matrix.
 	 * @return {Vector3} A reference to this vector.
 	 */
-	public function setFromMatrixPosition( m ) {
-		var e = m.elements;
-
-		this.x = e[ 12 ];
-		this.y = e[ 13 ];
-		this.z = e[ 14 ];
-
-		return this;
+	public function setFromMatrixPosition( m:Matrix4 ) {
+		return set(m.elements[12], m.elements[13], m.elements[14]);
 	}
 
 	/**
@@ -1024,7 +1021,7 @@ class Vector3 {
 	 * @param {number} index - The index into the attribute.
 	 * @return {Vector3} A reference to this vector.
 	 */
-	public function fromBufferAttribute( attribute, index ) {
+	public function fromBufferAttribute( attribute:BufferAttribute, index:Int ) {
 		this.x = attribute.getX( index );
 		this.y = attribute.getY( index );
 		this.z = attribute.getZ( index );

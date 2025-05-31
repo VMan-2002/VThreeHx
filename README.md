@@ -27,7 +27,12 @@ Required for example scene
     - Camera✅
     - Vector2✅
 - WebGLRenderer
-- BoxGeometry
+- BoxGeometry✅
+    - BufferGeometry
+        - Box3✅
+        - BufferAttribute✅
+            - DataUtils✅
+        - Sphere✅
 - MeshBasicMaterial
 - Mesh
 

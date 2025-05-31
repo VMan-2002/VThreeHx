@@ -1,7 +1,7 @@
 package vman2002.vthreehx.geometries;
 
 import vman2002.vthreehx.core.BufferGeometry;
-import vman2002.vthreehx.core.Float32BufferAttribute;
+import vman2002.vthreehx.core.BufferAttribute.Float32BufferAttribute;
 import vman2002.vthreehx.math.Vector3;
 
 /**
@@ -19,21 +19,6 @@ import vman2002.vthreehx.math.Vector3;
  * @augments BufferGeometry
  */
 class BoxGeometry extends BufferGeometry {
-    /**
-        * Holds the constructor parameters that have been
-        * used to generate the geometry. Any modification
-        * after instantiation does not change the geometry.
-        *
-        * @type {Object}
-        */
-    public var parameters = {
-        width: width,
-        height: height,
-        depth: depth,
-        widthSegments: widthSegments,
-        heightSegments: heightSegments,
-        depthSegments: depthSegments
-    };
 
 	/**
 	 * Constructs a new box geometry.
@@ -45,12 +30,19 @@ class BoxGeometry extends BufferGeometry {
 	 * @param {number} [heightSegments=1] - Number of segmented rectangular faces along the height of the sides.
 	 * @param {number} [depthSegments=1] - Number of segmented rectangular faces along the depth of the sides.
 	 */
-	public function new( width = 1, height = 1, depth = 1, widthSegments = 1, heightSegments = 1, depthSegments = 1 ) {
+	public function new( ?width:Float = 1, ?height:Float = 1, ?depth:Float = 1, ?widthSegments:Int = 1, ?heightSegments:Int = 1, ?depthSegments:Int = 1 ) {
 		super();
 
-		this.type = 'BoxGeometry';
-
 		var scope = this;
+
+        parameters = {
+            width: width,
+            height: height,
+            depth: depth,
+            widthSegments: widthSegments,
+            heightSegments: heightSegments,
+            depthSegments: depthSegments
+        }
 
 		// segments
 
@@ -60,10 +52,10 @@ class BoxGeometry extends BufferGeometry {
 
 		// buffers
 
-		var indices = [];
-		var vertices = [];
-		var normals = [];
-		var uvs = [];
+		var indices:Array<Int> = [];
+		var vertices = new Float32Array();
+		var normals = new Float32Array();
+		var uvs = new Float32Array();
 
 		// helper variables
 
@@ -72,66 +64,56 @@ class BoxGeometry extends BufferGeometry {
 
 		// build each side of the box geometry
 
-		buildPlane( 'z', 'y', 'x', - 1, - 1, depth, height, width, depthSegments, heightSegments, 0 ); // px
-		buildPlane( 'z', 'y', 'x', 1, - 1, depth, height, - width, depthSegments, heightSegments, 1 ); // nx
-		buildPlane( 'x', 'z', 'y', 1, 1, width, depth, height, widthSegments, depthSegments, 2 ); // py
-		buildPlane( 'x', 'z', 'y', 1, - 1, width, depth, - height, widthSegments, depthSegments, 3 ); // ny
-		buildPlane( 'x', 'y', 'z', 1, - 1, width, height, depth, widthSegments, heightSegments, 4 ); // pz
-		buildPlane( 'x', 'y', 'z', - 1, - 1, width, height, - depth, widthSegments, heightSegments, 5 ); // nz
+		function buildPlane( u:String, v:String, w:String, udir:Float, vdir:Float, width:Float, height:Float, depth:Float, gridX:Int, gridY:Int, materialIndex:Int ) {
+            //TODO: I probably did something wrong with u,v,w
+			var segmentWidth = width / gridX;
+			var segmentHeight = height / gridY;
 
-		// build geometry
+			var widthHalf = width / 2;
+			var heightHalf = height / 2;
+			var depthHalf = depth / 2;
 
-		this.setIndex( indices );
-		this.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
-		this.setAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
-		this.setAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
+			var gridX1 = gridX + 1;
+			var gridY1 = gridY + 1;
 
-		function buildPlane( u, v, w, udir, vdir, width, height, depth, gridX, gridY, materialIndex ) {
+			var vertexCounter = 0;
+			var groupCount = 0;
 
-			const segmentWidth = width / gridX;
-			const segmentHeight = height / gridY;
-
-			const widthHalf = width / 2;
-			const heightHalf = height / 2;
-			const depthHalf = depth / 2;
-
-			const gridX1 = gridX + 1;
-			const gridY1 = gridY + 1;
-
-			let vertexCounter = 0;
-			let groupCount = 0;
-
-			const vector = new Vector3();
+			var vx:Float, vy:Float, vz:Float;
 
 			// generate vertices, normals and uvs
 
-			for ( let iy = 0; iy < gridY1; iy ++ ) {
+			for ( iy in 0...gridY1 ) {
 
-				const y = iy * segmentHeight - heightHalf;
+				var y = iy * segmentHeight - heightHalf;
 
-				for ( let ix = 0; ix < gridX1; ix ++ ) {
+				for ( ix in 0...gridX1 ) {
 
-					const x = ix * segmentWidth - widthHalf;
+					var x = ix * segmentWidth - widthHalf;
 
 					// set values to correct vector component
 
-					vector[ u ] = x * udir;
-					vector[ v ] = y * vdir;
-					vector[ w ] = depthHalf;
+					vx = ( x * udir);
+					vy = (  y * vdir);
+					vz = (  depthHalf);
 
 					// now apply vector to vertex buffer
 
-					vertices.push( vector.x, vector.y, vector.z );
+					vertices.push( vx);
+                    vertices.push(vy);
+                    vertices.push(vz );
 
 					// set values to correct vector component
 
-					vector[ u ] = 0;
-					vector[ v ] = 0;
-					vector[ w ] = depth > 0 ? 1 : - 1;
+					vx = (  0);
+					vy = (  0);
+					vz = (  depth > 0 ? 1 : - 1);
 
 					// now apply vector to normal buffer
 
-					normals.push( vector.x, vector.y, vector.z );
+					normals.push( vx);
+                    normals.push(vy);
+                    normals.push(vz );
 
 					// uvs
 
@@ -152,19 +134,23 @@ class BoxGeometry extends BufferGeometry {
 			// 2. a single segment consists of two faces
 			// 3. so we need to generate six (2*3) indices per segment
 
-			for ( let iy = 0; iy < gridY; iy ++ ) {
+			for ( iy in 0...gridY ) {
 
-				for ( let ix = 0; ix < gridX; ix ++ ) {
+				for ( ix in 0...gridX ) {
 
-					const a = numberOfVertices + ix + gridX1 * iy;
-					const b = numberOfVertices + ix + gridX1 * ( iy + 1 );
-					const c = numberOfVertices + ( ix + 1 ) + gridX1 * ( iy + 1 );
-					const d = numberOfVertices + ( ix + 1 ) + gridX1 * iy;
+					var a = numberOfVertices + ix + gridX1 * iy;
+					var b = numberOfVertices + ix + gridX1 * ( iy + 1 );
+					var c = numberOfVertices + ( ix + 1 ) + gridX1 * ( iy + 1 );
+					var d = numberOfVertices + ( ix + 1 ) + gridX1 * iy;
 
 					// faces
 
-					indices.push( a, b, d );
-					indices.push( b, c, d );
+                    indices.push(a);
+                    indices.push(b);
+                    indices.push(d);
+                    indices.push(b);
+                    indices.push(c);
+                    indices.push(d);
 
 					// increase counter
 
@@ -188,16 +174,26 @@ class BoxGeometry extends BufferGeometry {
 
 		}
 
+		buildPlane( 'z', 'y', 'x', - 1, - 1, depth, height, width, depthSegments, heightSegments, 0 ); // px
+		buildPlane( 'z', 'y', 'x', 1, - 1, depth, height, - width, depthSegments, heightSegments, 1 ); // nx
+		buildPlane( 'x', 'z', 'y', 1, 1, width, depth, height, widthSegments, depthSegments, 2 ); // py
+		buildPlane( 'x', 'z', 'y', 1, - 1, width, depth, - height, widthSegments, depthSegments, 3 ); // ny
+		buildPlane( 'x', 'y', 'z', 1, - 1, width, height, depth, widthSegments, heightSegments, 4 ); // pz
+		buildPlane( 'x', 'y', 'z', - 1, - 1, width, height, - depth, widthSegments, heightSegments, 5 ); // nz
+
+		// build geometry
+
+		this.setIndex( indices );
+		this.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
+		this.setAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
+		this.setAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
+
 	}
 
-	copy( source ) {
-
+	public override function copy( source ) {
 		super.copy( source );
-
-		this.parameters = Object.assign( {}, source.parameters );
-
+		this.parameters = Common.assign( {}, source.parameters );
 		return this;
-
 	}
 
 	/**
@@ -207,12 +203,8 @@ class BoxGeometry extends BufferGeometry {
 	 * @param {Object} data - A JSON object representing the serialized geometry.
 	 * @return {BoxGeometry} A new instance.
 	 */
-	static fromJSON( data ) {
-
+	public static function fromJSON( data ) {
 		return new BoxGeometry( data.width, data.height, data.depth, data.widthSegments, data.heightSegments, data.depthSegments );
-
 	}
 
 }
-
-export { BoxGeometry };

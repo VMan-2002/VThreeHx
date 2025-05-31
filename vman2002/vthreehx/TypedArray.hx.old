@@ -1,0 +1,243 @@
+package vman2002.vthreehx;
+
+import vman2002.vthreehx.math.MathUtils;
+import lime.utils.Float32Array in Float32ArrayBuf;
+import lime.utils.UInt32Array in Uint32ArrayBuf;
+import lime.utils.UInt16Array in Uint16ArrayBuf;
+import lime.utils.UInt8Array in Uint8ArrayBuf;
+import lime.utils.Int32Array in Int32ArrayBuf;
+import lime.utils.Int16Array in Int16ArrayBuf;
+import lime.utils.Int8Array in Int8ArrayBuf;
+import lime.utils.Float64Array in Float64ArrayBuf;
+
+private class ArrayUtil {
+    public static inline function toStdFloatArray(buf:Dynamic) {
+        var result = new Array<Float>();
+        result.resize(buf.length);
+        for (i in 0...buf.length)
+            result[i] = buf.__get(i);
+        return result;
+    }
+    public static inline function toStdIntArray(buf:Dynamic) {
+        var result = new Array<Int>();
+        result.resize(buf.length);
+        for (i in 0...buf.length)
+            result[i] = buf.__get(i);
+        return result;
+    }
+}
+
+class TypedArray<T:(Dynamic) = Dynamic> {
+    @:arrayAccess
+    public function get(n:Int):T {return null;};
+
+    @:arrayAccess
+    public function set(n:Int, v:T):T {return null;};
+
+    public var length(get, never):Int;
+    public function get_length()
+        return 0;
+
+    public function push(v:T):T
+        return set(length, v);
+}
+
+//TODO: that's a lot of copypasting. can this be made better using macro?
+class Float32Array extends TypedArray<Float> {
+    public var buf:Float32ArrayBuf;
+
+    public function new(?length:Int) {
+        buf = new Float32ArrayBuf(length);
+    }
+
+    @:arrayAccess
+    public override function get(n:Int):Float {
+        return buf.__get(n);
+    }
+
+    @:arrayAccess
+    public override function set(n:Int, v:Float):Float {
+        return buf.__set(n, v);
+    }
+
+    public override function get_length()
+        return buf.length;
+
+    @:to
+    public function toArray():Array<Float>
+        return ArrayUtil.toStdFloatArray(buf);
+}
+class Uint32Array extends TypedArray<Int> {
+    public var buf:Uint32ArrayBuf;
+
+    public function new(?length:Int) {
+        buf = new Uint32ArrayBuf(length);
+    }
+
+    @:arrayAccess
+    public override function get(n:Int):Int {
+        return buf.__get(n);
+    }
+
+    @:arrayAccess
+    public override function set(n:Int, v:Int):Int {
+        return buf.__set(n, v);
+    }
+
+    public override function get_length()
+        return buf.length;
+
+    @:to
+    public function toArray():Array<Int>
+        return ArrayUtil.toStdIntArray(buf);
+}
+class Uint16Array extends TypedArray<Int> {
+    public var buf:Uint16ArrayBuf;
+
+    public function new(?length:Int) {
+        buf = new Uint16ArrayBuf(length);
+    }
+
+    @:arrayAccess
+    public override function get(n:Int):Int {
+        return buf.__get(n);
+    }
+
+    @:arrayAccess
+    public override function set(n:Int, v:Int):Int {
+        return buf.__set(n, v);
+    }
+
+    public override function get_length()
+        return buf.length;
+
+    @:to
+    public function toArray():Array<Int>
+        return ArrayUtil.toStdIntArray(buf);
+}
+class Uint8Array extends TypedArray<Int> {
+    public var buf:Uint8ArrayBuf;
+
+    public function new(?length:Int) {
+        buf = new Uint8ArrayBuf(length);
+    }
+
+    @:arrayAccess
+    public override function get(n:Int):Int {
+        return buf.__get(n);
+    }
+
+    @:arrayAccess
+    public override function set(n:Int, v:Int):Int {
+        return buf.__set(n, v);
+    }
+
+    public override function get_length()
+        return buf.length;
+
+    @:to
+    public function toArray():Array<Int>
+        return ArrayUtil.toStdIntArray(buf);
+}
+class Int32Array extends TypedArray<Int> {
+    public var buf:Int32ArrayBuf;
+
+    public function new(?length:Int) {
+        buf = new Int32ArrayBuf(length);
+    }
+
+    @:arrayAccess
+    public override function get(n:Int):Int {
+        return buf.__get(n);
+    }
+
+    @:arrayAccess
+    public override function set(n:Int, v:Int):Int {
+        return buf.__set(n, v);
+    }
+
+    public override function get_length()
+        return buf.length;
+
+    @:to
+    public function toArray():Array<Int>
+        return ArrayUtil.toStdIntArray(buf);
+}
+class Int16Array extends TypedArray<Int> {
+    public var buf:Int16ArrayBuf;
+
+    public function new(?length:Int) {
+        buf = new Int16ArrayBuf(length);
+    }
+
+    @:arrayAccess
+    public override function get(n:Int):Int {
+        return buf.__get(n);
+    }
+
+    @:arrayAccess
+    public override function set(n:Int, v:Int):Int {
+        return buf.__set(n, v);
+    }
+
+    public override function get_length()
+        return buf.length;
+
+    @:to
+    public function toArray():Array<Int>
+        return ArrayUtil.toStdIntArray(buf);
+}
+class Int8Array extends TypedArray<Int> {
+    public var buf:Int8ArrayBuf;
+
+    public function new(?length:Int) {
+        buf = new Int8ArrayBuf(length);
+    }
+
+    @:arrayAccess
+    public override function get(n:Int):Int {
+        return buf.__get(n);
+    }
+
+    @:arrayAccess
+    public override function set(n:Int, v:Int):Int {
+        return buf.__set(n, v);
+    }
+
+    public override function get_length()
+        return buf.length;
+
+    @:to
+    public function toArray():Array<Int>
+        return ArrayUtil.toStdIntArray(buf);
+}
+class Uint8ClampedArray extends Uint8Array {
+    @:arrayAccess
+    public override function set(n:Int, v:Int):Int {
+        return buf.__set(n, if (v >= 255) 255 else if (v <= 0) 0 else v);
+    }
+}
+class Float64Array extends TypedArray<Float> {
+    public var buf:Float64ArrayBuf;
+
+    public function new(?length:Int) {
+        buf = new Float64ArrayBuf(length);
+    }
+
+    @:arrayAccess
+    public override function get(n:Int):Float {
+        return buf.__get(n);
+    }
+
+    @:arrayAccess
+    public override function set(n:Int, v:Float):Float {
+        return buf.__set(n, v);
+    }
+
+    public override function get_length()
+        return buf.length;
+
+    @:to
+    public function toArray():Array<Float>
+        return ArrayUtil.toStdFloatArray(buf);
+}

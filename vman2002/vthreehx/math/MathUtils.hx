@@ -318,7 +318,7 @@ class MathUtils {
     * @param array The typed array that defines the data type of the value.
     * @return The denormalize (float) value in the range `[0,1]`.
     */
-    public static function denormalize( value, array ):Float {
+    public static function denormalize( value:Float, array ):Float {
         switch (Type.getClass(array)) {
             case Float32Array:
                 return value;
@@ -346,7 +346,7 @@ class MathUtils {
     * @param array The typed array that defines the data type of the value.
     * @return The normalize value.
     */
-    public static function normalize( value, array ) {
+    public static function normalize<T:(Int & Float)>( value:T, array ):Dynamic {
         switch ( Type.getClass(array) ) {
             case Float32Array:
                 return value;

@@ -1,25 +1,21 @@
 package vman2002.vthreehx.core;
 
-import { Vector3 } from '../math/Vector3.js';
-import { Vector2 } from '../math/Vector2.js';
-import { Box3 } from '../math/Box3.js';
-import { EventDispatcher } from './EventDispatcher.js';
-import { BufferAttribute, Float32BufferAttribute, Uint16BufferAttribute, Uint32BufferAttribute } from './BufferAttribute.js';
-import { Sphere } from '../math/Sphere.js';
-import { Object3D } from './Object3D.js';
-import { Matrix4 } from '../math/Matrix4.js';
-import { Matrix3 } from '../math/Matrix3.js';
-import { generateUUID } from '../math/MathUtils.js';
-import { arrayNeedsUint32 } from '../utils.js';
-
-let _id = 0;
-
-const _m1 = /*@__PURE__*/ new Matrix4();
-const _obj = /*@__PURE__*/ new Object3D();
-const _offset = /*@__PURE__*/ new Vector3();
-const _box = /*@__PURE__*/ new Box3();
-const _boxMorphTargets = /*@__PURE__*/ new Box3();
-const _vector = /*@__PURE__*/ new Vector3();
+import vman2002.vthreehx.interfaces.GetType;
+import haxe.Json;
+import vman2002.vthreehx.math.Vector3;
+import vman2002.vthreehx.math.Vector2;
+import vman2002.vthreehx.math.Box3;
+import vman2002.vthreehx.core.EventDispatcher;
+import vman2002.vthreehx.core.BufferAttribute;
+import vman2002.vthreehx.core.BufferAttribute.Float32BufferAttribute;
+import vman2002.vthreehx.core.BufferAttribute.Uint16BufferAttribute;
+import vman2002.vthreehx.core.BufferAttribute.Uint32BufferAttribute;
+import vman2002.vthreehx.math.Sphere;
+import vman2002.vthreehx.core.Object3D;
+import vman2002.vthreehx.math.Matrix4;
+import vman2002.vthreehx.math.Matrix3;
+import vman2002.vthreehx.math.MathUtils.generateUUID;
+import vman2002.vthreehx.Utils.arrayNeedsUint32;
 
 /**
  * A representation of mesh, line, or point geometry. Includes vertex
@@ -47,135 +43,144 @@ const _vector = /*@__PURE__*/ new Vector3();
  *
  * @augments EventDispatcher
  */
-class BufferGeometry extends EventDispatcher {
+class BufferGeometry extends EventDispatcher implements GetType {
+    static var _id = 0;
+
+    /**
+    * The ID of the geometry.
+    *
+    * @name BufferGeometry#id
+    * @type {number}
+    * @readonly
+    */
+    public var id:Int = 0;
+
+    /**
+    * The UUID of the geometry.
+    *
+    * @type {string}
+    * @readonly
+    */
+    public var uuid = generateUUID();
+
+    /**
+    * The name of the geometry.
+    *
+    * @type {string}
+    */
+    public var name = '';
+
+    /**
+    * Allows for vertices to be re-used across multiple triangles; this is
+    * called using "indexed triangles". Each triangle is associated with the
+    * indices of three vertices. This attribute therefore stores the index of
+    * each vertex for each triangular face. If this attribute is not set, the
+    * renderer assumes that each three contiguous positions represent a single triangle.
+    *
+    * @type {?BufferAttribute}
+    * @default null
+    */
+    public var index:BufferAttribute = null;
+
+    /**
+    * A (storage) buffer attribute which was generated with a compute shader and
+    * now defines indirect draw calls.
+    *
+    * Can only be used with {@link WebGPURenderer} and a WebGPU backend.
+    *
+    * @type {?BufferAttribute}
+    * @default null
+    */
+    public var indirect = null;
+
+    /**
+    * This dictionary has as id the name of the attribute to be set and as value
+    * the buffer attribute to set it to. Rather than accessing this property directly,
+    * use `setAttribute()` and `getAttribute()` to access attributes of this geometry.
+    *
+    * @type {Object<string,(BufferAttribute|InterleavedBufferAttribute)>}
+    */
+    public var attributes:Dynamic = {};
+
+    /**
+    * This dictionary holds the morph targets of the geometry.
+    *
+    * Note: Once the geometry has been rendered, the morph attribute data cannot
+    * be changed. You will have to call `dispose()?, and create a new geometry instance.
+    *
+    * @type {Object}
+    */
+    public var morphAttributes:Dynamic = {};
+
+    /**
+    * Used to control the morph target behavior; when set to `true`, the morph
+    * target data is treated as relative offsets, rather than as absolute
+    * positions/normals.
+    *
+    * @type {boolean}
+    * @default false
+    */
+    public var morphTargetsRelative = false;
+
+    /**
+    * Split the geometry into groups, each of which will be rendered in a
+    * separate draw call. This allows an array of materials to be used with the geometry.
+    *
+    * Use `addGroup()` and `clearGroups()` to edit groups, rather than modifying this array directly.
+    *
+    * Every vertex and index must belong to exactly one group — groups must not share vertices or
+    * indices, and must not leave vertices or indices unused.
+    *
+    * @type {Array<Object>}
+    */
+    public var groups:Array<Dynamic> = [];
+
+    /**
+    * Bounding box for the geometry which can be calculated with `computeBoundingBox()`.
+    *
+    * @type {Box3}
+    * @default null
+    */
+    public var boundingBox:Box3 = null;
+
+    /**
+    * Bounding sphere for the geometry which can be calculated with `computeBoundingSphere()`.
+    *
+    * @type {Sphere}
+    * @default null
+    */
+    public var boundingSphere:Sphere = null;
+
+    /**
+    * Determines the part of the geometry to render. This should not be set directly,
+    * instead use `setDrawRange()`.
+    *
+    * @type {{start:number,count:number}}
+    */
+    public var drawRange = { start: 0, count: Infinity };
+
+    /**
+    * An object that can be used to store custom data about the geometry.
+    * It should not hold references to functions as these will not be cloned.
+    *
+    * @type {Object}
+    */
+    public var userData = {};
+    
+    /**
+        * Holds the constructor parameters that have been
+        * used to generate the geometry. Any modification
+        * after instantiation does not change the geometry.
+        *
+        * @type {Object}
+        */
+    public var parameters:Dynamic;
 
 	/**
 	 * Constructs a new geometry.
 	 */
 	public function new() {
 		super();
-
-		/**
-		 * The ID of the geometry.
-		 *
-		 * @name BufferGeometry#id
-		 * @type {number}
-		 * @readonly
-		 */
-		Object.defineProperty( this, 'id', { value: _id ++ } );
-
-		/**
-		 * The UUID of the geometry.
-		 *
-		 * @type {string}
-		 * @readonly
-		 */
-		this.uuid = generateUUID();
-
-		/**
-		 * The name of the geometry.
-		 *
-		 * @type {string}
-		 */
-		this.name = '';
-		this.type = 'BufferGeometry';
-
-		/**
-		 * Allows for vertices to be re-used across multiple triangles; this is
-		 * called using "indexed triangles". Each triangle is associated with the
-		 * indices of three vertices. This attribute therefore stores the index of
-		 * each vertex for each triangular face. If this attribute is not set, the
-		 * renderer assumes that each three contiguous positions represent a single triangle.
-		 *
-		 * @type {?BufferAttribute}
-		 * @default null
-		 */
-		this.index = null;
-
-		/**
-		 * A (storage) buffer attribute which was generated with a compute shader and
-		 * now defines indirect draw calls.
-		 *
-		 * Can only be used with {@link WebGPURenderer} and a WebGPU backend.
-		 *
-		 * @type {?BufferAttribute}
-		 * @default null
-		 */
-		this.indirect = null;
-
-		/**
-		 * This dictionary has as id the name of the attribute to be set and as value
-		 * the buffer attribute to set it to. Rather than accessing this property directly,
-		 * use `setAttribute()` and `getAttribute()` to access attributes of this geometry.
-		 *
-		 * @type {Object<string,(BufferAttribute|InterleavedBufferAttribute)>}
-		 */
-		this.attributes = {};
-
-		/**
-		 * This dictionary holds the morph targets of the geometry.
-		 *
-		 * Note: Once the geometry has been rendered, the morph attribute data cannot
-		 * be changed. You will have to call `dispose()?, and create a new geometry instance.
-		 *
-		 * @type {Object}
-		 */
-		this.morphAttributes = {};
-
-		/**
-		 * Used to control the morph target behavior; when set to `true`, the morph
-		 * target data is treated as relative offsets, rather than as absolute
-		 * positions/normals.
-		 *
-		 * @type {boolean}
-		 * @default false
-		 */
-		this.morphTargetsRelative = false;
-
-		/**
-		 * Split the geometry into groups, each of which will be rendered in a
-		 * separate draw call. This allows an array of materials to be used with the geometry.
-		 *
-		 * Use `addGroup()` and `clearGroups()` to edit groups, rather than modifying this array directly.
-		 *
-		 * Every vertex and index must belong to exactly one group — groups must not share vertices or
-		 * indices, and must not leave vertices or indices unused.
-		 *
-		 * @type {Array<Object>}
-		 */
-		this.groups = [];
-
-		/**
-		 * Bounding box for the geometry which can be calculated with `computeBoundingBox()`.
-		 *
-		 * @type {Box3}
-		 * @default null
-		 */
-		this.boundingBox = null;
-
-		/**
-		 * Bounding sphere for the geometry which can be calculated with `computeBoundingSphere()`.
-		 *
-		 * @type {Sphere}
-		 * @default null
-		 */
-		this.boundingSphere = null;
-
-		/**
-		 * Determines the part of the geometry to render. This should not be set directly,
-		 * instead use `setDrawRange()`.
-		 *
-		 * @type {{start:number,count:number}}
-		 */
-		this.drawRange = { start: 0, count: Infinity };
-
-		/**
-		 * An object that can be used to store custom data about the geometry.
-		 * It should not hold references to functions as these will not be cloned.
-		 *
-		 * @type {Object}
-		 */
-		this.userData = {};
 
 	}
 
@@ -184,7 +189,7 @@ class BufferGeometry extends EventDispatcher {
 	 *
 	 * @return {?BufferAttribute} The index. Returns `null` if no index is defined.
 	 */
-	getIndex() {
+	public function getIndex() {
 
 		return this.index;
 
@@ -196,15 +201,13 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {Array<number>|BufferAttribute} index - The index to set.
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	setIndex( index ) {
+	public function setIndex( index:Dynamic ) {
 
-		if ( Array.isArray( index ) ) {
+        if (Std.isOfType(index, BufferAttribute)) {
+            this.index = index;
+        } else {
 
-			this.index = new ( arrayNeedsUint32( index ) ? Uint32BufferAttribute : Uint16BufferAttribute )( index, 1 );
-
-		} else {
-
-			this.index = index;
+            this.index = arrayNeedsUint32(index) ? new Uint32BufferAttribute(index, 1) : new Uint16BufferAttribute(index, 1);
 
 		}
 
@@ -218,7 +221,7 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {BufferAttribute} indirect - The attribute holding indirect draw calls.
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	setIndirect( indirect ) {
+	public function setIndirect( indirect ) {
 
 		this.indirect = indirect;
 
@@ -231,7 +234,7 @@ class BufferGeometry extends EventDispatcher {
 	 *
 	 * @return {?BufferAttribute} The indirect attribute. Returns `null` if no indirect attribute is defined.
 	 */
-	getIndirect() {
+	public function getIndirect() {
 
 		return this.indirect;
 
@@ -241,12 +244,12 @@ class BufferGeometry extends EventDispatcher {
 	 * Returns the buffer attribute for the given name.
 	 *
 	 * @param {string} name - The attribute name.
-	 * @return {BufferAttribute|InterleavedBufferAttribute|undefined} The buffer attribute.
-	 * Returns `undefined` if not attribute has been found.
+	 * @return {BufferAttribute|InterleavedBufferAttribute|null} The buffer attribute.
+	 * Returns `null` if not attribute has been found.
 	 */
-	getAttribute( name ) {
+	public function getAttribute( name ):Dynamic {
 
-		return this.attributes[ name ];
+		return Reflect.field(this.attributes, name);
 
 	}
 
@@ -257,9 +260,9 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {BufferAttribute|InterleavedBufferAttribute} attribute - The attribute to set.
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	setAttribute( name, attribute ) {
+	public function setAttribute( name, attribute:BufferAttribute ) {
 
-		this.attributes[ name ] = attribute;
+		Reflect.setField(this.attributes, name, attribute);
 
 		return this;
 
@@ -271,9 +274,9 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {string} name - The attribute name to delete.
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	deleteAttribute( name ) {
+	public function deleteAttribute( name ) {
 
-		delete this.attributes[ name ];
+		Reflect.deleteField(this.attributes, name);
 
 		return this;
 
@@ -285,9 +288,9 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {string} name - The attribute name.
 	 * @return {boolean} Whether this geometry has an attribute for the given name or not.
 	 */
-	hasAttribute( name ) {
+	public function hasAttribute( name ) {
 
-		return this.attributes[ name ] !== undefined;
+		return Reflect.hasField(this.attributes, name);
 
 	}
 
@@ -299,7 +302,7 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {number} count - Specifies how many vertices (or indices) are part of this group.
 	 * @param {number} [materialIndex=0] - The material array index to use.
 	 */
-	addGroup( start, count, materialIndex = 0 ) {
+	public function addGroup( start, count, materialIndex = 0 ) {
 
 		this.groups.push( {
 
@@ -314,7 +317,7 @@ class BufferGeometry extends EventDispatcher {
 	/**
 	 * Clears all groups.
 	 */
-	clearGroups() {
+	public function clearGroups() {
 
 		this.groups = [];
 
@@ -327,7 +330,7 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {number} count - For non-indexed BufferGeometry, `count` is the number of vertices to render.
 	 * For indexed BufferGeometry, `count` is the number of indices to render.
 	 */
-	setDrawRange( start, count ) {
+	public function setDrawRange( start, count ) {
 
 		this.drawRange.start = start;
 		this.drawRange.count = count;
@@ -340,11 +343,11 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {Matrix4} matrix - The matrix to apply.
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	applyMatrix4( matrix ) {
+	public function applyMatrix4( matrix ) {
 
-		const position = this.attributes.position;
+		var position = this.attributes.position;
 
-		if ( position !== undefined ) {
+		if ( position != null ) {
 
 			position.applyMatrix4( matrix );
 
@@ -352,11 +355,11 @@ class BufferGeometry extends EventDispatcher {
 
 		}
 
-		const normal = this.attributes.normal;
+		var normal = this.attributes.normal;
 
-		if ( normal !== undefined ) {
+		if ( normal != null ) {
 
-			const normalMatrix = new Matrix3().getNormalMatrix( matrix );
+			var normalMatrix = new Matrix3().getNormalMatrix( matrix );
 
 			normal.applyNormalMatrix( normalMatrix );
 
@@ -364,9 +367,9 @@ class BufferGeometry extends EventDispatcher {
 
 		}
 
-		const tangent = this.attributes.tangent;
+		var tangent = this.attributes.tangent;
 
-		if ( tangent !== undefined ) {
+		if ( tangent != null ) {
 
 			tangent.transformDirection( matrix );
 
@@ -374,13 +377,13 @@ class BufferGeometry extends EventDispatcher {
 
 		}
 
-		if ( this.boundingBox !== null ) {
+		if ( this.boundingBox != null ) {
 
 			this.computeBoundingBox();
 
 		}
 
-		if ( this.boundingSphere !== null ) {
+		if ( this.boundingSphere != null ) {
 
 			this.computeBoundingSphere();
 
@@ -396,7 +399,7 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {Quaternion} q - The Quaternion to apply.
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	applyQuaternion( q ) {
+	public function applyQuaternion( q ) {
 
 		_m1.makeRotationFromQuaternion( q );
 
@@ -414,7 +417,7 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {number} angle - The angle in radians.
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	rotateX( angle ) {
+	public function rotateX( angle ) {
 
 		// rotate geometry around world x-axis
 
@@ -434,7 +437,7 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {number} angle - The angle in radians.
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	rotateY( angle ) {
+	public function rotateY( angle ) {
 
 		// rotate geometry around world y-axis
 
@@ -454,7 +457,7 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {number} angle - The angle in radians.
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	rotateZ( angle ) {
+	public function rotateZ( angle ) {
 
 		// rotate geometry around world z-axis
 
@@ -476,7 +479,7 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {number} z - The z offset.
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	translate( x, y, z ) {
+	public function translate( x, y, z ) {
 
 		// translate geometry
 
@@ -498,7 +501,7 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {number} z - The z scale.
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	scale( x, y, z ) {
+	public function scale( x, y, z ) {
 
 		// scale geometry
 
@@ -518,7 +521,7 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {Vector3} vector - The target point.
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	lookAt( vector ) {
+	public function lookAt( vector ) {
 
 		_obj.lookAt( vector );
 
@@ -535,7 +538,7 @@ class BufferGeometry extends EventDispatcher {
 	 *
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	center() {
+	public function center() {
 
 		this.computeBoundingBox();
 
@@ -558,18 +561,20 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {Array<Vector2>|Array<Vector3>} points - The points.
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	setFromPoints( points ) {
+	public function setFromPoints( points ) {
 
-		const positionAttribute = this.getAttribute( 'position' );
+		var positionAttribute:BufferAttribute = this.getAttribute( 'position' );
 
-		if ( positionAttribute === undefined ) {
+		if ( positionAttribute == null ) {
 
-			const position = [];
+			var position = new Float32Array();
 
-			for ( let i = 0, l = points.length; i < l; i ++ ) {
+			for ( i in 0...points.length ) {
 
-				const point = points[ i ];
-				position.push( point.x, point.y, point.z || 0 );
+				var point = points[ i ];
+				position.push( point.x);
+				position.push( point.y);
+				position.push( point.z ?? 0 );
 
 			}
 
@@ -577,18 +582,18 @@ class BufferGeometry extends EventDispatcher {
 
 		} else {
 
-			const l = Math.min( points.length, positionAttribute.count ); // make sure data do not exceed buffer size
+			var l = points.length > positionAttribute.count ? points.length : positionAttribute.count; // make sure data do not exceed buffer size
 
-			for ( let i = 0; i < l; i ++ ) {
+			for ( i in 0...l ) {
 
-				const point = points[ i ];
-				positionAttribute.setXYZ( i, point.x, point.y, point.z || 0 );
+				var point = points[ i ];
+				positionAttribute.setXYZ( i, point.x, point.y, point.z ?? 0 );
 
 			}
 
 			if ( points.length > positionAttribute.count ) {
 
-				console.warn( 'THREE.BufferGeometry: Buffer size too small for points data. Use .dispose() and create a new geometry.' );
+				Common.warn( 'THREE.BufferGeometry: Buffer size too small for points data. Use .dispose() and create a new geometry.' );
 
 			}
 
@@ -605,41 +610,42 @@ class BufferGeometry extends EventDispatcher {
 	 * The bounding box is not computed by the engine; it must be computed by your app.
 	 * You may need to recompute the bounding box if the geometry vertices are modified.
 	 */
-	computeBoundingBox() {
+	public function computeBoundingBox() {
 
-		if ( this.boundingBox === null ) {
+		if ( this.boundingBox == null ) {
 
 			this.boundingBox = new Box3();
 
 		}
 
-		const position = this.attributes.position;
-		const morphAttributesPosition = this.morphAttributes.position;
+		var position = this.attributes.position;
+		var morphAttributesPosition:Array<Float32BufferAttribute> = this.morphAttributes.position;
 
-		if ( position && position.isGLBufferAttribute ) {
+        //TODO: for GLBufferAttribute
+		/*if ( position && position.isGLBufferAttribute ) {
 
-			console.error( 'THREE.BufferGeometry.computeBoundingBox(): GLBufferAttribute requires a manual bounding box.', this );
+			Common.error( 'THREE.BufferGeometry.computeBoundingBox(): GLBufferAttribute requires a manual bounding box.', this );
 
 			this.boundingBox.set(
-				new Vector3( - Infinity, - Infinity, - Infinity ),
-				new Vector3( + Infinity, + Infinity, + Infinity )
+				new Vector3( -Infinity, -Infinity, -Infinity ),
+				new Vector3( Infinity, Infinity, Infinity )
 			);
 
 			return;
 
-		}
+		}*/
 
-		if ( position !== undefined ) {
+		if ( position != null ) {
 
 			this.boundingBox.setFromBufferAttribute( position );
 
 			// process morph attributes if present
 
-			if ( morphAttributesPosition ) {
+			if ( morphAttributesPosition != null ) {
 
-				for ( let i = 0, il = morphAttributesPosition.length; i < il; i ++ ) {
+				for ( i in 0...morphAttributesPosition.length ) {
 
-					const morphAttribute = morphAttributesPosition[ i ];
+					var morphAttribute = morphAttributesPosition[ i ];
 					_box.setFromBufferAttribute( morphAttribute );
 
 					if ( this.morphTargetsRelative ) {
@@ -669,7 +675,7 @@ class BufferGeometry extends EventDispatcher {
 
 		if ( isNaN( this.boundingBox.min.x ) || isNaN( this.boundingBox.min.y ) || isNaN( this.boundingBox.min.z ) ) {
 
-			console.error( 'THREE.BufferGeometry.computeBoundingBox(): Computed min/max have NaN values. The "position" attribute is likely to have NaN values.', this );
+			Common.error( 'THREE.BufferGeometry.computeBoundingBox(): Computed min/max have NaN values. The "position" attribute is likely to have NaN values.', this );
 
 		}
 
@@ -680,42 +686,39 @@ class BufferGeometry extends EventDispatcher {
 	 * The engine automatically computes the bounding sphere when it is needed, e.g., for ray casting or view frustum culling.
 	 * You may need to recompute the bounding sphere if the geometry vertices are modified.
 	 */
-	computeBoundingSphere() {
+	public function computeBoundingSphere() {
 
-		if ( this.boundingSphere === null ) {
-
+		if ( this.boundingSphere == null ) {
 			this.boundingSphere = new Sphere();
-
 		}
 
-		const position = this.attributes.position;
-		const morphAttributesPosition = this.morphAttributes.position;
+		var position = this.attributes.position;
+		var morphAttributesPosition:Array<Float32BufferAttribute> = this.morphAttributes.position;
 
-		if ( position && position.isGLBufferAttribute ) {
-
-			console.error( 'THREE.BufferGeometry.computeBoundingSphere(): GLBufferAttribute requires a manual bounding sphere.', this );
+        //TODO: for GLBufferAttribute
+		/*if ( position && position.isGLBufferAttribute ) {
+			Common.error( 'THREE.BufferGeometry.computeBoundingSphere(): GLBufferAttribute requires a manual bounding sphere.', this );
 
 			this.boundingSphere.set( new Vector3(), Infinity );
 
 			return;
+		}*/
 
-		}
-
-		if ( position ) {
+		if ( position != null ) {
 
 			// first, find the center of the bounding sphere
 
-			const center = this.boundingSphere.center;
+			var center = this.boundingSphere.center;
 
 			_box.setFromBufferAttribute( position );
 
 			// process morph attributes if present
 
-			if ( morphAttributesPosition ) {
+			if ( morphAttributesPosition != null ) {
 
-				for ( let i = 0, il = morphAttributesPosition.length; i < il; i ++ ) {
+				for ( i in 0...morphAttributesPosition.length ) {
 
-					const morphAttribute = morphAttributesPosition[ i ];
+					var morphAttribute = morphAttributesPosition[ i ];
 					_boxMorphTargets.setFromBufferAttribute( morphAttribute );
 
 					if ( this.morphTargetsRelative ) {
@@ -742,9 +745,9 @@ class BufferGeometry extends EventDispatcher {
 			// second, try to find a boundingSphere with a radius smaller than the
 			// boundingSphere of the boundingBox: sqrt(3) smaller in the best case
 
-			let maxRadiusSq = 0;
+			var maxRadiusSq:Float = 0;
 
-			for ( let i = 0, il = position.count; i < il; i ++ ) {
+			for ( i in 0...position.count ) {
 
 				_vector.fromBufferAttribute( position, i );
 
@@ -754,14 +757,14 @@ class BufferGeometry extends EventDispatcher {
 
 			// process morph attributes if present
 
-			if ( morphAttributesPosition ) {
+			if ( morphAttributesPosition != null ) {
 
-				for ( let i = 0, il = morphAttributesPosition.length; i < il; i ++ ) {
+				for ( i in 0...morphAttributesPosition.length ) {
 
-					const morphAttribute = morphAttributesPosition[ i ];
-					const morphTargetsRelative = this.morphTargetsRelative;
+					var morphAttribute = morphAttributesPosition[ i ];
+					var morphTargetsRelative = this.morphTargetsRelative;
 
-					for ( let j = 0, jl = morphAttribute.count; j < jl; j ++ ) {
+					for ( j in 0...morphAttribute.count ) {
 
 						_vector.fromBufferAttribute( morphAttribute, j );
 
@@ -784,7 +787,7 @@ class BufferGeometry extends EventDispatcher {
 
 			if ( isNaN( this.boundingSphere.radius ) ) {
 
-				console.error( 'THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The "position" attribute is likely to have NaN values.', this );
+				Common.error( 'THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The "position" attribute is likely to have NaN values.', this );
 
 			}
 
@@ -799,46 +802,46 @@ class BufferGeometry extends EventDispatcher {
 	 * are defined. When using a tangent space normal map, prefer the MikkTSpace algorithm provided by
 	 * {@link BufferGeometryUtils#computeMikkTSpaceTangents} instead.
 	 */
-	computeTangents() {
+	public function computeTangents() {
 
-		const index = this.index;
-		const attributes = this.attributes;
+		var index:BufferAttribute<Dynamic, Int> = cast this.index;
+		var attributes = this.attributes;
 
 		// based on http://www.terathon.com/code/tangent.html
 		// (per vertex tangents)
 
-		if ( index === null ||
-			 attributes.position === undefined ||
-			 attributes.normal === undefined ||
-			 attributes.uv === undefined ) {
+		if ( index == null ||
+			 !Reflect.hasField(attributes, "position") ||
+			 !Reflect.hasField(attributes, "normal") ||
+			 !Reflect.hasField(attributes, "uv") ) {
 
-			console.error( 'THREE.BufferGeometry: .computeTangents() failed. Missing required attributes (index, position, normal or uv)' );
+			Common.error( 'THREE.BufferGeometry: .computeTangents() failed. Missing required attributes (index, position, normal or uv)' );
 			return;
 
 		}
 
-		const positionAttribute = attributes.position;
-		const normalAttribute = attributes.normal;
-		const uvAttribute = attributes.uv;
+		var positionAttribute = attributes.position;
+		var normalAttribute = attributes.normal;
+		var uvAttribute = attributes.uv;
 
-		if ( this.hasAttribute( 'tangent' ) === false ) {
+		if ( this.hasAttribute( 'tangent' ) == false ) {
 
 			this.setAttribute( 'tangent', new BufferAttribute( new Float32Array( 4 * positionAttribute.count ), 4 ) );
 
 		}
 
-		const tangentAttribute = this.getAttribute( 'tangent' );
+		var tangentAttribute = this.getAttribute( 'tangent' );
 
-		const tan1 = [], tan2 = [];
+		var tan1 = [], tan2 = [];
 
-		for ( let i = 0; i < positionAttribute.count; i ++ ) {
+		for ( i in 0...positionAttribute.count ) {
 
 			tan1[ i ] = new Vector3();
 			tan2[ i ] = new Vector3();
 
 		}
 
-		const vA = new Vector3(),
+		var vA = new Vector3(),
 			vB = new Vector3(),
 			vC = new Vector3(),
 
@@ -865,7 +868,7 @@ class BufferGeometry extends EventDispatcher {
 			uvB.sub( uvA );
 			uvC.sub( uvA );
 
-			const r = 1.0 / ( uvB.x * uvC.y - uvC.x * uvB.y );
+			var r = 1.0 / ( uvB.x * uvC.y - uvC.x * uvB.y );
 
 			// silently ignore degenerate uv triangles having coincident or colinear vertices
 
@@ -884,9 +887,9 @@ class BufferGeometry extends EventDispatcher {
 
 		}
 
-		let groups = this.groups;
+		var groups = this.groups;
 
-		if ( groups.length === 0 ) {
+		if ( groups.length == 0 ) {
 
 			groups = [ {
 				start: 0,
@@ -895,34 +898,36 @@ class BufferGeometry extends EventDispatcher {
 
 		}
 
-		for ( let i = 0, il = groups.length; i < il; ++ i ) {
+		for ( i in 0...groups.length ) {
 
-			const group = groups[ i ];
+			var group:{start:Int, count:Int} = groups[ i ];
 
-			const start = group.start;
-			const count = group.count;
+			var start = group.start;
+			var count = group.count;
 
-			for ( let j = start, jl = start + count; j < jl; j += 3 ) {
-
+            var j:Int = start, jl:Int = start + count;
+			while ( j < jl ) {
 				handleTriangle(
-					index.getX( j + 0 ),
-					index.getX( j + 1 ),
-					index.getX( j + 2 )
+					Common.numberAsInt(index.getX( j )),
+					Common.numberAsInt(index.getX( j + 1 )),
+					Common.numberAsInt(index.getX( j + 2 ))
 				);
 
+                j += 3;
 			}
 
 		}
 
-		const tmp = new Vector3(), tmp2 = new Vector3();
-		const n = new Vector3(), n2 = new Vector3();
+		var tmp = new Vector3(), tmp2 = new Vector3();
+		var n = new Vector3(), n2 = new Vector3();
 
-		function handleVertex( v ) {
+		function handleVertex( vin:Dynamic ) {
+            var v = Common.numberAsInt(vin);
 
 			n.fromBufferAttribute( normalAttribute, v );
 			n2.copy( n );
 
-			const t = tan1[ v ];
+			var t = tan1[ v ];
 
 			// Gram-Schmidt orthogonalize
 
@@ -932,30 +937,28 @@ class BufferGeometry extends EventDispatcher {
 			// Calculate handedness
 
 			tmp2.crossVectors( n2, t );
-			const test = tmp2.dot( tan2[ v ] );
-			const w = ( test < 0.0 ) ? - 1.0 : 1.0;
+			var test = tmp2.dot( tan2[ v ] );
+			var w = ( test < 0.0 ) ? - 1.0 : 1.0;
 
 			tangentAttribute.setXYZW( v, tmp.x, tmp.y, tmp.z, w );
 
 		}
 
-		for ( let i = 0, il = groups.length; i < il; ++ i ) {
+		for ( i in 0...groups.length ) {
+			var group = groups[ i ];
 
-			const group = groups[ i ];
+			var start = group.start;
+			var count = group.count;
 
-			const start = group.start;
-			const count = group.count;
-
-			for ( let j = start, jl = start + count; j < jl; j += 3 ) {
-
+            var j = start, jl = start + count;
+			while ( j < jl ) {
 				handleVertex( index.getX( j + 0 ) );
 				handleVertex( index.getX( j + 1 ) );
 				handleVertex( index.getX( j + 2 ) );
 
+                j += 3;
 			}
-
 		}
-
 	}
 
 	/**
@@ -964,16 +967,16 @@ class BufferGeometry extends EventDispatcher {
 	 * For non-indexed geometries, vertices are not shared, and the method sets each vertex normal
 	 * to be the same as the face normal.
 	 */
-	computeVertexNormals() {
+	public function computeVertexNormals() {
 
-		const index = this.index;
-		const positionAttribute = this.getAttribute( 'position' );
+		var index = this.index;
+		var positionAttribute:BufferAttribute = this.getAttribute( 'position' );
 
-		if ( positionAttribute !== undefined ) {
+		if ( positionAttribute != null ) {
 
-			let normalAttribute = this.getAttribute( 'normal' );
+			var normalAttribute:BufferAttribute = this.getAttribute( 'normal' );
 
-			if ( normalAttribute === undefined ) {
+			if ( normalAttribute == null ) {
 
 				normalAttribute = new BufferAttribute( new Float32Array( positionAttribute.count * 3 ), 3 );
 				this.setAttribute( 'normal', normalAttribute );
@@ -982,7 +985,7 @@ class BufferGeometry extends EventDispatcher {
 
 				// reset existing normals to zero
 
-				for ( let i = 0, il = normalAttribute.count; i < il; i ++ ) {
+				for ( i in 0...normalAttribute.count ) {
 
 					normalAttribute.setXYZ( i, 0, 0, 0 );
 
@@ -990,19 +993,19 @@ class BufferGeometry extends EventDispatcher {
 
 			}
 
-			const pA = new Vector3(), pB = new Vector3(), pC = new Vector3();
-			const nA = new Vector3(), nB = new Vector3(), nC = new Vector3();
-			const cb = new Vector3(), ab = new Vector3();
+			var pA = new Vector3(), pB = new Vector3(), pC = new Vector3();
+			var nA = new Vector3(), nB = new Vector3(), nC = new Vector3();
+			var cb = new Vector3(), ab = new Vector3();
 
 			// indexed elements
 
-			if ( index ) {
+			if ( index != null) {
+                var i = 0, il = index.count;
+				while ( i < il ) {
 
-				for ( let i = 0, il = index.count; i < il; i += 3 ) {
-
-					const vA = index.getX( i + 0 );
-					const vB = index.getX( i + 1 );
-					const vC = index.getX( i + 2 );
+					var vA:Int = Common.numberAsInt(index.getX( i + 0 ));
+					var vB:Int = Common.numberAsInt(index.getX( i + 1 ));
+					var vC:Int = Common.numberAsInt(index.getX( i + 2 ));
 
 					pA.fromBufferAttribute( positionAttribute, vA );
 					pB.fromBufferAttribute( positionAttribute, vB );
@@ -1024,13 +1027,15 @@ class BufferGeometry extends EventDispatcher {
 					normalAttribute.setXYZ( vB, nB.x, nB.y, nB.z );
 					normalAttribute.setXYZ( vC, nC.x, nC.y, nC.z );
 
+                    i += 3;
 				}
 
 			} else {
 
 				// non-indexed elements (unconnected triangle soup)
 
-				for ( let i = 0, il = positionAttribute.count; i < il; i += 3 ) {
+                var i = 0, il = positionAttribute.count;
+				while ( i < il ) {
 
 					pA.fromBufferAttribute( positionAttribute, i + 0 );
 					pB.fromBufferAttribute( positionAttribute, i + 1 );
@@ -1060,11 +1065,11 @@ class BufferGeometry extends EventDispatcher {
 	 * Ensures every normal vector in a geometry will have a magnitude of `1`. This will
 	 * correct lighting on the geometry surfaces.
 	 */
-	normalizeNormals() {
+	public function normalizeNormals() {
 
-		const normals = this.attributes.normal;
+		var normals:BufferAttribute = this.attributes.normal;
 
-		for ( let i = 0, il = normals.count; i < il; i ++ ) {
+		for ( i in 0...normals.count ) {
 
 			_vector.fromBufferAttribute( normals, i );
 
@@ -1082,17 +1087,18 @@ class BufferGeometry extends EventDispatcher {
 	 *
 	 * @return {BufferGeometry} The non-indexed version of this indexed geometry.
 	 */
-	toNonIndexed() {
+     //TODO:
+	/*public function toNonIndexed() {
 
 		function convertBufferAttribute( attribute, indices ) {
 
-			const array = attribute.array;
-			const itemSize = attribute.itemSize;
-			const normalized = attribute.normalized;
+			var array = attribute.array;
+			var itemSize = attribute.itemSize;
+			var normalized = attribute.normalized;
 
-			const array2 = new array.constructor( indices.length * itemSize );
+			var array2 = new array.constructor( indices.length * itemSize );
 
-			let index = 0, index2 = 0;
+			var index = 0, index2 = 0;
 
 			for ( let i = 0, l = indices.length; i < l; i ++ ) {
 
@@ -1120,7 +1126,7 @@ class BufferGeometry extends EventDispatcher {
 
 		//
 
-		if ( this.index === null ) {
+		if ( this.index == null ) {
 
 			console.warn( 'THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.' );
 			return this;
@@ -1182,17 +1188,17 @@ class BufferGeometry extends EventDispatcher {
 
 		return geometry2;
 
-	}
+	}*/
 
 	/**
 	 * Serializes the geometry into JSON.
 	 *
 	 * @return {Object} A JSON object representing the serialized geometry.
 	 */
-	toJSON() {
+	public function toJSON() {
 
-		const data = {
-			metadata: {
+		var data:Dynamic = {
+			metadata: cast {
 				version: 4.6,
 				type: 'BufferGeometry',
 				generator: 'BufferGeometry.toJSON'
@@ -1203,16 +1209,16 @@ class BufferGeometry extends EventDispatcher {
 
 		data.uuid = this.uuid;
 		data.type = this.type;
-		if ( this.name !== '' ) data.name = this.name;
-		if ( Object.keys( this.userData ).length > 0 ) data.userData = this.userData;
+		if ( this.name != '' ) data.name = this.name;
+		if ( Reflect.fields( this.userData ).length > 0 ) data.userData = this.userData;
 
-		if ( this.parameters !== undefined ) {
+		if ( this.parameters != null ) {
 
-			const parameters = this.parameters;
+			var parameters = this.parameters;
 
-			for ( const key in parameters ) {
+			for ( key in Reflect.fields(parameters) ) {
 
-				if ( parameters[ key ] !== undefined ) data[ key ] = parameters[ key ];
+				if ( Reflect.field(parameters, key) != null ) Reflect.setField(data, key, Reflect.field(parameters, key));
 
 			}
 
@@ -1222,41 +1228,41 @@ class BufferGeometry extends EventDispatcher {
 
 		// for simplicity the code assumes attributes are not shared across geometries, see #15811
 
-		data.data = { attributes: {} };
+		data.data = cast { attributes: cast {} };
 
-		const index = this.index;
+		var index = this.index;
 
-		if ( index !== null ) {
+		if ( index != null ) {
 
 			data.data.index = {
-				type: index.array.constructor.name,
-				array: Array.prototype.slice.call( index.array )
+				type: Type.getClassName(Type.getClass(index.array)),
+				array: index.array.copy()
 			};
 
 		}
 
-		const attributes = this.attributes;
+		var attributes = this.attributes;
 
-		for ( const key in attributes ) {
+		for ( key in Reflect.fields(attributes) ) {
 
-			const attribute = attributes[ key ];
+			var attribute = Reflect.field(attributes, key);
 
-			data.data.attributes[ key ] = attribute.toJSON( data.data );
+			Reflect.setField(data.data.attributes, key, attribute.toJSON( data.data ));
 
 		}
 
-		const morphAttributes = {};
-		let hasMorphAttributes = false;
+		var morphAttributes:Dynamic = {};
+		var hasMorphAttributes = false;
 
-		for ( const key in this.morphAttributes ) {
+		for ( key in Reflect.fields(this.morphAttributes) ) {
 
-			const attributeArray = this.morphAttributes[ key ];
+			var attributeArray = Reflect.field(this.morphAttributes, key);
 
-			const array = [];
+			var array = [];
 
-			for ( let i = 0, il = attributeArray.length; i < il; i ++ ) {
+			for ( i in 0...attributeArray.length ) {
 
-				const attribute = attributeArray[ i ];
+				var attribute = attributeArray[ i ];
 
 				array.push( attribute.toJSON( data.data ) );
 
@@ -1264,7 +1270,7 @@ class BufferGeometry extends EventDispatcher {
 
 			if ( array.length > 0 ) {
 
-				morphAttributes[ key ] = array;
+				Reflect.setField(morphAttributes, key, array);
 
 				hasMorphAttributes = true;
 
@@ -1279,17 +1285,15 @@ class BufferGeometry extends EventDispatcher {
 
 		}
 
-		const groups = this.groups;
+		var groups = this.groups;
 
 		if ( groups.length > 0 ) {
-
-			data.data.groups = JSON.parse( JSON.stringify( groups ) );
-
+			data.data.groups = Json.parse( Json.stringify( groups ) );
 		}
 
-		const boundingSphere = this.boundingSphere;
+		var boundingSphere = this.boundingSphere;
 
-		if ( boundingSphere !== null ) {
+		if ( boundingSphere != null ) {
 
 			data.data.boundingSphere = {
 				center: boundingSphere.center.toArray(),
@@ -1307,10 +1311,8 @@ class BufferGeometry extends EventDispatcher {
 	 *
 	 * @return {BufferGeometry} A clone of this instance.
 	 */
-	clone() {
-
-		return new this.constructor().copy( this );
-
+	public function clone():Dynamic {
+		return Common.reconstruct(this).copy( this );
 	}
 
 	/**
@@ -1319,7 +1321,7 @@ class BufferGeometry extends EventDispatcher {
 	 * @param {BufferGeometry} source - The geometry to copy.
 	 * @return {BufferGeometry} A reference to this instance.
 	 */
-	copy( source ) {
+	public function copy( source:BufferGeometry ) {
 
 		// reset
 
@@ -1332,7 +1334,7 @@ class BufferGeometry extends EventDispatcher {
 
 		// used for storing cloned, shared data
 
-		const data = {};
+		var data = {};
 
 		// name
 
@@ -1340,9 +1342,9 @@ class BufferGeometry extends EventDispatcher {
 
 		// index
 
-		const index = source.index;
+		var index = source.index;
 
-		if ( index !== null ) {
+		if ( index != null ) {
 
 			this.setIndex( index.clone() );
 
@@ -1350,31 +1352,31 @@ class BufferGeometry extends EventDispatcher {
 
 		// attributes
 
-		const attributes = source.attributes;
+		var attributes = source.attributes;
 
-		for ( const name in attributes ) {
+		for ( name in Reflect.fields(attributes) ) {
 
-			const attribute = attributes[ name ];
+			var attribute = Reflect.field(attributes, name);
 			this.setAttribute( name, attribute.clone( data ) );
 
 		}
 
 		// morph attributes
 
-		const morphAttributes = source.morphAttributes;
+		var morphAttributes = source.morphAttributes;
 
-		for ( const name in morphAttributes ) {
+		for ( name in Reflect.fields(morphAttributes) ) {
 
-			const array = [];
-			const morphAttribute = morphAttributes[ name ]; // morphAttribute: array of Float32BufferAttributes
+			var array = [];
+			var morphAttribute = Reflect.field(morphAttributes, name); // morphAttribute: array of Float32BufferAttributes
 
-			for ( let i = 0, l = morphAttribute.length; i < l; i ++ ) {
+			for ( i in 0...morphAttribute.length ) {
 
 				array.push( morphAttribute[ i ].clone( data ) );
 
 			}
 
-			this.morphAttributes[ name ] = array;
+			Reflect.setField(this.morphAttributes, name, array);
 
 		}
 
@@ -1382,30 +1384,28 @@ class BufferGeometry extends EventDispatcher {
 
 		// groups
 
-		const groups = source.groups;
+		var groups = source.groups;
 
-		for ( let i = 0, l = groups.length; i < l; i ++ ) {
+		for ( i in 0...groups.length ) {
 
-			const group = groups[ i ];
+			var group = groups[ i ];
 			this.addGroup( group.start, group.count, group.materialIndex );
 
 		}
 
 		// bounding box
 
-		const boundingBox = source.boundingBox;
+		if ( source.boundingBox != null ) {
 
-		if ( boundingBox !== null ) {
-
-			this.boundingBox = boundingBox.clone();
+			this.boundingBox = source.boundingBox.clone();
 
 		}
 
 		// bounding sphere
 
-		const boundingSphere = source.boundingSphere;
+		var boundingSphere = source.boundingSphere;
 
-		if ( boundingSphere !== null ) {
+		if ( boundingSphere != null ) {
 
 			this.boundingSphere = boundingSphere.clone();
 
@@ -1424,18 +1424,27 @@ class BufferGeometry extends EventDispatcher {
 
 	}
 
+    public var type(get, never):String;
+    function get_type() {
+        return Common.typeName(this);
+    }
+
 	/**
 	 * Frees the GPU-related resources allocated by this instance. Call this
 	 * method whenever this instance is no longer used in your app.
 	 *
 	 * @fires BufferGeometry#dispose
 	 */
-	dispose() {
+	public function dispose() {
 
 		this.dispatchEvent( { type: 'dispose' } );
 
 	}
 
+    var _m1 = /*@__PURE__*/ new Matrix4();
+    var _obj = /*@__PURE__*/ new Object3D();
+    var _offset = /*@__PURE__*/ new Vector3();
+    var _box = /*@__PURE__*/ new Box3();
+    var _boxMorphTargets = /*@__PURE__*/ new Box3();
+    var _vector = /*@__PURE__*/ new Vector3();
 }
-
-export { BufferGeometry };

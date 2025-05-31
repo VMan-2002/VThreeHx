@@ -1,13 +1,15 @@
 package vman2002.vthreehx;
 
+import vman2002.vthreehx.math.Matrix4;
+
 class Utils {
-    function arrayMin( array ) {
+    public static function arrayMin( array ) {
 
-        if ( array.length === 0 ) return Infinity;
+        if ( array.length == 0 ) return Infinity;
 
-        let min = array[ 0 ];
+        var min = array[ 0 ];
 
-        for ( let i = 1, l = array.length; i < l; ++ i ) {
+        for ( i in 1...array.length ) {
 
             if ( array[ i ] < min ) min = array[ i ];
 
@@ -17,13 +19,13 @@ class Utils {
 
     }
 
-    function arrayMax( array ) {
+    public static function arrayMax( array ) {
 
-        if ( array.length === 0 ) return - Infinity;
+        if ( array.length == 0 ) return - Infinity;
 
-        let max = array[ 0 ];
+        var max = array[ 0 ];
 
-        for ( let i = 1, l = array.length; i < l; ++ i ) {
+        for ( i in 1...array.length ) {
 
             if ( array[ i ] > max ) max = array[ i ];
 
@@ -33,35 +35,31 @@ class Utils {
 
     }
 
-    function arrayNeedsUint32( array ) {
-
+    public static function arrayNeedsUint32( array:Array<Int> ) {
         // assumes larger values usually on last
 
-        for ( let i = array.length - 1; i >= 0; -- i ) {
-
-            if ( array[ i ] >= 65535 ) return true; // account for PRIMITIVE_RESTART_FIXED_INDEX, #24565
-
+        for ( n in array ) {
+            if ( n >= 65535 ) return true; // account for PRIMITIVE_RESTART_FIXED_INDEX, #24565
         }
 
         return false;
-
     }
 
-    static var TYPED_ARRAYS = [
-        "Int8Array" => Common.Int8Array,
-        "Uint8Array" => Common.Uint8Array,
-        "Uint8ClampedArray" => Common.Uint8ClampedArray,
-        "Int16Array" => Common.Int16Array,
-        "Uint16Array" => Common.Uint16Array,
-        "Int32Array" => Common.Int32Array,
-        "Uint32Array" => Common.Uint32Array,
-        "Float32Array" => Common.Float32Array,
-        "Float64Array" => Common.Float64Array
+    static var TYPED_ARRAYS:Map<String, Class<Dynamic>> = [
+        "Int8Array" => TypedArray.Int8Array,
+        "Uint8Array" => TypedArray.Uint8Array,
+        "Uint8ClampedArray" => TypedArray.Uint8ClampedArray,
+        "Int16Array" => TypedArray.Int16Array,
+        "Uint16Array" => TypedArray.Uint16Array,
+        "Int32Array" => TypedArray.Int32Array,
+        "Uint32Array" => TypedArray.Uint32Array,
+        "Float32Array" => TypedArray.Float32Array,
+        "Float64Array" => TypedArray.Float64Array
     ];
 
-    public function getTypedArray( type, buffer ) {
+    public static  function getTypedArray( type, buffer ) {
 
-        return new TYPED_ARRAYS[ type ]( buffer );
+        return Type.createInstance(TYPED_ARRAYS[ type ], [buffer] );
 
     }
 
@@ -79,13 +77,13 @@ class Utils {
 
     }*/
 
-    public var _cache = new Map<String, Bool>();
+    static var _cache = new Map<String, Bool>();
 
-    function warnOnce( message ) {
+    public static function warnOnce( message:String ) {
 
         if ( _cache.exists(message) ) return;
 
-        _cache.set(message, true)
+        _cache.set(message, true);
 
         Common.warn( message );
 
@@ -121,9 +119,9 @@ class Utils {
 
     }*/
 
-    function toNormalizedProjectionMatrix( projectionMatrix ) {
+    public static function toNormalizedProjectionMatrix( projectionMatrix:Matrix4 ) {
 
-        const m = projectionMatrix.elements;
+        var m = projectionMatrix.elements;
 
         // Convert [-1, 1] to [0, 1] projection matrix
         m[ 2 ] = 0.5 * m[ 2 ] + 0.5 * m[ 3 ];
@@ -133,10 +131,10 @@ class Utils {
 
     }
 
-    function toReversedProjectionMatrix( projectionMatrix ) {
+    public static function toReversedProjectionMatrix( projectionMatrix:Matrix4 ) {
 
-        const m = projectionMatrix.elements;
-        const isPerspectiveMatrix = m[ 11 ] === - 1;
+        var m = projectionMatrix.elements;
+        var isPerspectiveMatrix = m[ 11 ] == - 1;
 
         // Reverse [0, 1] projection matrix
         if ( isPerspectiveMatrix ) {

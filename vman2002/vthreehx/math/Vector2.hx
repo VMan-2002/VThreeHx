@@ -141,6 +141,7 @@ class Vector2 {
 	 * @param {number} value - The value to set.
 	 * @return {Vector2} A reference to this vector.
 	 */
+	@:arrayAccess
 	public function setComponent( index, value ) {
 
 		switch ( index ) {
@@ -159,6 +160,7 @@ class Vector2 {
 	 * @param {number} index - The component index. `0` equals to x, `1` equals to y.
 	 * @return {number} A vector component value.
 	 */
+	@:arrayAccess
 	public function getComponent( index ) {
 
 		switch ( index ) {
@@ -369,7 +371,7 @@ class Vector2 {
 	 * @param {Matrix3} m - The matrix to apply.
 	 * @return {Vector2} A reference to this vector.
 	 */
-	public function applyMatrix3( m ) {
+	public function applyMatrix3( m:Matrix3 ) {
 
 		var x = this.x, y = this.y;
 		var e = m.elements;
