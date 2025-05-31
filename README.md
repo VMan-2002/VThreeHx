@@ -40,3 +40,5 @@ Other
 - Color✅
 - ColorManagement✅
 - Constants✅
+
+Welcome to [TypedArray](https://github.com/VMan-2002/VThreeHx/blob/main/vman2002/vthreehx/TypedArray.hx), the worst hx file
