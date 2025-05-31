@@ -28,7 +28,7 @@ Required for example scene
     - Vector2✅
 - WebGLRenderer
 - BoxGeometry✅
-    - BufferGeometry
+    - BufferGeometry✅
         - Box3✅
         - BufferAttribute✅
             - DataUtils✅
