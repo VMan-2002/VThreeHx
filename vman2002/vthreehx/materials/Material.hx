@@ -548,12 +548,14 @@ class Material extends EventDispatcher implements GetType {
 	 *
 	 * @param {Object} [values] - The material values to set.
 	 */
-	public function setValues( values ) {
+	public function setValues( ?values:Dynamic ) {
 
 		if ( values == null ) return;
 
 		var ogFields = Type.getInstanceFields(Type.getClass(this));
+		Common.describe("this class", Type.getClass(this));
 
+		//TODO: this doesn't actually set `color` on `MeshBasicMaterial`, why is that?
 		for ( key in Reflect.fields(values) ) {
 
 			var newValue:Dynamic = Reflect.field(values, key);

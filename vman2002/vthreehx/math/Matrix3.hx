@@ -310,7 +310,7 @@ class Matrix3 {
 	 * @param {Matrix4} matrix4 - The 4x4 matrix.
 	 * @return {Matrix3} A reference to this matrix.
 	 */
-	public function getNormalMatrix( matrix4 ) {
+	public function getNormalMatrix( matrix4 ):Matrix3 {
 		return this.setFromMatrix4( matrix4 ).invert().transpose();
 	}
 

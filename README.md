@@ -27,7 +27,6 @@ Required for example scene
 - PerspectiveCamera✅
     - Camera✅
     - Vector2✅
-- WebGLRenderer
 - BoxGeometry✅
     - BufferGeometry✅
         - Box3✅
@@ -38,9 +37,17 @@ Required for example scene
     - Material✅
         - Texture✅
             - Source✅
-                - ImageUtils❌
+                - ImageUtils❌ (Should not be necessary in haxe, i think)
     - Color✅
         - ColorManagement✅
-- Mesh
+- Mesh✅
+    - Ray✅
+        - Plane✅
+            - Line3✅
+    - Triangle✅
+        - Vector4✅
+    - Raycaster✅
+- WebGLRenderer //the boss fight
+    - Frustum
 
 Welcome to [TypedArray](https://github.com/VMan-2002/VThreeHx/blob/main/vman2002/vthreehx/TypedArray.hx), the worst hx file

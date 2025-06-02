@@ -191,7 +191,7 @@ class MeshBasicMaterial extends vman2002.vthreehx.materials.Material {
 	 * in here. Color values can be passed any type of value accepted
 	 * by {@link Color#set}.
 	 */
-	public function new( parameters:Dynamic ) {
+	public function new( ?parameters:Dynamic ) {
 
 		super();
 

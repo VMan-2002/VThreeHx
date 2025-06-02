@@ -433,7 +433,7 @@ class Vector3 {
 	 * @param {Matrix4} m - The matrix.
 	 * @return {Vector3} A reference to this vector.
 	 */
-	public function transformDirection( m ) {
+	public function transformDirection( m:Matrix4 ) {
 		// input: THREE.Matrix4 affine matrix
 		// vector interpreted as a direction
 
@@ -821,7 +821,7 @@ class Vector3 {
 	 * @param {Vector3} v - The vector to compute the squared distance to.
 	 * @return {number} The squared distance.
 	 */
-	public function distanceToSquared( v:Vector3 ) {
+	public function distanceToSquared( v:Vector3 ):Float {
 		var dx = this.x - v.x, dy = this.y - v.y, dz = this.z - v.z;
 
 		return dx * dx + dy * dy + dz * dz;
