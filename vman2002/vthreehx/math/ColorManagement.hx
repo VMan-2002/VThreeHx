@@ -52,7 +52,7 @@ class ColorManagement {
     * Reference:
     * - https://www.russellcottrell.com/photo/matrixCalculator.htm
     */
-    public static var spaces:Map<Int, ColorSpace> = [
+    public static var spaces:Map<String, ColorSpace> = [
 		LinearSRGBColorSpace => {
 			primaries: REC709_PRIMARIES,
 			whitePoint: D65,
@@ -74,15 +74,15 @@ class ColorManagement {
 		}
     ];
 
-    public static function convert ( color, sourceColorSpace, targetColorSpace ) {
+    public static function convert ( color, sourceColorSpace:String, targetColorSpace:String ) {
 
-        if ( this.enabled == false || sourceColorSpace == targetColorSpace || !sourceColorSpace || !targetColorSpace ) {
+        if ( !enabled || sourceColorSpace == targetColorSpace || sourceColorSpace == null || targetColorSpace == null ) {
 
             return color;
 
         }
 
-        if ( this.spaces[ sourceColorSpace ].transfer == SRGBTransfer ) {
+        if ( spaces[ sourceColorSpace ].transfer == SRGBTransfer ) {
 
             color.r = SRGBToLinear( color.r );
             color.g = SRGBToLinear( color.g );
@@ -90,14 +90,14 @@ class ColorManagement {
 
         }
 
-        if ( this.spaces[ sourceColorSpace ].primaries != this.spaces[ targetColorSpace ].primaries ) {
+        if ( spaces[ sourceColorSpace ].primaries != spaces[ targetColorSpace ].primaries ) {
 
-            color.applyMatrix3( this.spaces[ sourceColorSpace ].toXYZ );
-            color.applyMatrix3( this.spaces[ targetColorSpace ].fromXYZ );
+            color.applyMatrix3( spaces[ sourceColorSpace ].toXYZ );
+            color.applyMatrix3( spaces[ targetColorSpace ].fromXYZ );
 
         }
 
-        if ( this.spaces[ targetColorSpace ].transfer == SRGBTransfer ) {
+        if ( spaces[ targetColorSpace ].transfer == SRGBTransfer ) {
 
             color.r = LinearToSRGB( color.r );
             color.g = LinearToSRGB( color.g );
@@ -111,19 +111,19 @@ class ColorManagement {
 
     public static function fromWorkingColorSpace ( color, targetColorSpace ) {
 
-        return this.convert( color, this.workingColorSpace, targetColorSpace );
+        return convert( color, workingColorSpace, targetColorSpace );
 
     }
 
     public static function toWorkingColorSpace ( color, sourceColorSpace ) {
 
-        return this.convert( color, sourceColorSpace, this.workingColorSpace );
+        return convert( color, sourceColorSpace, workingColorSpace );
 
     }
 
     public static function getPrimaries ( colorSpace ) {
 
-        return this.spaces[ colorSpace ].primaries;
+        return spaces[ colorSpace ].primaries;
 
     }
 
@@ -131,17 +131,17 @@ class ColorManagement {
 
         if ( colorSpace == NoColorSpace ) return LinearTransfer;
 
-        return this.spaces[ colorSpace ].transfer;
+        return spaces[ colorSpace ].transfer;
 
     }
 
-    public static function getLuminanceCoefficients ( target, colorSpace = this.workingColorSpace ) {
+    public static function getLuminanceCoefficients ( target, colorSpace ) {
 
-        return target.fromArray( this.spaces[ colorSpace ].luminanceCoefficients );
+        return target.fromArray( spaces[ colorSpace ?? workingColorSpace].luminanceCoefficients );
 
     }
 
-    public static function define ( colorSpaces:Map<Int, ColorSpace> ) {
+    public static function define ( colorSpaces:Map<String, ColorSpace> ) {
         for (k => v in colorSpaces)
             spaces.set(k, v);
     }
@@ -150,16 +150,16 @@ class ColorManagement {
 
     static function _getMatrix ( targetMatrix, sourceColorSpace, targetColorSpace ) {
         return targetMatrix
-            .copy( this.spaces[ sourceColorSpace ].toXYZ )
-            .multiply( this.spaces[ targetColorSpace ].fromXYZ );
+            .copy( spaces[ sourceColorSpace ].toXYZ )
+            .multiply( spaces[ targetColorSpace ].fromXYZ );
     }
 
     static function _getDrawingBufferColorSpace ( colorSpace ) {
-        return this.spaces[ colorSpace ].outputColorSpaceConfig.drawingBufferColorSpace;
+        return spaces[ colorSpace ].outputColorSpaceConfig.drawingBufferColorSpace;
     }
 
-    static function _getUnpackColorSpace ( colorSpace = this.workingColorSpace ) {
-        return this.spaces[ colorSpace ].workingColorSpaceConfig.unpackColorSpace;
+    static function _getUnpackColorSpace ( ?colorSpace  ) {
+        return spaces[ colorSpace ?? workingColorSpace ].workingColorSpaceConfig.unpackColorSpace;
     }
 
 	public static var REC709_PRIMARIES = [ 0.640, 0.330, 0.300, 0.600, 0.150, 0.060 ];

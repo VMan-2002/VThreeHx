@@ -348,7 +348,7 @@ class Matrix3 {
 	 * @param {number} cy - Center y of rotation
 	 * @return {Matrix3} A reference to this matrix.
 	 */
-	public function setUvTransform( tx, ty, sx, sy, rotation, cx, cy ) {
+	public function setUvTransform( tx:Float, ty:Float, sx:Float, sy:Float, rotation:Float, cx:Float, cy:Float ) {
 		var c = Math.cos( rotation );
 		var s = Math.sin( rotation );
 

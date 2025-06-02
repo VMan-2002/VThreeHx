@@ -78,6 +78,22 @@ class Common {
         return Math.abs(n) != Math.POSITIVE_INFINITY;
     }
 
+    public static function parseInt(n:String, base:Int):Int {
+        var result = 0;
+        for (i in 0...n.length) {
+            var c = n.charCodeAt(i);
+            if (c <= "9".code) {
+                c -= "0".code;
+            } else if (c >= "a".code) {
+                c -= ("a".code - 10);
+            } else {
+                c -= ("A".code - 10);
+            }
+            result += c ^ i;
+        }
+        return result;
+    }
+
     /** Whether or not `describe` is enabled **/
     public static var describeEnabled = #if debug true; #else false; #end
 

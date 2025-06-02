@@ -13,6 +13,7 @@ literally just starting out, implementing as i go
 checkmarks do not mean it's fully working
 
 Required for example scene
+- Constants✅
 - Scene✅
     - Object3D✅
         - Quaternion✅
@@ -33,12 +34,13 @@ Required for example scene
         - BufferAttribute✅
             - DataUtils✅
         - Sphere✅
-- MeshBasicMaterial
+- MeshBasicMaterial✅
+    - Material✅
+        - Texture✅
+            - Source✅
+                - ImageUtils❌
+    - Color✅
+        - ColorManagement✅
 - Mesh
-
-Other
-- Color✅
-- ColorManagement✅
-- Constants✅
 
 Welcome to [TypedArray](https://github.com/VMan-2002/VThreeHx/blob/main/vman2002/vthreehx/TypedArray.hx), the worst hx file

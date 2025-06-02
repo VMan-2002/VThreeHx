@@ -1,6 +1,7 @@
 package vman2002.vthreehx;
 
 import vman2002.vthreehx.math.MathUtils;
+import UInt;
 
 class ArrayUtil {
     public static inline function toStdFloatArray(buf:Array<Float>) {
@@ -58,20 +59,20 @@ class Float32Array extends TypedArray<Float> {
     public function toArray():Array<Float>
         return ArrayUtil.toStdFloatArray(buf);
 }
-class Uint32Array extends TypedArray<Int> {
-    public var buf:Array<Int>;
+class Uint32Array extends TypedArray<UInt> {
+    public var buf:Array<UInt>;
 
-    public function new(?length:Int) {
-        buf = new Array<Int>();
+    public function new(?length:UInt) {
+        buf = new Array<UInt>();
     }
 
     @:arrayAccess
-    public override function get(n:Int):Int {
+    public override function get(n:UInt):UInt {
         return buf[n];
     }
 
     @:arrayAccess
-    public override function set(n:Int, v:Int):Int {
+    public override function set(n:UInt, v:UInt):UInt {
         return buf[n] = v;
     }
 
@@ -79,23 +80,23 @@ class Uint32Array extends TypedArray<Int> {
         return buf.length;
 
     @:to
-    public function toArray():Array<Int>
+    public function toArray():Array<UInt>
         return ArrayUtil.toStdIntArray(buf);
 }
-class Uint16Array extends TypedArray<Int> {
-    public var buf:Array<Int>;
+class Uint16Array extends TypedArray<UInt> {
+    public var buf:Array<UInt>;
 
-    public function new(?length:Int) {
-        buf = new Array<Int>();
+    public function new(?length:UInt) {
+        buf = new Array<UInt>();
     }
 
     @:arrayAccess
-    public override function get(n:Int):Int {
+    public override function get(n:UInt):UInt {
         return buf[n];
     }
 
     @:arrayAccess
-    public override function set(n:Int, v:Int):Int {
+    public override function set(n:UInt, v:UInt):UInt {
         return buf[n] = v;
     }
 
@@ -103,23 +104,23 @@ class Uint16Array extends TypedArray<Int> {
         return buf.length;
 
     @:to
-    public function toArray():Array<Int>
+    public function toArray():Array<UInt>
         return ArrayUtil.toStdIntArray(buf);
 }
-class Uint8Array extends TypedArray<Int> {
-    public var buf:Array<Int>;
+class Uint8Array extends TypedArray<UInt> {
+    public var buf:Array<UInt>;
 
-    public function new(?length:Int) {
-        buf = new Array<Int>();
+    public function new(?length:UInt) {
+        buf = new Array<UInt>();
     }
 
     @:arrayAccess
-    public override function get(n:Int):Int {
+    public override function get(n:UInt):UInt {
         return buf[n];
     }
 
     @:arrayAccess
-    public override function set(n:Int, v:Int):Int {
+    public override function set(n:UInt, v:UInt):UInt {
         return buf[n] = v;
     }
 
@@ -127,7 +128,7 @@ class Uint8Array extends TypedArray<Int> {
         return buf.length;
 
     @:to
-    public function toArray():Array<Int>
+    public function toArray():Array<UInt>
         return ArrayUtil.toStdIntArray(buf);
 }
 class Int32Array extends TypedArray<Int> {
@@ -204,7 +205,7 @@ class Int8Array extends TypedArray<Int> {
 }
 class Uint8ClampedArray extends Uint8Array {
     @:arrayAccess
-    public override function set(n:Int, v:Int):Int {
+    public override function set(n:UInt, v:UInt):UInt {
         return super.set(n, if (v >= 255) 255 else if (v <= 0) 0 else v);
     }
 }

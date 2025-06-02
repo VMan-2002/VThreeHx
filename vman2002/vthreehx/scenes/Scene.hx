@@ -1,5 +1,7 @@
 package vman2002.vthreehx.scenes;
 
+import vman2002.vthreehx.materials.Material;
+import vman2002.vthreehx.textures.Texture;
 import vman2002.vthreehx.core.Object3D;
 import vman2002.vthreehx.math.Euler;
 
@@ -20,7 +22,7 @@ class Scene extends Object3D {
     * @type {?(Color|Texture)}
     * @default null
     */
-    public var background = null;
+    public var background:Dynamic = null;
 
     /**
     * Sets the environment map for all physical materials in the scene. However,
@@ -30,7 +32,7 @@ class Scene extends Object3D {
     * @type {?Texture}
     * @default null
     */
-    public var environment = null;
+    public var environment:Texture = null;
 
     /**
     * A fog instance defining the type of fog that affects everything
@@ -49,7 +51,7 @@ class Scene extends Object3D {
     * @type {number}
     * @default 0
     */
-    public var backgroundBlurriness = 0;
+    public var backgroundBlurriness:Float = 0;
 
     /**
     * Attenuates the color of the background. Only applies to background textures.
@@ -57,7 +59,7 @@ class Scene extends Object3D {
     * @type {number}
     * @default 1
     */
-    public var backgroundIntensity = 1;
+    public var backgroundIntensity:Float = 1;
 
     /**
     * The rotation of the background in radians. Only influences environment maps
@@ -75,7 +77,7 @@ class Scene extends Object3D {
     * @type {number}
     * @default 1
     */
-    public var environmentIntensity = 1;
+    public var environmentIntensity:Float = 1;
 
     /**
     * The rotation of the environment map in radians. Only influences physical materials
@@ -93,7 +95,7 @@ class Scene extends Object3D {
     * @type {?Material}
     * @default null
     */
-    public var overrideMaterial = null;
+    public var overrideMaterial:Material = null;
 
 	/**
 	 * Constructs a new scene.

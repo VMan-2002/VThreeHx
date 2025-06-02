@@ -65,7 +65,7 @@ class BoxGeometry extends BufferGeometry {
 		// build each side of the box geometry
 
 		function buildPlane( u:String, v:String, w:String, udir:Float, vdir:Float, width:Float, height:Float, depth:Float, gridX:Int, gridY:Int, materialIndex:Int ) {
-            //TODO: I probably did something wrong with u,v,w
+            //TODO: I probably did something wrong with u,v,w, might be necessary to re-port this
 			var segmentWidth = width / gridX;
 			var segmentHeight = height / gridY;
 

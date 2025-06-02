@@ -2,11 +2,17 @@ package vman2002.vthreehx.math;
 
 import vman2002.vthreehx.math.MathUtils.clamp in clamp;
 import vman2002.vthreehx.math.MathUtils.euclideanModulo in euclideanModulo;
-import vman2002.vthreehx.math.MathUtils.lerp in lerp;
+import vman2002.vthreehx.math.MathUtils;
 import vman2002.vthreehx.math.ColorManagement;
 import vman2002.vthreehx.math.ColorManagement.SRGBToLinear in SRGBToLinear;
 import vman2002.vthreehx.math.ColorManagement.LinearToSRGB in LinearToSRGB;
 import vman2002.vthreehx.Constants.SRGBColorSpace in SRGBColorSpace;
+import Std.parseInt;
+import Std.parseFloat;
+import vman2002.vthreehx.Common.parseInt in parseInt2;
+#if flixel
+import flixel.math.FlxMath.roundDecimal in flxRoundDecimal;
+#end
 
 /**
  * A Color instance is represented by RGB components in the linear <i>working
@@ -51,7 +57,7 @@ import vman2002.vthreehx.Constants.SRGBColorSpace in SRGBColorSpace;
  * const color7 = new THREE.Color( 1, 0, 0 );
  * ```
  */
-class Color implements vman2002.vthreehx.interfaces.ToJson {
+class Color {
     /**
     * A dictionary with X11 color names.
     *
@@ -118,7 +124,7 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 	 * @return {Color} A reference to this color.
 	 */
 	public function set( r:Dynamic, ?g:Float, ?b:Float ) {
-		if ( g == undefined && b == undefined ) {
+		if ( g == null && b == null ) {
 
 			// r is THREE.Color, hex or string
 
@@ -127,9 +133,9 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 			if (Std.isOfType(r, Color)) {
 				this.copy(value);
 			} else if (Std.isOfType(r, Int)) {
-				this.setHex( value );
+				this.setHex( cast value );
 			} else if (Std.isOfType(r, String)) {
-				this.setStyle( value );
+				this.setStyle( cast value );
 			}
 		} else {
 			this.setRGB( r, g, b );
@@ -161,15 +167,13 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 	 * @param {string} [colorSpace=SRGBColorSpace] - The color space.
 	 * @return {Color} A reference to this color.
 	 */
-	public function setHex( hex, colorSpace = SRGBColorSpace ) {
-
-		hex = Math.floor( hex );
+	public function setHex( hex:Int, ?colorSpace:String ) {
 
 		this.r = ( hex >> 16 & 255 ) / 255;
 		this.g = ( hex >> 8 & 255 ) / 255;
 		this.b = ( hex & 255 ) / 255;
 
-		ColorManagement.toWorkingColorSpace( this, colorSpace );
+		ColorManagement.toWorkingColorSpace( this, colorSpace ?? SRGBColorSpace );
 
 		return this;
 
@@ -184,13 +188,13 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 	 * @param {string} [colorSpace=ColorManagement.workingColorSpace] - The color space.
 	 * @return {Color} A reference to this color.
 	 */
-	public function setRGB( r, g, b, colorSpace = ColorManagement.workingColorSpace ) {
+	public function setRGB( r, g, b, ?colorSpace:String ) {
 
 		this.r = r;
 		this.g = g;
 		this.b = b;
 
-		ColorManagement.toWorkingColorSpace( this, colorSpace );
+		ColorManagement.toWorkingColorSpace( this, colorSpace ?? ColorManagement.workingColorSpace );
 
 		return this;
 
@@ -205,7 +209,7 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 	 * @param {string} [colorSpace=ColorManagement.workingColorSpace] - The color space.
 	 * @return {Color} A reference to this color.
 	 */
-	public function setHSL( h, s, l, colorSpace = ColorManagement.workingColorSpace ) {
+	public function setHSL( h:Float, s:Float, l:Float, ?colorSpace  ) {
 
 		// h,s,l ranges are in 0.0 - 1.0
 		h = euclideanModulo( h, 1 );
@@ -219,7 +223,7 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 		} else {
 
 			var p = l <= 0.5 ? l * ( 1 + s ) : l + s - ( l * s );
-			var q = ( 2 * l ) - p;
+			var q:Float = ( 2 * l ) - p;
 
 			this.r = hue2rgb( q, p, h + 1 / 3 );
 			this.g = hue2rgb( q, p, h );
@@ -227,7 +231,7 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 
 		}
 
-		ColorManagement.toWorkingColorSpace( this, colorSpace );
+		ColorManagement.toWorkingColorSpace( this, colorSpace ?? ColorManagement.workingColorSpace );
 
 		return this;
 
@@ -243,123 +247,126 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 	 * @param {string} [colorSpace=SRGBColorSpace] - The color space.
 	 * @return {Color} A reference to this color.
 	 */
-	public function setStyle( style, colorSpace = SRGBColorSpace ) {
-
+	public function setStyle( style, ?colorSpace  ) {
+		colorSpace = colorSpace ?? SRGBColorSpace;
 		function handleAlpha( string ) {
 
-			if ( string == undefined ) return;
+			if ( string == null ) return;
 
 			if ( parseFloat( string ) < 1 ) {
 
-				console.warn( 'THREE.Color: Alpha component of ' + style + ' will be ignored.' );
+				Common.warn( 'THREE.Color: Alpha component of ' + style + ' will be ignored.' );
 
 			}
 
 		}
 
 
-		var m;
+		var m:Array<String>;
 
-		if ( m = ~/^(\w+)\(([^\)]*)\)/.exec( style ) ) {
+		var r1 = ~/^(\w+)\(([^\)]*)\)/;
+		var r5 = ~/^#([A-Fa-f\d]+)$/;
+		if ( r1.match(style) ) {
 
 			// rgb / hsl
 
 			var color;
-			var name = m[ 1 ];
-			var components = m[ 2 ];
+			var name = r1.matched(1 );
+			var components = r1.matched( 2);
 
 			switch ( name ) {
 
 				case 'rgb':
 				case 'rgba':
 
-					if ( color = ~/^\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec( components ) ) {
+					var r2 = ~/^\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*(\d*\.?\d+)\s*)?$/;
+					if ( r2.match( components ) ) {
 
 						// rgb(255,0,0) rgba(255,0,0,0.5)
 
-						handleAlpha( color[ 4 ] );
+						handleAlpha( r2.matched( 4 ) );
 
 						return this.setRGB(
-							Math.min( 255, parseInt( color[ 1 ], 10 ) ) / 255,
-							Math.min( 255, parseInt( color[ 2 ], 10 ) ) / 255,
-							Math.min( 255, parseInt( color[ 3 ], 10 ) ) / 255,
+							Math.min( 255, parseInt( r2.matched( 1 ) ) ) / 255,
+							Math.min( 255, parseInt( r2.matched( 2 ) ) ) / 255,
+							Math.min( 255, parseInt( r2.matched( 3 ) ) ) / 255,
 							colorSpace
 						);
 
 					}
 
-					if ( color = ~/^\s*(\d+)%\s*,\s*(\d+)%\s*,\s*(\d+)%\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec( components ) ) {
+					var r3 = ~/^\s*(\d+)%\s*,\s*(\d+)%\s*,\s*(\d+)%\s*(?:,\s*(\d*\.?\d+)\s*)?$/;
+					if ( r3.match( components ) ) {
 
 						// rgb(100%,0%,0%) rgba(100%,0%,0%,0.5)
 
-						handleAlpha( color[ 4 ] );
+						handleAlpha( r3.matched( 4 ) );
 
 						return this.setRGB(
-							Math.min( 100, parseInt( color[ 1 ], 10 ) ) / 100,
-							Math.min( 100, parseInt( color[ 2 ], 10 ) ) / 100,
-							Math.min( 100, parseInt( color[ 3 ], 10 ) ) / 100,
+							Math.min( 100, parseInt( r3.matched(1  ) ) ) / 100,
+							Math.min( 100, parseInt( r3.matched( 2 ) ) ) / 100,
+							Math.min( 100, parseInt( r3.matched( 3 ) ) ) / 100,
 							colorSpace
 						);
 
 					}
 
-					break;
 
 				case 'hsl':
 				case 'hsla':
 
-					if ( color = ~/^\s*(\d*\.?\d+)\s*,\s*(\d*\.?\d+)%\s*,\s*(\d*\.?\d+)%\s*(?:,\s*(\d*\.?\d+)\s*)?$/.exec( components ) ) {
+				var r4 = ~/^\s*(\d*\.?\d+)\s*,\s*(\d*\.?\d+)%\s*,\s*(\d*\.?\d+)%\s*(?:,\s*(\d*\.?\d+)\s*)?$/;
+					if ( r4.match( components ) ) {
 
 						// hsl(120,50%,50%) hsla(120,50%,50%,0.5)
 
-						handleAlpha( color[ 4 ] );
+						handleAlpha( r4.matched( 4 ) );
 
 						return this.setHSL(
-							parseFloat( color[ 1 ] ) / 360,
-							parseFloat( color[ 2 ] ) / 100,
-							parseFloat( color[ 3 ] ) / 100,
+							parseFloat( r4.matched( 1 ) ) / 360,
+							parseFloat( r4.matched( 2 ) ) / 100,
+							parseFloat( r4.matched( 3 ) ) / 100,
 							colorSpace
 						);
 
 					}
 
-					break;
 
 				default:
 
-					console.warn( 'THREE.Color: Unknown color model ' + style );
+					Common.warn( 'THREE.Color: Unknown color model ' + style );
 
 			}
 
-		} else if ( m = ~/^#([A-Fa-f\d]+)$/.exec( style ) ) {
+		} else if ( r5.match( style ) ) {
 
 			// hex color
 
-			var hex = m[ 1 ];
+			var hex = r5.matched( 1 );
 			var size = hex.length;
 
 			if ( size == 3 ) {
 
 				// #ff0
 				return this.setRGB(
-					parseInt( hex.charAt( 0 ), 16 ) / 15,
-					parseInt( hex.charAt( 1 ), 16 ) / 15,
-					parseInt( hex.charAt( 2 ), 16 ) / 15,
+					parseInt2( hex.charAt( 0 ), 16 ) / 15,
+					parseInt2( hex.charAt( 1 ), 16 ) / 15,
+					parseInt2( hex.charAt( 2 ), 16 ) / 15,
 					colorSpace
 				);
 
 			} else if ( size == 6 ) {
 
 				// #ff0000
-				return this.setHex( parseInt( hex, 16 ), colorSpace );
+				return this.setHex( parseInt2( hex, 16 ), colorSpace );
 
 			} else {
 
-				console.warn( 'THREE.Color: Invalid hex color ' + style );
+				Common.warn( 'THREE.Color: Invalid hex color ' + style );
 
 			}
 
-		} else if ( style && style.length > 0 ) {
+		} else if ( style != null && style.length != 0 ) {
 
 			return this.setColorName( style, colorSpace );
 
@@ -382,19 +389,19 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 	 * @param {string} [colorSpace=SRGBColorSpace] - The color space.
 	 * @return {Color} A reference to this color.
 	 */
-	public function setColorName( style, colorSpace = SRGBColorSpace ) {
+	public function setColorName( style, ?colorSpace ) {
 		// color keywords
 		var hex = NAMES[ style.toLowerCase() ];
 
-		if ( hex != undefined ) {
+		if ( hex != null ) {
 
 			// red
-			this.setHex( hex, colorSpace );
+			this.setHex( hex, colorSpace ?? SRGBColorSpace );
 
 		} else {
 
 			// unknown color
-			console.warn( 'THREE.Color: Unknown color ' + style );
+			Common.warn( 'THREE.Color: Unknown color ' + style );
 
 		}
 
@@ -481,8 +488,8 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 	 * @param {string} [colorSpace=SRGBColorSpace] - The color space.
 	 * @return {number} The hexadecimal value.
 	 */
-	public function getHex( colorSpace = SRGBColorSpace ) {
-		ColorManagement.fromWorkingColorSpace( _color.copy( this ), colorSpace );
+	public function getHex( ?colorSpace ) {
+		ColorManagement.fromWorkingColorSpace( _color.copy( this ), colorSpace ?? SRGBColorSpace  );
 
 		return Math.round( clamp( _color.r * 255, 0, 255 ) ) * 65536 + Math.round( clamp( _color.g * 255, 0, 255 ) ) * 256 + Math.round( clamp( _color.b * 255, 0, 255 ) );
 	}
@@ -493,8 +500,9 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 	 * @param {string} [colorSpace=SRGBColorSpace] - The color space.
 	 * @return {string} The hexadecimal value as a string.
 	 */
-	public function getHexString( colorSpace = SRGBColorSpace ) {
-		return ( '000000' + this.getHex( colorSpace ).toString( 16 ) ).slice( - 6 );
+	public function getHexString( ?colorSpace  ) {
+		ColorManagement.fromWorkingColorSpace( _color.copy( this ), colorSpace ?? SRGBColorSpace  );
+		return (MathUtils._lut[Std.int(_color.r * 255)] + MathUtils._lut[Std.int(_color.g * 255)] + MathUtils._lut[Std.int(_color.b * 255)]).toUpperCase();
 	}
 
 	/**
@@ -505,18 +513,18 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 	 * @param {string} [colorSpace=ColorManagement.workingColorSpace] - The color space.
 	 * @return {{h:number,s:number,l:number}} The HSL representation of this color.
 	 */
-	public function getHSL( target, colorSpace = ColorManagement.workingColorSpace ) {
+	public function getHSL( ?target:{h:Float,s:Float,l:Float}, ?colorSpace  ) {
 
 		// h,s,l ranges are in 0.0 - 1.0
 
-		ColorManagement.fromWorkingColorSpace( _color.copy( this ), colorSpace );
+		ColorManagement.fromWorkingColorSpace( _color.copy( this ), colorSpace ?? ColorManagement.workingColorSpace );
 
 		var r = _color.r, g = _color.g, b = _color.b;
 
-		var max = Math.max( r, g, b );
-		var min = Math.min( r, g, b );
+		var max = Math.max( Math.max(r, g), b );
+		var min = Math.min( Math.min(r, g), b );
 
-		var hue, saturation;
+		var hue:Float, saturation:Float;
 		var lightness = ( min + max ) / 2.0;
 
 		if ( min == max ) {
@@ -530,17 +538,18 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 
 			saturation = lightness <= 0.5 ? delta / ( max + min ) : delta / ( 2 - max - min );
 
-			switch ( max ) {
-
-				case r: hue = ( g - b ) / delta + ( g < b ? 6 : 0 ); break;
-				case g: hue = ( b - r ) / delta + 2; break;
-				case b: hue = ( r - g ) / delta + 4; break;
-
-			}
+			if (r == max)
+				hue = ( g - b ) / delta + ( g < b ? 6 : 0 ); 
+			else if (g == max)
+				hue = ( b - r ) / delta + 2; 
+			else
+				hue = ( r - g ) / delta + 4; 
 
 			hue /= 6;
 
 		}
+		if (target == null)
+			return {h:hue, s:saturation, l:lightness};
 
 		target.h = hue;
 		target.s = saturation;
@@ -557,9 +566,9 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 	 * @param {string} [colorSpace=ColorManagement.workingColorSpace] - The color space.
 	 * @return {Color} The RGB representation of this color.
 	 */
-	public function getRGB( target, colorSpace = ColorManagement.workingColorSpace ) {
+	public function getRGB( target, ?colorSpace ) {
 
-		ColorManagement.fromWorkingColorSpace( _color.copy( this ), colorSpace );
+		ColorManagement.fromWorkingColorSpace( _color.copy( this ), colorSpace ?? ColorManagement.workingColorSpace );
 
 		target.r = _color.r;
 		target.g = _color.g;
@@ -575,16 +584,21 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 	 * @param {string} [colorSpace=SRGBColorSpace] - The color space.
 	 * @return {string} The CSS representation of this color.
 	 */
-	public function getStyle( colorSpace = SRGBColorSpace ) {
-
+	public function getStyle( ?colorSpace  ) {
+		colorSpace = colorSpace ?? SRGBColorSpace;
 		ColorManagement.fromWorkingColorSpace( _color.copy( this ), colorSpace );
 
 		var r = _color.r, g = _color.g, b = _color.b;
+		#if flixel
+		r = flxRoundDecimal(r, 2);
+		g = flxRoundDecimal(g, 2);
+		b = flxRoundDecimal(b, 2);
+		#end
 
 		if ( colorSpace != SRGBColorSpace ) {
 
 			// Requires CSS Color Module Level 4 (https://www.w3.org/TR/css-color-4/).
-			return 'color(${ colorSpace } ${ r.toFixed( 3 ) } ${ g.toFixed( 3 ) } ${ b.toFixed( 3 ) })';
+			return 'color(${ colorSpace } ${ r } ${ g } ${ b })';
 
 		}
 
@@ -716,7 +730,7 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 	 * @param {number} alpha - The interpolation factor in the closed interval `[0,1]`.
 	 * @return {Color} A reference to this color.
 	 */
-	public function lerp( color, alpha ) {
+	public function lerp( color:Color, alpha:Float ) {
 
 		this.r += ( color.r - this.r ) * alpha;
 		this.g += ( color.g - this.g ) * alpha;
@@ -762,9 +776,9 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 		this.getHSL( _hslA );
 		color.getHSL( _hslB );
 
-		var h = lerp( _hslA.h, _hslB.h, alpha );
-		var s = lerp( _hslA.s, _hslB.s, alpha );
-		var l = lerp( _hslA.l, _hslB.l, alpha );
+		var h = MathUtils.lerp( _hslA.h, _hslB.h, alpha );
+		var s = MathUtils.lerp( _hslA.s, _hslB.s, alpha );
+		var l = MathUtils.lerp( _hslA.l, _hslB.l, alpha );
 
 		this.setHSL( h, s, l );
 
@@ -844,8 +858,9 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
 	 * @param {number} [offset=0] - Index of the first element in the array.
 	 * @return {Array<number>} The color components.
 	 */
-	public function toArray( array = [], offset = 0 ) {
-
+	public function toArray( ?array:Array<Float>, ?offset = 0 ) {
+		if (array == null)
+			array = [];
 		array[ offset ] = this.r;
 		array[ offset + 1 ] = this.g;
 		array[ offset + 2 ] = this.b;
@@ -909,7 +924,7 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
         return [this.r, this.g, this.b].iterator();
     }
 
-    static function hue2rgb( p, q, t ) {
+    static function hue2rgb( p:Float, q:Float, t:Float ) {
         if ( t < 0 ) t += 1;
         if ( t > 1 ) t -= 1;
         if ( t < 1 / 6 ) return p + ( q - p ) * 6 * t;
@@ -918,7 +933,7 @@ class Color implements vman2002.vthreehx.interfaces.ToJson {
         return p;
     }
 
-    static var _hslA = { h: 0, s: 0, l: 0 };
-    static var _hslB = { h: 0, s: 0, l: 0 };
+    static var _hslA:{h:Float,s:Float,l:Float} = { h: 0, s: 0, l: 0 };
+    static var _hslB:{h:Float,s:Float,l:Float} = { h: 0, s: 0, l: 0 };
     static var _color = /*@__PURE__*/ new Color();
 }
