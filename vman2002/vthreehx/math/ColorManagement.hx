@@ -7,8 +7,16 @@ import vman2002.vthreehx.Constants.LinearTransfer in LinearTransfer;
 import vman2002.vthreehx.Constants.NoColorSpace in NoColorSpace;
 import vman2002.vthreehx.math.Matrix3;
 
-//TODO: make a better typedef
-typedef ColorSpace = Dynamic;
+typedef ColorSpace = {
+    primaries:Array<Float>,
+    whitePoint:Array<Float>,
+    transfer:String,
+    toXYZ:Matrix3,
+    fromXYZ:Matrix3,
+    luminanceCoefficients: Array<Float>,
+    ?outputColorSpaceConfig: {drawingBufferColorSpace:ColorSpace},
+    ?workingColorSpaceConfig: {unpackColorSpace:ColorSpace}
+}
 
 class ColorManagement {
     public static var LINEAR_REC709_TO_XYZ = new Matrix3().set(

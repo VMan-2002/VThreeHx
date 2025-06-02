@@ -1,5 +1,6 @@
 package vman2002.vthreehx.core;
 
+import vman2002.vthreehx.objects.Mesh;
 import vman2002.vthreehx.cameras.Camera;
 import vman2002.vthreehx.interfaces.GetType;
 import vman2002.vthreehx.math.Quaternion;
@@ -1132,8 +1133,8 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher implements GetType
 			return element.uuid;
 		}
 
-		if ( false /*Std.isOfType(this, Scene)*/ ) { //TODO: when we have Scene class
-			/*if ( this.background ) {
+		if ( Std.isOfType(this, Scene) ) {
+			if ( this.background ) {
 				if ( this.background.isColor ) {
 					object.background = this.background.toJSON();
 				} else if ( this.background.isTexture ) {
@@ -1143,10 +1144,10 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher implements GetType
 
 			if ( this.environment && this.environment.isTexture && this.environment.isRenderTargetTexture != true ) {
 				object.environment = this.environment.toJSON( meta ).uuid;
-			}*/
+			}
 
-		} else if ( false ) { //TODO: this.isMesh || this.isLine || this.isPoints
-			/*object.geometry = serialize( meta.geometries, this.geometry );
+		} else if ( Std.downcast(this, Mesh) != null ) { //TODO: this.isMesh || this.isLine || this.isPoints
+			object.geometry = serialize( meta.geometries, this.geometry );
 			var parameters = this.geometry.parameters;
 
 			if ( parameters != null && parameters.shapes != null ) {
@@ -1161,7 +1162,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher implements GetType
 				} else {
 					serialize( meta.shapes, shapes );
 				}
-			}*/
+			}
 		}
 
 		if ( false ) { //TODO: isSkinnedMesh
@@ -1174,8 +1175,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher implements GetType
 			}*/
 		}
 
-		//TODO: things with materials
-		/*if ( this.material != null ) {
+		if ( this.material != null ) {
 			if ( Array.isArray( this.material ) ) {
 				var uuids = [];
 				for ( i in 0...this.material.length )
@@ -1185,7 +1185,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher implements GetType
 			} else {
 				object.material = serialize( meta.materials, this.material );
 			}
-		}*/
+		}
 
 		//
 

@@ -307,11 +307,11 @@ class Box3 {
 			// precise AABB computation based on vertex data requires at least a position attribute.
 			// instancing isn't supported so far and uses the normal (conservative) code path.
 
-			/*if ( precise == true && positionAttribute != null && object.isInstancedMesh != true ) {
+			if ( precise && positionAttribute != null ) { //TODO: ensure object isn't InstancedMesh
 
 				for ( i in 0...positionAttribute.count ) {
 
-					if ( object.isMesh == true  ) {//TODO: isMesh
+					if ( Std.downcast(object, Mesh) != null  ) {//TODO: isMesh
 
 						object.getVertexPosition( i, _vector );
 
@@ -359,7 +359,7 @@ class Box3 {
 
 				this.union( _box );
 
-			}*/
+			}
 
 		}
 

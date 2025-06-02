@@ -621,8 +621,7 @@ class BufferGeometry extends EventDispatcher implements GetType {
 		var position = this.attributes.position;
 		var morphAttributesPosition:Array<Float32BufferAttribute> = this.morphAttributes.position;
 
-        //TODO: for GLBufferAttribute
-		/*if ( position && position.isGLBufferAttribute ) {
+		if ( position != null && Std.isOfType(position, BufferAttribute) ) {
 
 			Common.error( 'THREE.BufferGeometry.computeBoundingBox(): GLBufferAttribute requires a manual bounding box.', this );
 
@@ -633,7 +632,7 @@ class BufferGeometry extends EventDispatcher implements GetType {
 
 			return;
 
-		}*/
+		}
 
 		if ( position != null ) {
 
@@ -695,14 +694,13 @@ class BufferGeometry extends EventDispatcher implements GetType {
 		var position = this.attributes.position;
 		var morphAttributesPosition:Array<Float32BufferAttribute> = this.morphAttributes.position;
 
-        //TODO: for GLBufferAttribute
-		/*if ( position && position.isGLBufferAttribute ) {
+		if ( position != null && Std.isOfType(position, BufferAttribute) ) {
 			Common.error( 'THREE.BufferGeometry.computeBoundingSphere(): GLBufferAttribute requires a manual bounding sphere.', this );
 
 			this.boundingSphere.set( new Vector3(), Infinity );
 
 			return;
-		}*/
+		}
 
 		if ( position != null ) {
 
