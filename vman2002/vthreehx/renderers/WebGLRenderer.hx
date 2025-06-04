@@ -48,11 +48,12 @@ import vman2002.vthreehx.renderers.webgl.WebGLRenderLists;
 import vman2002.vthreehx.renderers.webgl.WebGLRenderStates;
 import vman2002.vthreehx.renderers.webgl.WebGLRenderTarget;
 import vman2002.vthreehx.renderers.webgl.WebGLShadowMap;
-import vman2002.vthreehx.renderers.webgl.WebGWebGLStateLProperties;
+import vman2002.vthreehx.renderers.webgl.WebGLState;
 import vman2002.vthreehx.renderers.webgl.WebGLTextures;
 import vman2002.vthreehx.renderers.webgl.WebGLUniforms;
 import vman2002.vthreehx.renderers.webgl.WebGLUtils;
-import vman2002.vthreehx.renderers.webxr.WebXRManager;
+//TODO: WebXRManager
+//import vman2002.vthreehx.renderers.webxr.WebXRManager;
 import vman2002.vthreehx.renderers.webgl.WebGLMaterials;
 import vman2002.vthreehx.renderers.webgl.WebGLUniformsGroups;
 import vman2002.vthreehx.Utils.warnOnce;
