@@ -1153,7 +1153,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher implements GetType
 			if ( parameters != null && parameters.shapes != null ) {
 				var shapes = parameters.shapes;
 
-				if ( Array.isArray( shapes ) ) {
+				if ( Std.isOfType( shapes, Array ) ) {
 					for ( i in 0...shapes.length ) {
 						var shape = shapes[ i ];
 
@@ -1176,7 +1176,7 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher implements GetType
 		}
 
 		if ( this.material != null ) {
-			if ( Array.isArray( this.material ) ) {
+			if ( Std.isOfType( this.material, Array ) ) {
 				var uuids = [];
 				for ( i in 0...this.material.length )
 					uuids.push( serialize( meta.materials, this.material[ i ] ) );
