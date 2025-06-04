@@ -6,6 +6,7 @@ import vman2002.vthreehx.Constants.SRGBTransfer in SRGBTransfer;
 import vman2002.vthreehx.Constants.LinearTransfer in LinearTransfer;
 import vman2002.vthreehx.Constants.NoColorSpace in NoColorSpace;
 import vman2002.vthreehx.math.Matrix3;
+import vman2002.vthreehx.math.Color;
 
 typedef ColorSpace = {
     primaries:Array<Float>,
@@ -82,7 +83,7 @@ class ColorManagement {
 		}
     ];
 
-    public static function convert ( color, sourceColorSpace:String, targetColorSpace:String ) {
+    public static function convert ( color:Color, sourceColorSpace:String, targetColorSpace:String ) {
 
         if ( !enabled || sourceColorSpace == targetColorSpace || sourceColorSpace == null || targetColorSpace == null ) {
 

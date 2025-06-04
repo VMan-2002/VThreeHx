@@ -5,6 +5,7 @@ import vman2002.vthreehx.Constants.WebGPUCoordinateSystem;
 import vman2002.vthreehx.math.Vector3;
 import vman2002.vthreehx.math.Sphere;
 import vman2002.vthreehx.math.Plane;
+import vman2002.vthreehx.core.Object3D;
 
 /**
  * Frustums are used to determine what is inside the camera's field of view.
