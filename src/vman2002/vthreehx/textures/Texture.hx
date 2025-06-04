@@ -344,7 +344,6 @@ class Texture extends EventDispatcher {
 	 * @param {string} [colorSpace=NoColorSpace] - The color space.
 	 */
 	public function new( ?image:Dynamic, ?mapping, ?wrapS, ?wrapT, ?magFilter, ?minFilter, ?format, ?type, ?anisotropy, ?colorSpace ) {
-
 		super();
 
         this.source = new Source(image ?? DEFAULT_IMAGE);

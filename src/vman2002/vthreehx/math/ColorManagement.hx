@@ -14,8 +14,8 @@ typedef ColorSpace = {
     toXYZ:Matrix3,
     fromXYZ:Matrix3,
     luminanceCoefficients: Array<Float>,
-    ?outputColorSpaceConfig: {drawingBufferColorSpace:ColorSpace},
-    ?workingColorSpaceConfig: {unpackColorSpace:ColorSpace}
+    ?outputColorSpaceConfig: {drawingBufferColorSpace:String},
+    ?workingColorSpaceConfig: {unpackColorSpace:String}
 }
 
 class ColorManagement {

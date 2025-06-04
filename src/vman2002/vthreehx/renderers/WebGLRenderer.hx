@@ -577,7 +577,7 @@ class WebGLRenderer {
         * @param {number} height - The height in logical pixels.
         * @param {boolean} [updateStyle=true] - Whether to update the `style` attribute of the canvas or not.
         */
-    public function setSize( width, height, updateStyle = true ) {
+    public function setSize( width:Int, height:Int, updateStyle = true ) {
 
         //TODO: xr stuff
         /*if ( xr.isPresenting ) {

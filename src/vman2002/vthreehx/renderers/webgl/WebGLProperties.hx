@@ -17,7 +17,7 @@ class WebGLProperties {
 
         var map:Dynamic = properties.get( object );
 
-        if ( map == undefined ) {
+        if ( map == null ) {
 
             map = {};
             properties.set( object, map );
@@ -30,7 +30,7 @@ class WebGLProperties {
 
     public function remove( object ) {
 
-        properties.delete( object );
+        properties.remove( object );
 
     }
 
