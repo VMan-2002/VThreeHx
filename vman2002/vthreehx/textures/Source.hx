@@ -34,7 +34,7 @@ class Source {
 		 *
 		 * @type {any}
 		 */
-		public var data:Dynamic;
+		public var data:openfl.display.Bitmap;
 
 		/**
 		 * This property is only relevant when {@link Source#needsUpdate} is set to `true` and
