@@ -2,6 +2,7 @@ package vman2002.vthreehx.renderers;
 
 //goodluck
 
+import vman2002.vthreehx.materials.MeshBasicMaterial;
 import vman2002.vthreehx.Constants.REVISION;
 import vman2002.vthreehx.Constants.BackSide;
 import vman2002.vthreehx.Constants.FrontSide;
@@ -60,6 +61,7 @@ import vman2002.vthreehx.Utils.warnOnce;
 import vman2002.vthreehx.Utils.toNormalizedProjectionMatix;
 import vman2002.vthreehx.Utils.toReversedProjectionMatrix;
 //import { createCanvasElement, probeAsync, } from '../utils.js';
+import vman2002.vthreehx.materials.MeshStandardMaterial;
 
 /**
  * This renderer uses WebGL 2 to display scenes.
@@ -2159,21 +2161,23 @@ class WebGLRenderer {
 
     }
 
-    function setProgram( camera, scene, geometry, material, object ) {
+    function setProgram( camera:Camera, scene:Scene, geometry:BufferGeometry, material:Material, object:Object3D ) {
 
         if ( scene.isScene != true ) scene = _emptyScene; // scene could be a Mesh, Line, Points, ...
 
         textures.resetTextureUnits();
 
+        var isMeshStandardMaterial = Std.downcast(material, MeshStandardMaterial) != null;
+
         var fog = scene.fog;
-        var environment = material.isMeshStandardMaterial ? scene.environment : null;
+        var environment = isMeshStandardMaterial ? scene.environment : null;
         var colorSpace = ( _currentRenderTarget == null ) ? this.outputColorSpace : ( _currentRenderTarget.isXRRenderTarget == true ? _currentRenderTarget.texture.colorSpace : LinearSRGBColorSpace );
-        var envMap = ( material.isMeshStandardMaterial ? cubeuvmaps : cubemaps ).get( material.envMap || environment );
-        var vertexAlphas = material.vertexColors == true && !! geometry.attributes.color && geometry.attributes.color.itemSize == 4;
-        var vertexTangents = !! geometry.attributes.tangent && ( !! material.normalMap || material.anisotropy > 0 );
-        var morphTargets = !! geometry.morphAttributes.position;
-        var morphNormals = !! geometry.morphAttributes.normal;
-        var morphColors = !! geometry.morphAttributes.color;
+        var envMap = ( isMeshStandardMaterial ? cubeuvmaps : cubemaps ).get( material.envMap || environment );
+        var vertexAlphas = material.vertexColors == true && geometry.attributes.color != null && geometry.attributes.color.itemSize == 4;
+        var vertexTangents = geometry.attributes.tangent && ( material.normalMap != null || material.anisotropy > 0 );
+        var morphTargets = geometry.morphAttributes.position != null;
+        var morphNormals = geometry.morphAttributes.normal != null;
+        var morphColors = geometry.morphAttributes.color != null;
 
         var toneMapping = NoToneMapping;
 
@@ -2396,14 +2400,11 @@ class WebGLRenderer {
 
             // consider moving isOrthographic to UniformLib and WebGLMaterials, see https://github.com/mrdoob/three.js/pull/26467#issuecomment-1645185067
 
-            if ( material.isMeshPhongMaterial ||
-                material.isMeshToonMaterial ||
-                material.isMeshLambertMaterial ||
-                material.isMeshBasicMaterial ||
-                material.isMeshStandardMaterial ||
-                material.isShaderMaterial ) {
+            // TODO: MeshPhongMaterial, MeshToonMaterial, MeshLambertMaterial, MeshBasicMaterial, MeshStandardMaterial, ShaderMaterial
+            if ( isStandardMaterial
+                || Std.downcast(material, MeshBasicMaterial) != null) {
 
-                p_uniforms.setValue( context, 'isOrthographic', camera.isOrthographicCamera == true );
+                //p_uniforms.setValue( context, 'isOrthographic', false ); //TODO: ortho camera
 
             }
 
