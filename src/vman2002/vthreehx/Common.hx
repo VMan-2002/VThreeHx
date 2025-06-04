@@ -114,6 +114,10 @@ class Common {
             obj = Type.getClass(obj);
         return obj != TypedArray.Float32Array/* && obj != TypedArray.Float16Array*/;
     }
+
+    public static function log(s:String) {
+        trace("[LOG] "+s);
+    }
 }
 
 /*#if lime

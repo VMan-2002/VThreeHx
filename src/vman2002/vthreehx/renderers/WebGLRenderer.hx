@@ -234,27 +234,103 @@ class WebGLRenderer {
 		var uintClearColor = new Uint32Array( 4 );
 		var intClearColor = new Int32Array( 4 );
 
+			/**
+			 * Holds details about the capabilities of the current rendering context.
+			 *
+			 * @name WebGLRenderer#capabilities
+			 * @type {WebGLRenderer~Capabilities}
+			 */
+			public var capabilities:Dynamic = null;
+
+			/**
+			 * Provides methods for retrieving and testing WebGL extensions.
+			 *
+			 * - `get(extensionName:string)`: Used to check whether a WebGL extension is supported
+			 * and return the extension object if available.
+			 * - `has(extensionName:string)`: returns `true` if the extension is supported.
+			 *
+			 * @name WebGLRenderer#extensions
+			 * @type {Object}
+			 */
+			public var extensions:Dynamic = null;
+
+			/**
+			 * Used to track properties of other objects like native WebGL objects.
+			 *
+			 * @name WebGLRenderer#properties
+			 * @type {Object}
+			 */
+			public var properties:Dynamic = null;
+
+			/**
+			 * Manages the render lists of the renderer.
+			 *
+			 * @name WebGLRenderer#renderLists
+			 * @type {Object}
+			 */
+			public var renderLists:Dynamic = null;
+
+
+
+			/**
+			 * Interface for managing shadows.
+			 *
+			 * @name WebGLRenderer#shadowMap
+			 * @type {WebGLRenderer~ShadowMap}
+			 */
+			public var shadowMap:Dynamic = null;
+
+			/**
+			 * Interface for managing the WebGL state.
+			 *
+			 * @name WebGLRenderer#state
+			 * @type {Object}
+			 */
+			public var state:Dynamic = null;
+
+			/**
+			 * Holds a series of statistical information about the GPU memory
+			 * and the rendering process. Useful for debugging and monitoring.
+			 *
+			 * By default these data are reset at each render call but when having
+			 * multiple render passes per frame (e.g. when using post processing) it can
+			 * be preferred to reset with a custom pattern. First, set `autoReset` to
+			 * `false`.
+			 * ```js
+			 * renderer.info.autoReset:Dynamic = null;
+			 * ```
+			 * Call `reset()` whenever you have finished to render a single frame.
+			 * ```js
+			 * renderer.info.reset();
+			 * ```
+			 *
+			 * @name WebGLRenderer#info
+			 * @type {WebGLRenderer~Info}
+			 */
+			public var info:Dynamic = null;
+
 	/**
 	 * Constructs a new WebGL renderer.
 	 *
 	 * @param {WebGLRenderer~Options} [parameters] - The configuration parameter.
 	 */
-	public function new( parameters:Dynamic ) {
+	public function new( ?parameters:Dynamic ) {
+        if (parameters != null) {
+            inline function put(n) {
+                if (Reflect.hasField(parameters, n)) Reflect.setProperty(this, n, Reflect.field(parameters, n));
+            }
 
-        inline function put(n) {
-            if (Reflect.hasField(parameters, n)) Reflect.setProperty(this, n, Reflect.field(parameters, n));
+            put("context");
+            put("depth");
+            put("stencil");
+            put("alpha");
+            put("antialias");
+            put("premultipliedAlpha");
+            put("preserveDrawingBuffer");
+            put("powerPreference");
+            put("failIfMajorPerformanceCaveat");
+            put("reverseDepthBuffer");
         }
-
-        put("context");
-        put("depth");
-        put("stencil");
-        put("alpha");
-        put("antialias");
-        put("premultipliedAlpha");
-        put("preserveDrawingBuffer");
-        put("powerPreference");
-        put("failIfMajorPerformanceCaveat");
-        put("reverseDepthBuffer");
 
 		var _alpha;
 
@@ -288,7 +364,7 @@ class WebGLRenderer {
 
 		var context = context;
 
-		function getContext( contextName, contextAttributes ) {
+		function getContext( contextName, ?contextAttributes ) {
 
 			return canvas.getContext( contextName, contextAttributes );
 
@@ -372,20 +448,20 @@ class WebGLRenderer {
 			info = new WebGLInfo( context );
 			properties = new WebGLProperties();
 			textures = new WebGLTextures( context, extensions, state, properties, capabilities, utils, info );
-			cubemaps = new WebGLCubeMaps( _this );
-			cubeuvmaps = new WebGLCubeUVMaps( _this );
+			cubemaps = new WebGLCubeMaps( this );
+			cubeuvmaps = new WebGLCubeUVMaps( this );
 			attributes = new WebGLAttributes( context );
 			bindingStates = new WebGLBindingStates( context, attributes );
 			geometries = new WebGLGeometries( context, attributes, info, bindingStates );
 			objects = new WebGLObjects( context, geometries, attributes, info );
 			morphtargets = new WebGLMorphtargets( context, capabilities, textures );
 			clipping = new WebGLClipping( properties );
-			programCache = new WebGLPrograms( _this, cubemaps, cubeuvmaps, extensions, capabilities, bindingStates, clipping );
-			materials = new WebGLMaterials( _this, properties );
+			programCache = new WebGLPrograms( this, cubemaps, cubeuvmaps, extensions, capabilities, bindingStates, clipping );
+			materials = new WebGLMaterials( this, properties );
 			renderLists = new WebGLRenderLists();
 			renderStates = new WebGLRenderStates( extensions );
-			background = new WebGLBackground( _this, cubemaps, cubeuvmaps, state, objects, _alpha, premultipliedAlpha );
-			shadowMap = new WebGLShadowMap( _this, objects, capabilities );
+			background = new WebGLBackground( this, cubemaps, cubeuvmaps, state, objects, _alpha, premultipliedAlpha );
+			shadowMap = new WebGLShadowMap( this, objects, capabilities );
 			uniformsGroups = new WebGLUniformsGroups( context, info, capabilities, state );
 
 			bufferRenderer = new WebGLBufferRenderer( context, extensions, info );
@@ -393,80 +469,13 @@ class WebGLRenderer {
 
 			info.programs = programCache.programs;
 
-			/**
-			 * Holds details about the capabilities of the current rendering context.
-			 *
-			 * @name WebGLRenderer#capabilities
-			 * @type {WebGLRenderer~Capabilities}
-			 */
-			_this.capabilities = capabilities;
-
-			/**
-			 * Provides methods for retrieving and testing WebGL extensions.
-			 *
-			 * - `get(extensionName:string)`: Used to check whether a WebGL extension is supported
-			 * and return the extension object if available.
-			 * - `has(extensionName:string)`: returns `true` if the extension is supported.
-			 *
-			 * @name WebGLRenderer#extensions
-			 * @type {Object}
-			 */
-			_this.extensions = extensions;
-
-			/**
-			 * Used to track properties of other objects like native WebGL objects.
-			 *
-			 * @name WebGLRenderer#properties
-			 * @type {Object}
-			 */
-			_this.properties = properties;
-
-			/**
-			 * Manages the render lists of the renderer.
-			 *
-			 * @name WebGLRenderer#renderLists
-			 * @type {Object}
-			 */
-			_this.renderLists = renderLists;
-
-
-
-			/**
-			 * Interface for managing shadows.
-			 *
-			 * @name WebGLRenderer#shadowMap
-			 * @type {WebGLRenderer~ShadowMap}
-			 */
-			_this.shadowMap = shadowMap;
-
-			/**
-			 * Interface for managing the WebGL state.
-			 *
-			 * @name WebGLRenderer#state
-			 * @type {Object}
-			 */
-			_this.state = state;
-
-			/**
-			 * Holds a series of statistical information about the GPU memory
-			 * and the rendering process. Useful for debugging and monitoring.
-			 *
-			 * By default these data are reset at each render call but when having
-			 * multiple render passes per frame (e.g. when using post processing) it can
-			 * be preferred to reset with a custom pattern. First, set `autoReset` to
-			 * `false`.
-			 * ```js
-			 * renderer.info.autoReset = false;
-			 * ```
-			 * Call `reset()` whenever you have finished to render a single frame.
-			 * ```js
-			 * renderer.info.reset();
-			 * ```
-			 *
-			 * @name WebGLRenderer#info
-			 * @type {WebGLRenderer~Info}
-			 */
-			_this.info = info;
+			this.capabilities = capabilities;
+			this.extensions = extensions;
+			this.properties = properties;
+			this.renderLists = renderLists;
+			this.shadowMap = shadowMap;
+			this.state = state;
+			this.info = info;
 
 		}
 
@@ -488,7 +497,7 @@ class WebGLRenderer {
     // xr
 
     //TODO: XR stuff
-    //var xr = new WebXRManager( _this, context );
+    //var xr = new WebXRManager( this, context );
 
     /**
         * A reference to the XR manager.
@@ -806,9 +815,9 @@ class WebGLRenderer {
         * @param {Color} color - The clear color.
         * @param {number} [alpha=1] - The clear alpha.
         */
-    public function setClearColor() {
+    public function setClearColor(?color:Color, ?alpha:Float = 1) {
 
-        background.setClearColor( ...arguments );
+        background.setClearColor( color, alpha );
 
     };
 
@@ -828,9 +837,9 @@ class WebGLRenderer {
         *
         * @param {number} alpha - The clear alpha.
         */
-    public function setClearAlpha() {
+    public function setClearAlpha(alpha:Float) {
 
-        background.setClearAlpha( ...arguments );
+        background.setClearAlpha( alpha );
 
     };
 
@@ -1491,9 +1500,9 @@ class WebGLRenderer {
         * @param {Object3D} scene - The scene to render.
         * @param {Camera} camera - The camera.
         */
-    public function render( scene, camera ) {
+    public function render( scene:Object3D, camera:Camera ) {
 
-        if ( camera != null && camera.isCamera != true ) {
+        if ( camera != null && Std.downcast(camera, Camera) == null ) {
 
             Common.error( 'THREE.WebGLRenderer.render: camera is not an instance of THREE.Camera.' );
             return;
@@ -1520,7 +1529,7 @@ class WebGLRenderer {
         }*/
 
         //
-        if ( scene.isScene == true ) scene.onBeforeRender( _this, scene, camera, _currentRenderTarget );
+        if ( scene.isScene == true ) scene.onBeforeRender( this, scene, camera, _currentRenderTarget );
 
         currentRenderState = renderStates.get( scene, renderStateStack.length );
         currentRenderState.init( camera );
@@ -1541,21 +1550,21 @@ class WebGLRenderer {
         //TODO: xr
         /*if ( xr.enabled == true && xr.isPresenting == true ) {
 
-            var depthSensingMesh = _this.xr.getDepthSensingMesh();
+            var depthSensingMesh = this.xr.getDepthSensingMesh();
 
             if ( depthSensingMesh != null ) {
 
-                projectObject( depthSensingMesh, camera, - Infinity, _this.sortObjects );
+                projectObject( depthSensingMesh, camera, - Infinity, this.sortObjects );
 
             }
 
         }*/
 
-        projectObject( scene, camera, 0, _this.sortObjects );
+        projectObject( scene, camera, 0, this.sortObjects );
 
         currentRenderList.finish();
 
-        if ( _this.sortObjects == true ) {
+        if ( this.sortObjects == true ) {
 
             currentRenderList.sort( _opaqueSort, _transparentSort );
 
@@ -1645,7 +1654,7 @@ class WebGLRenderer {
 
         //
 
-        if ( scene.isScene == true ) scene.onAfterRender( _this, scene, camera );
+        if ( scene.isScene == true ) scene.onAfterRender( this, scene, camera );
 
         // context.finish();
 
@@ -1659,7 +1668,7 @@ class WebGLRenderer {
 
             currentRenderState = renderStateStack[ renderStateStack.length - 1 ];
 
-            if ( _clippingEnabled == true ) clipping.setGlobalState( _this.clippingPlanes, currentRenderState.state.camera );
+            if ( _clippingEnabled == true ) clipping.setGlobalState( this.clippingPlanes, currentRenderState.state.camera );
 
         } else {
 
@@ -1803,7 +1812,7 @@ class WebGLRenderer {
 
         currentRenderState.setupLightsView( camera );
 
-        if ( _clippingEnabled == true ) clipping.setGlobalState( _this.clippingPlanes, camera );
+        if ( _clippingEnabled == true ) clipping.setGlobalState( this.clippingPlanes, camera );
 
         if ( viewport ) state.viewport( _currentViewport.copy( viewport ) );
 
@@ -1859,25 +1868,25 @@ class WebGLRenderer {
         var transmissionRenderTarget = currentRenderState.state.transmissionRenderTarget[ camera.id ];
 
         var activeViewport = camera.viewport || _currentViewport;
-        transmissionRenderTarget.setSize( activeViewport.z * _this.transmissionResolutionScale, activeViewport.w * _this.transmissionResolutionScale );
+        transmissionRenderTarget.setSize( activeViewport.z * this.transmissionResolutionScale, activeViewport.w * this.transmissionResolutionScale );
 
         //
 
-        var currentRenderTarget = _this.getRenderTarget();
-        _this.setRenderTarget( transmissionRenderTarget );
+        var currentRenderTarget = this.getRenderTarget();
+        this.setRenderTarget( transmissionRenderTarget );
 
-        _this.getClearColor( _currentClearColor );
-        _currentClearAlpha = _this.getClearAlpha();
-        if ( _currentClearAlpha < 1 ) _this.setClearColor( 0xffffff, 0.5 );
+        this.getClearColor( _currentClearColor );
+        _currentClearAlpha = this.getClearAlpha();
+        if ( _currentClearAlpha < 1 ) this.setClearColor( 0xffffff, 0.5 );
 
-        _this.clear();
+        this.clear();
 
         if ( _renderBackground ) background.render( scene );
 
         // Turn off the features which can affect the frag color for opaque objects pass.
         // Otherwise they are applied twice in opaque objects pass and transmission objects pass.
-        var currentToneMapping = _this.toneMapping;
-        _this.toneMapping = NoToneMapping;
+        var currentToneMapping = this.toneMapping;
+        this.toneMapping = NoToneMapping;
 
         // Remove viewport from camera to avoid nested render calls resetting viewport to it (e.g Reflector).
         // Transmission render pass requires viewport to match the transmissionRenderTarget.
@@ -1886,7 +1895,7 @@ class WebGLRenderer {
 
         currentRenderState.setupLightsView( camera );
 
-        if ( _clippingEnabled == true ) clipping.setGlobalState( _this.clippingPlanes, camera );
+        if ( _clippingEnabled == true ) clipping.setGlobalState( this.clippingPlanes, camera );
 
         renderObjects( opaqueObjects, scene, camera );
 
@@ -1933,13 +1942,13 @@ class WebGLRenderer {
 
         }
 
-        _this.setRenderTarget( currentRenderTarget );
+        this.setRenderTarget( currentRenderTarget );
 
-        _this.setClearColor( _currentClearColor, _currentClearAlpha );
+        this.setClearColor( _currentClearColor, _currentClearAlpha );
 
         if ( currentCameraViewport != null ) camera.viewport = currentCameraViewport;
 
-        _this.toneMapping = currentToneMapping;
+        this.toneMapping = currentToneMapping;
 
     }
 
@@ -1974,32 +1983,32 @@ class WebGLRenderer {
 
     function renderObject( object, scene, camera, geometry, material, group ) {
 
-        object.onBeforeRender( _this, scene, camera, geometry, material, group );
+        object.onBeforeRender( this, scene, camera, geometry, material, group );
 
         object.modelViewMatrix.multiplyMatrices( camera.matrixWorldInverse, object.matrixWorld );
         object.normalMatrix.getNormalMatrix( object.modelViewMatrix );
 
-        material.onBeforeRender( _this, scene, camera, geometry, object, group );
+        material.onBeforeRender( this, scene, camera, geometry, object, group );
 
         if ( material.transparent == true && material.side == DoubleSide && material.forceSinglePass == false ) {
 
             material.side = BackSide;
             material.needsUpdate = true;
-            _this.renderBufferDirect( camera, scene, geometry, material, object, group );
+            this.renderBufferDirect( camera, scene, geometry, material, object, group );
 
             material.side = FrontSide;
             material.needsUpdate = true;
-            _this.renderBufferDirect( camera, scene, geometry, material, object, group );
+            this.renderBufferDirect( camera, scene, geometry, material, object, group );
 
             material.side = DoubleSide;
 
         } else {
 
-            _this.renderBufferDirect( camera, scene, geometry, material, object, group );
+            this.renderBufferDirect( camera, scene, geometry, material, object, group );
 
         }
 
-        object.onAfterRender( _this, scene, camera, geometry, material, group );
+        object.onAfterRender( this, scene, camera, geometry, material, group );
 
     }
 
@@ -2055,7 +2064,7 @@ class WebGLRenderer {
 
             parameters.uniforms = programCache.getUniforms( material );
 
-            material.onBeforeCompile( parameters, _this );
+            material.onBeforeCompile( parameters, this );
 
             program = programCache.acquireProgram( parameters, programCacheKey );
             programs.set( programCacheKey, program );
@@ -2158,7 +2167,7 @@ class WebGLRenderer {
 
         var fog = scene.fog;
         var environment = material.isMeshStandardMaterial ? scene.environment : null;
-        var colorSpace = ( _currentRenderTarget == null ) ? _this.outputColorSpace : ( _currentRenderTarget.isXRRenderTarget == true ? _currentRenderTarget.texture.colorSpace : LinearSRGBColorSpace );
+        var colorSpace = ( _currentRenderTarget == null ) ? this.outputColorSpace : ( _currentRenderTarget.isXRRenderTarget == true ? _currentRenderTarget.texture.colorSpace : LinearSRGBColorSpace );
         var envMap = ( material.isMeshStandardMaterial ? cubeuvmaps : cubemaps ).get( material.envMap || environment );
         var vertexAlphas = material.vertexColors == true && !! geometry.attributes.color && geometry.attributes.color.itemSize == 4;
         var vertexTangents = !! geometry.attributes.tangent && ( !! material.normalMap || material.anisotropy > 0 );
@@ -2172,7 +2181,7 @@ class WebGLRenderer {
 
             if ( _currentRenderTarget == null || _currentRenderTarget.isXRRenderTarget == true ) {
 
-                toneMapping = _this.toneMapping;
+                toneMapping = this.toneMapping;
 
             }
 
@@ -2484,7 +2493,7 @@ class WebGLRenderer {
 
         if ( refreshMaterial ) {
 
-            p_uniforms.setValue( context, 'toneMappingExposure', _this.toneMappingExposure );
+            p_uniforms.setValue( context, 'toneMappingExposure', this.toneMappingExposure );
 
             if ( materialProperties.needsLights ) {
 
@@ -2665,7 +2674,7 @@ class WebGLRenderer {
         var isCube = false;
         var isRenderTarget3D = false;
 
-        if ( renderTarget ) {
+        if ( renderTarget != null ) {
 
             var renderTargetProperties = properties.get( renderTarget );
 
@@ -2827,7 +2836,7 @@ class WebGLRenderer {
 
         }
 
-        var framebuffer = properties.get( renderTarget ).__webglFramebuffer;
+        var framebuffer:Dynamic = properties.get( renderTarget ).__webglFramebuffer;
 
         if ( renderTarget.isWebGLCubeRenderTarget && activeCubeFaceIndex != null ) {
 
@@ -2835,7 +2844,7 @@ class WebGLRenderer {
 
         }
 
-        if ( framebuffer ) {
+        if ( framebuffer != null ) {
 
             state.bindFramebuffer( context.FRAMEBUFFER, framebuffer );
 
@@ -3380,8 +3389,6 @@ class WebGLRenderer {
 	}
 
 		// internal properties
-
-		var _this = this;
 
 		var _isContextLost = false;
 
