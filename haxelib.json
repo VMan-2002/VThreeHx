@@ -1,0 +1,15 @@
+{
+  "name": "VThreeHx",
+  "url" : "https://github.com/VMan-2002/VThreeHx/",
+  "license": "MIT",
+  "tags": ["3d"],
+  "description": "General purpose 3D library Three.js, ported to HaxeFlixel.",
+  "version": "0.0.0",
+  "classPath": "src/",
+  "releasenote": "Stuff needed for the basic Three.js example",
+  "contributors": ["VMan_2002"],
+  "dependencies": {
+    "openfl": ""
+  },
+  "main": "tools.Main"
+}
