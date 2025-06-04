@@ -431,7 +431,7 @@ class WebGLRenderer {
 		var utils, bindingStates, uniformsGroups;
 
 		function initGLContext() {
-
+            //TODO: Stuff in vman2002.vthreehx.renderers.webgl is initted here, this demonstrates explicit ordering of the classes
 			extensions = new WebGLExtensions( context );
 			extensions.init();
 
