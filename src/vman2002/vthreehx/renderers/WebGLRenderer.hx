@@ -69,7 +69,7 @@ import vman2002.vthreehx.Utils.toReversedProjectionMatrix;
 class WebGLRenderer {
 
         //TODO: Haxe canvas
-        //var canvas = createCanvasElement(),
+        var canvas:Dynamic = null;
         var context = null;
         var depth = true;
         var stencil = false;
@@ -225,6 +225,15 @@ class WebGLRenderer {
 		 */
 		public var transmissionResolutionScale = 1.0;
 
+		var currentRenderList = null;
+		var currentRenderState = null;
+
+		var renderListStack = [];
+		var renderStateStack = [];
+
+		var uintClearColor = new Uint32Array( 4 );
+		var intClearColor = new Int32Array( 4 );
+
 	/**
 	 * Constructs a new WebGL renderer.
 	 *
@@ -233,7 +242,7 @@ class WebGLRenderer {
 	public function new( parameters:Dynamic ) {
 
         inline function put(n) {
-            if (Reflect.field(parameters, n)) Reflect.setProperty(this, n);
+            if (Reflect.hasField(parameters, n)) Reflect.setProperty(this, n, Reflect.field(parameters, n));
         }
 
         put("context");
@@ -266,17 +275,8 @@ class WebGLRenderer {
 
 		}
 
-		var uintClearColor = new Uint32Array( 4 );
-		var intClearColor = new Int32Array( 4 );
-
-		var currentRenderList = null;
-		var currentRenderState = null;
-
 		// render() can be called from within a callback triggered by another render.
 		// We track this so that the nested render call gets its list and state isolated from the parent render call.
-
-		var renderListStack = [];
-		var renderStateStack = [];
 
 		function getTargetPixelRatio() {
 
