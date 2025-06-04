@@ -68,7 +68,18 @@ import vman2002.vthreehx.Utils.toReversedProjectionMatrix;
  */
 class WebGLRenderer {
 
-    var parameters = {
+    public var parameters:{
+        context:GL,
+        depth:Bool,
+        stencil:Bool,
+        alpha:Bool,
+        antialias:Bool,
+        premultipliedAlpha:Bool,
+        preserveDrawingBuffer:Bool,
+        powerPreference:String,
+        failIfMajorPerformanceCaveat:Bool,
+        reverseDepthBuffer:Bool,
+    } = {
         //TODO: Haxe canvas
         /*canvas: createCanvasElement(),*/
         context: null,
@@ -94,7 +105,7 @@ class WebGLRenderer {
 		 *
 		 * @type {DOMElement}
 		 */
-		public var domElement = canvas;
+		public var domElement = null;
 
 		/**
 		 * A object with debug configuration settings.
@@ -243,7 +254,7 @@ class WebGLRenderer {
 		if ( context != null ) {
 
             //TODO: We probably dont need this
-			/*if ( typeof WebGLRenderingContext != 'undefined' && context instanceof WebGLRenderingContext ) {
+			/*if ( typeof WebGLRenderingContext != 'null' && context instanceof WebGLRenderingContext ) {
 
 				throw ( 'THREE.WebGLRenderer: WebGL 1 is not supported since r163.' );
 
@@ -464,7 +475,7 @@ class WebGLRenderer {
 		initGLContext();
 
         //TODO: devtools whatevers
-		/*if ( typeof __THREE_DEVTOOLS__ != 'undefined' ) {
+		/*if ( typeof __THREE_DEVTOOLS__ != 'null' ) {
 
 			__THREE_DEVTOOLS__.dispatchEvent( new CustomEvent( 'observe', { detail: this } ) );
 
@@ -473,7 +484,7 @@ class WebGLRenderer {
 		animation.setAnimationLoop( onAnimationFrame );
 
         //TODO: what
-		/*if ( typeof self != 'undefined' )*/ animation.setContext( self );
+		/*if ( typeof self != 'null' )*/ animation.setContext( self );
 	}
 
     // xr
@@ -548,7 +559,7 @@ class WebGLRenderer {
         */
     public function setPixelRatio( value ) {
 
-        if ( value == undefined ) return;
+        if ( value == null ) return;
 
         _pixelRatio = value;
 
@@ -1035,7 +1046,7 @@ class WebGLRenderer {
 
         var programs = properties.get( material ).programs;
 
-        if ( programs != undefined ) {
+        if ( programs != null ) {
 
             programs.forEach( function ( program ) {
 
@@ -1074,7 +1085,7 @@ class WebGLRenderer {
 
             index = geometries.getWireframeAttribute( geometry );
 
-            if ( index == undefined ) return;
+            if ( index == null ) return;
 
             rangeFactor = 2;
 
@@ -1100,7 +1111,7 @@ class WebGLRenderer {
             drawStart = Math.max( drawStart, 0 );
             drawEnd = Math.min( drawEnd, index.count );
 
-        } else if ( position != undefined && position != null ) {
+        } else if ( position != null && position != null ) {
 
             drawStart = Math.max( drawStart, 0 );
             drawEnd = Math.min( drawEnd, position.count );
@@ -1146,7 +1157,7 @@ class WebGLRenderer {
 
             var lineWidth = material.linewidth;
 
-            if ( lineWidth == undefined ) lineWidth = 1; // Not using Line*Material
+            if ( lineWidth == null ) lineWidth = 1; // Not using Line*Material
 
             state.setLineWidth( lineWidth * getTargetPixelRatio() );
 
@@ -1212,7 +1223,7 @@ class WebGLRenderer {
 
         } else if ( geometry.isInstancedBufferGeometry ) {
 
-            var maxInstanceCount = geometry._maxInstanceCount != undefined ? geometry._maxInstanceCount : Infinity;
+            var maxInstanceCount = geometry._maxInstanceCount != null ? geometry._maxInstanceCount : Infinity;
             var instanceCount = Math.min( geometry.instanceCount, maxInstanceCount );
 
             renderer.renderInstances( drawStart, drawCount, instanceCount );
@@ -1484,7 +1495,7 @@ class WebGLRenderer {
         */
     public function render( scene, camera ) {
 
-        if ( camera != undefined && camera.isCamera != true ) {
+        if ( camera != null && camera.isCamera != true ) {
 
             Common.error( 'THREE.WebGLRenderer.render: camera is not an instance of THREE.Camera.' );
             return;
@@ -1729,7 +1740,7 @@ class WebGLRenderer {
 
                     if ( sortObjects ) {
 
-                        if ( object.boundingSphere != undefined ) {
+                        if ( object.boundingSphere != null ) {
 
                             if ( object.boundingSphere == null ) object.computeBoundingSphere();
                             _vector4.copy( object.boundingSphere.center );
@@ -1822,7 +1833,7 @@ class WebGLRenderer {
 
         }
 
-        if ( currentRenderState.state.transmissionRenderTarget[ camera.id ] == undefined ) {
+        if ( currentRenderState.state.transmissionRenderTarget[ camera.id ] == null ) {
 
             currentRenderState.state.transmissionRenderTarget[ camera.id ] = new WebGLRenderTarget( 1, 1, {
                 generateMipmaps: true,
@@ -1873,7 +1884,7 @@ class WebGLRenderer {
         // Remove viewport from camera to avoid nested render calls resetting viewport to it (e.g Reflector).
         // Transmission render pass requires viewport to match the transmissionRenderTarget.
         var currentCameraViewport = camera.viewport;
-        if ( camera.viewport != undefined ) camera.viewport = undefined;
+        if ( camera.viewport != null ) camera.viewport = null;
 
         currentRenderState.setupLightsView( camera );
 
@@ -1928,7 +1939,7 @@ class WebGLRenderer {
 
         _this.setClearColor( _currentClearColor, _currentClearAlpha );
 
-        if ( currentCameraViewport != undefined ) camera.viewport = currentCameraViewport;
+        if ( currentCameraViewport != null ) camera.viewport = currentCameraViewport;
 
         _this.toneMapping = currentToneMapping;
 
@@ -2017,7 +2028,7 @@ class WebGLRenderer {
         materialProperties.envMap = ( material.isMeshStandardMaterial ? cubeuvmaps : cubemaps ).get( material.envMap || materialProperties.environment );
         materialProperties.envMapRotation = ( materialProperties.environment != null && material.envMap == null ) ? scene.environmentRotation : material.envMapRotation;
 
-        if ( programs == undefined ) {
+        if ( programs == null ) {
 
             // new material
 
@@ -2030,7 +2041,7 @@ class WebGLRenderer {
 
         var program = programs.get( programCacheKey );
 
-        if ( program != undefined ) {
+        if ( program != null ) {
 
             // early out if program and light state is identical
 
@@ -2170,7 +2181,7 @@ class WebGLRenderer {
         }
 
         var morphAttribute = geometry.morphAttributes.position || geometry.morphAttributes.normal || geometry.morphAttributes.color;
-        var morphTargetsCount = ( morphAttribute != undefined ) ? morphAttribute.length : 0;
+        var morphTargetsCount = ( morphAttribute != null ) ? morphAttribute.length : 0;
 
         var materialProperties = properties.get( material );
         var lights = currentRenderState.state.lights;
@@ -2262,7 +2273,7 @@ class WebGLRenderer {
 
                 needsProgramChange = true;
 
-            } else if ( materialProperties.numClippingPlanes != undefined &&
+            } else if ( materialProperties.numClippingPlanes != null &&
                 ( materialProperties.numClippingPlanes != clipping.numPlanes ||
                 materialProperties.numIntersection != clipping.numIntersection ) ) {
 
@@ -2363,7 +2374,7 @@ class WebGLRenderer {
 
             var uCamPos = p_uniforms.map.cameraPosition;
 
-            if ( uCamPos != undefined ) {
+            if ( uCamPos != null ) {
 
                 uCamPos.setValue( _gl, _vector3.setFromMatrixPosition( camera.matrixWorld ) );
 
@@ -2444,7 +2455,7 @@ class WebGLRenderer {
 
         var morphAttributes = geometry.morphAttributes;
 
-        if ( morphAttributes.position != undefined || morphAttributes.normal != undefined || ( morphAttributes.color != undefined ) ) {
+        if ( morphAttributes.position != null || morphAttributes.normal != null || ( morphAttributes.color != null ) ) {
 
             morphtargets.update( object, geometry, program );
 
@@ -2620,7 +2631,7 @@ class WebGLRenderer {
         }
 
         properties.get( renderTarget.texture ).__webglTexture = colorTexture;
-        properties.get( renderTarget.depthTexture ).__webglTexture = renderTargetProperties.__autoAllocateDepthBuffer ? undefined : depthTexture;
+        properties.get( renderTarget.depthTexture ).__webglTexture = renderTargetProperties.__autoAllocateDepthBuffer ? null : depthTexture;
 
         renderTargetProperties.__hasExternalTextures = true;
 
@@ -2630,7 +2641,7 @@ class WebGLRenderer {
 
         var renderTargetProperties = properties.get( renderTarget );
         renderTargetProperties.__webglFramebuffer = defaultFramebuffer;
-        renderTargetProperties.__useDefaultFramebuffer = defaultFramebuffer == undefined;
+        renderTargetProperties.__useDefaultFramebuffer = defaultFramebuffer == null;
 
     }
 
@@ -2660,13 +2671,13 @@ class WebGLRenderer {
 
             var renderTargetProperties = properties.get( renderTarget );
 
-            if ( renderTargetProperties.__useDefaultFramebuffer != undefined ) {
+            if ( renderTargetProperties.__useDefaultFramebuffer != null ) {
 
                 // We need to make sure to rebind the framebuffer.
                 state.bindFramebuffer( _gl.FRAMEBUFFER, null );
                 useDefaultFramebuffer = false;
 
-            } else if ( renderTargetProperties.__webglFramebuffer == undefined ) {
+            } else if ( renderTargetProperties.__webglFramebuffer == null ) {
 
                 textures.setupRenderTarget( renderTarget );
 
@@ -2820,7 +2831,7 @@ class WebGLRenderer {
 
         var framebuffer = properties.get( renderTarget ).__webglFramebuffer;
 
-        if ( renderTarget.isWebGLCubeRenderTarget && activeCubeFaceIndex != undefined ) {
+        if ( renderTarget.isWebGLCubeRenderTarget && activeCubeFaceIndex != null ) {
 
             framebuffer = framebuffer[ activeCubeFaceIndex ];
 
@@ -2899,7 +2910,7 @@ class WebGLRenderer {
         }
 
         var framebuffer = properties.get( renderTarget ).__webglFramebuffer;
-        if ( renderTarget.isWebGLCubeRenderTarget && activeCubeFaceIndex != undefined ) {
+        if ( renderTarget.isWebGLCubeRenderTarget && activeCubeFaceIndex != null ) {
 
             framebuffer = framebuffer[ activeCubeFaceIndex ];
 
@@ -3278,7 +3289,7 @@ class WebGLRenderer {
         */
     public function initRenderTarget( target ) {
 
-        if ( properties.get( target ).__webglFramebuffer == undefined ) {
+        if ( properties.get( target ).__webglFramebuffer == null ) {
 
             textures.setupRenderTarget( target );
 
@@ -3369,6 +3380,14 @@ class WebGLRenderer {
 		gl.unpackColorSpace = ColorManagement._getUnpackColorSpace();
 
 	}
+
+    var _gl(get, set):GL;
+    function get__gl(){
+        return parameters.context;
+    }
+    function set__gl(v) {
+        return parameters.context = v;
+    }
 
 		// internal properties
 
