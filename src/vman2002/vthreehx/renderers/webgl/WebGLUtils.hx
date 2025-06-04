@@ -5,7 +5,7 @@ import vman2002.vthreehx.math.ColorManagement;
 
 class WebGLUtils {
 	//TODO: what type are these?
-	var gl:Dynamic;
+	var gl:GL;
 	var extensions:Dynamic;
 
 	public function new(gl, extensions) {
