@@ -176,7 +176,7 @@ class WebGLRenderer {
 		 * @type {boolean}
 		 * @default true
 		 */
-		public varsortObjects = true;
+		public var sortObjects = true;
 
 		// user-defined clipping
 
