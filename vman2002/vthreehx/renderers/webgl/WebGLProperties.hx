@@ -1,49 +1,49 @@
 package vman2002.vthreehx.renderers.webgl;
 
 class WebGLProperties {
+    //TODO: This is originally a WeakMap, this implementation may not garbage collect as intended
+    var properties = new Map<Dynamic, Dynamic>();
 
     public function new() {
-        //TODO: This is originally a WeakMap, this implementation may not garbage collect as intended
-        var properties = new Map<Dynamic, Dynamic>();
+    }
 
-        public function has( object ) {
+    public function has( object ) {
 
-            return properties.exists( object );
+        return properties.exists( object );
 
-        }
+    }
 
-        public function get( object ) {
+    public function get( object ) {
 
-            var map = properties.get( object );
+        var map:Dynamic = properties.get( object );
 
-            if ( map == undefined ) {
+        if ( map == undefined ) {
 
-                map:Dynamic = {};
-                properties.set( object, map );
-
-            }
-
-            return map;
+            map = {};
+            properties.set( object, map );
 
         }
 
-        public function remove( object ) {
+        return map;
 
-            properties.delete( object );
+    }
 
-        }
+    public function remove( object ) {
 
-        public function update( object, key, value ) {
+        properties.delete( object );
 
-            Reflect.setField(properties.get( object ), key, value);
+    }
 
-        }
+    public function update( object, key, value ) {
 
-        public function dispose() {
+        Reflect.setField(properties.get( object ), key, value);
 
-            properties = new Map<Dynamic, Dynamic>();
+    }
 
-        }
+    public function dispose() {
+
+        properties = new Map<Dynamic, Dynamic>();
+
     }
 
 }
