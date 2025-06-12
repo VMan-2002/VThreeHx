@@ -6,6 +6,7 @@ import vman2002.vthreehx.core.EventDispatcher.Event;
 //shortcuts lol
 import Math.POSITIVE_INFINITY in Infinity;
 import Math.isNaN;
+import haxe.ds.WeakMap;
 import vman2002.vthreehx.Common.isFinite;
 
 import vman2002.vthreehx.TypedArray.Float32Array;

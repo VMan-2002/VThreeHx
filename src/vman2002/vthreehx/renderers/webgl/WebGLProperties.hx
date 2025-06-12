@@ -1,8 +1,8 @@
 package vman2002.vthreehx.renderers.webgl;
 
+
 class WebGLProperties {
-    //TODO: This is originally a WeakMap, this implementation may not garbage collect as intended
-    var properties = new Map<Dynamic, Dynamic>();
+    var properties = new WeakMap<Dynamic, Dynamic>();
 
     public function new() {
     }

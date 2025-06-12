@@ -3,8 +3,44 @@ package vman2002.vthreehx.renderers.webgl;
 import vman2002.vthreehx.Constants;
 import vman2002.vthreehx.math.Color;
 import vman2002.vthreehx.math.Vector4;
+import lime.graphics.opengl.GLTexture;
 
 class WebGLState {
+	public function new() {
+		if ( glVersion.indexOf( 'WebGL' ) != - 1 ) {
+
+			version = parseFloat( ~/^WebGL (\d)/.exec( glVersion )[ 1 ] );
+			lineWidthAvailable = ( version >= 1.0 );
+
+		} else if ( glVersion.indexOf( 'OpenGL ES' ) != - 1 ) {
+
+			version = parseFloat( ~/^OpenGL ES (\d)/.exec( glVersion )[ 1 ] );
+			lineWidthAvailable = ( version >= 2.0 );
+
+		}
+
+		// init
+
+		colorBuffer.setClear( 0, 0, 0, 1 );
+		depthBuffer.setClear( 1 );
+		stencilBuffer.setClear( 0 );
+
+		enable( gl.DEPTH_TEST );
+		depthBuffer.setFunc( LessEqualDepth );
+
+		setFlipSided( false );
+		setCullFace( CullFaceBack );
+		enable( gl.CULL_FACE );
+
+		setBlending( NoBlending );
+		
+		buffers = {
+			color: colorBuffer,
+			depth: depthBuffer,
+			stencil: stencilBuffer
+		};
+	}
+
     static var reversedFuncs:Map<Int, Int> = [
         Constants.NeverDepth => Constants.AlwaysDepth,
         Constants.LessDepth => Constants.GreaterDepth,
@@ -397,18 +433,6 @@ class WebGLState {
 	var version = 0;
 	var glVersion = gl.getParameter( gl.VERSION );
 
-	if ( glVersion.indexOf( 'WebGL' ) != - 1 ) {
-
-		version = parseFloat( /^WebGL (\d)/.exec( glVersion )[ 1 ] );
-		lineWidthAvailable = ( version >= 1.0 );
-
-	} else if ( glVersion.indexOf( 'OpenGL ES' ) != - 1 ) {
-
-		version = parseFloat( /^OpenGL ES (\d)/.exec( glVersion )[ 1 ] );
-		lineWidthAvailable = ( version >= 2.0 );
-
-	}
-
 	var currentTextureSlot = null;
 	var currentBoundTextures = {};
 
@@ -427,7 +451,7 @@ class WebGLState {
 		gl.texParameteri( type, gl.TEXTURE_MIN_FILTER, gl.NEAREST );
 		gl.texParameteri( type, gl.TEXTURE_MAG_FILTER, gl.NEAREST );
 
-		for ( var i = 0; i < count; i ++ ) {
+		for ( i in 0...count ) {
 
 			if ( type == gl.TEXTURE_3D || type == gl.TEXTURE_2D_ARRAY ) {
 
@@ -445,26 +469,12 @@ class WebGLState {
 
 	}
 
-	var emptyTextures = {};
-	emptyTextures[ gl.TEXTURE_2D ] = createTexture( gl.TEXTURE_2D, gl.TEXTURE_2D, 1 );
-	emptyTextures[ gl.TEXTURE_CUBE_MAP ] = createTexture( gl.TEXTURE_CUBE_MAP, gl.TEXTURE_CUBE_MAP_POSITIVE_X, 6 );
-	emptyTextures[ gl.TEXTURE_2D_ARRAY ] = createTexture( gl.TEXTURE_2D_ARRAY, gl.TEXTURE_2D_ARRAY, 1, 1 );
-	emptyTextures[ gl.TEXTURE_3D ] = createTexture( gl.TEXTURE_3D, gl.TEXTURE_3D, 1, 1 );
-
-	// init
-
-	colorBuffer.setClear( 0, 0, 0, 1 );
-	depthBuffer.setClear( 1 );
-	stencilBuffer.setClear( 0 );
-
-	enable( gl.DEPTH_TEST );
-	depthBuffer.setFunc( LessEqualDepth );
-
-	setFlipSided( false );
-	setCullFace( CullFaceBack );
-	enable( gl.CULL_FACE );
-
-	setBlending( NoBlending );
+	var emptyTextures:Map<Int, GLTexture> = [
+		gl.TEXTURE_2D => createTexture( gl.TEXTURE_2D, gl.TEXTURE_2D, 1 ),
+		gl.TEXTURE_CUBE_MAP => createTexture( gl.TEXTURE_CUBE_MAP, gl.TEXTURE_CUBE_MAP_POSITIVE_X, 6 ),
+		gl.TEXTURE_2D_ARRAY => createTexture( gl.TEXTURE_2D_ARRAY, gl.TEXTURE_2D_ARRAY, 1, 1 ),
+		gl.TEXTURE_3D => createTexture( gl.TEXTURE_3D, gl.TEXTURE_3D, 1, 1 )
+	];
 
 	//
 
@@ -541,7 +551,7 @@ class WebGLState {
 
 			if ( drawBuffers.length != textures.length || drawBuffers[ 0 ] != gl.COLOR_ATTACHMENT0 ) {
 
-				for ( var i = 0, il = textures.length; i < il; i ++ ) {
+				for ( i in 0...textures.length ) {
 
 					drawBuffers[ i ] = gl.COLOR_ATTACHMENT0 + i;
 
@@ -592,9 +602,9 @@ class WebGLState {
 	static var equationToGL:Map<Int, Int> = [
 		Constants.AddEquation => gl.FUNC_ADD,
 		Constants.SubtractEquation => gl.FUNC_SUBTRACT,
-		Constants.ReverseSubtractEquation => gl.FUNC_REVERSE_SUBTRACT
-        Constants.MinEquation = gl.MIN;
-        Constants.MaxEquation = gl.MAX;
+		Constants.ReverseSubtractEquation => gl.FUNC_REVERSE_SUBTRACT,
+        Constants.MinEquation = gl.MIN,
+        Constants.MaxEquation = gl.MAX
     ];
 
 	static var factorToGL:Map<Int, Int> = [
@@ -1274,56 +1284,5 @@ class WebGLState {
 
 	}
 
-	return {
-
-		buffers: {
-			color: colorBuffer,
-			depth: depthBuffer,
-			stencil: stencilBuffer
-		},
-
-		enable: enable,
-		disable: disable,
-
-		bindFramebuffer: bindFramebuffer,
-		drawBuffers: drawBuffers,
-
-		useProgram: useProgram,
-
-		setBlending: setBlending,
-		setMaterial: setMaterial,
-
-		setFlipSided: setFlipSided,
-		setCullFace: setCullFace,
-
-		setLineWidth: setLineWidth,
-		setPolygonOffset: setPolygonOffset,
-
-		setScissorTest: setScissorTest,
-
-		activeTexture: activeTexture,
-		bindTexture: bindTexture,
-		unbindTexture: unbindTexture,
-		compressedTexImage2D: compressedTexImage2D,
-		compressedTexImage3D: compressedTexImage3D,
-		texImage2D: texImage2D,
-		texImage3D: texImage3D,
-
-		updateUBOMapping: updateUBOMapping,
-		uniformBlockBinding: uniformBlockBinding,
-
-		texStorage2D: texStorage2D,
-		texStorage3D: texStorage3D,
-		texSubImage2D: texSubImage2D,
-		texSubImage3D: texSubImage3D,
-		compressedTexSubImage2D: compressedTexSubImage2D,
-		compressedTexSubImage3D: compressedTexSubImage3D,
-
-		scissor: scissor,
-		viewport: viewport,
-
-		reset: reset
-
-	};
-
+	public var buffers:{color:ColorBuffer, depth:DepthBuffer, stencil:StencilBuffer};
 }
