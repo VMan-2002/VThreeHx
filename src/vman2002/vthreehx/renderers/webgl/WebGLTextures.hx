@@ -33,15 +33,25 @@ import vman2002.vthreehx.Constants.LinearTransfer;
 import vman2002.vthreehx.Constants.UnsignedShortType;
 import vman2002.vthreehx.Constants.UnsignedInt248Type;
 //import { createElementNS } from '../../utils.js';
-import { getByteLength } from '../../extras/TextureUtils.js';
+import vman2002.vthreehx.extras.TextureUtils.getByteLength;
 
 class WebGLTextures {
     public function new( _gl, extensions, state, properties, capabilities, utils, info ) {
+		/*try {
 
+			useOffscreenCanvas = typeof OffscreenCanvas != 'undefined'
+				// eslint-disable-next-line compat/compat
+				&& ( new OffscreenCanvas( 1, 1 ).getContext( '2d' ) ) != null;
+
+		} catch ( err ) {
+
+			// Ignore any errors
+
+		}*/
     }
 
 	var multisampledRTTExt = extensions.has( 'WEBGL_multisampled_render_to_texture' ) ? extensions.get( 'WEBGL_multisampled_render_to_texture' ) : null;
-	var supportsInvalidateFramebuffer = typeof navigator == 'undefined' ? false : /OculusBrowser/g.test( navigator.userAgent );
+	var supportsInvalidateFramebuffer = typeof navigator == 'undefined' ? false : ~/OculusBrowser/g.test( navigator.userAgent );
 
 	var _imageDimensions = new Vector2();
 	var _videoTextures = new WeakMap();
@@ -53,22 +63,10 @@ class WebGLTextures {
 	// also OffscreenCanvas.getContext("webgl"), but not OffscreenCanvas.getContext("2d")!
 	// Some implementations may only implement OffscreenCanvas partially (e.g. lacking 2d).
 
-	var useOffscreenCanvas = false;
+	var useOffscreenCanvas = true;
 
-	try {
-
-		useOffscreenCanvas = typeof OffscreenCanvas != 'undefined'
-			// eslint-disable-next-line compat/compat
-			&& ( new OffscreenCanvas( 1, 1 ).getContext( '2d' ) ) != null;
-
-	} catch ( err ) {
-
-		// Ignore any errors
-
-	}
-
-    //TODO: i hope we dont need this
-	/*function createCanvas( width, height ) {
+    //TODO: we need this
+	function createCanvas( width, height ) {
 
 		// Use OffscreenCanvas when available. Specially needed in web workers
 
@@ -76,7 +74,7 @@ class WebGLTextures {
 			// eslint-disable-next-line compat/compat
 			new OffscreenCanvas( width, height ) : createElementNS( 'canvas' );
 
-	}*/
+	}
 
 	function resizeImage( image, needsNewCanvas, maxSize ) {
 
@@ -2228,22 +2226,5 @@ class WebGLTextures {
 		return _imageDimensions;
 
 	}
-
-	//
-
-	this.allocateTextureUnit = allocateTextureUnit;
-	this.resetTextureUnits = resetTextureUnits;
-
-	this.setTexture2D = setTexture2D;
-	this.setTexture2DArray = setTexture2DArray;
-	this.setTexture3D = setTexture3D;
-	this.setTextureCube = setTextureCube;
-	this.rebindTextures = rebindTextures;
-	this.setupRenderTarget = setupRenderTarget;
-	this.updateRenderTargetMipmap = updateRenderTargetMipmap;
-	this.updateMultisampleRenderTarget = updateMultisampleRenderTarget;
-	this.setupDepthRenderbuffer = setupDepthRenderbuffer;
-	this.setupFrameBufferTexture = setupFrameBufferTexture;
-	this.useMultisampledRTT = useMultisampledRTT;
 
 }
