@@ -424,11 +424,11 @@ class WebGLTextures {
 
 		if ( renderTarget.isWebGLCubeRenderTarget ) {
 
-			for ( var i = 0; i < 6; i ++ ) {
+			for ( i in 0...6 ) {
 
 				if ( Array.isArray( renderTargetProperties.__webglFramebuffer[ i ] ) ) {
 
-					for ( var level = 0; level < renderTargetProperties.__webglFramebuffer[ i ].length; level ++ ) _gl.deleteFramebuffer( renderTargetProperties.__webglFramebuffer[ i ][ level ] );
+					for ( level in 0...renderTargetProperties.__webglFramebuffer[ i ].length ) _gl.deleteFramebuffer( renderTargetProperties.__webglFramebuffer[ i ][ level ] );
 
 				} else {
 
@@ -444,7 +444,7 @@ class WebGLTextures {
 
 			if ( Array.isArray( renderTargetProperties.__webglFramebuffer ) ) {
 
-				for ( var level = 0; level < renderTargetProperties.__webglFramebuffer.length; level ++ ) _gl.deleteFramebuffer( renderTargetProperties.__webglFramebuffer[ level ] );
+				for ( level in 0...renderTargetProperties.__webglFramebuffer.length ) _gl.deleteFramebuffer( renderTargetProperties.__webglFramebuffer[ level ] );
 
 			} else {
 
@@ -457,7 +457,7 @@ class WebGLTextures {
 
 			if ( renderTargetProperties.__webglColorRenderbuffer ) {
 
-				for ( var i = 0; i < renderTargetProperties.__webglColorRenderbuffer.length; i ++ ) {
+				for ( i in 0...renderTargetProperties.__webglColorRenderbuffer.length ) {
 
 					if ( renderTargetProperties.__webglColorRenderbuffer[ i ] ) _gl.deleteRenderbuffer( renderTargetProperties.__webglColorRenderbuffer[ i ] );
 
@@ -471,7 +471,7 @@ class WebGLTextures {
 
 		var textures = renderTarget.textures;
 
-		for ( var i = 0, il = textures.length; i < il; i ++ ) {
+		for ( i in 0...textures.length ) {
 
 			var attachmentProperties = properties.get( textures[ i ] );
 
@@ -851,7 +851,7 @@ class WebGLTextures {
 
 					}
 
-					for ( var i = 0, il = mipmaps.length; i < il; i ++ ) {
+					for ( i in 0...mipmaps.length ) {
 
 						mipmap = mipmaps[ i ];
 
@@ -907,7 +907,7 @@ class WebGLTextures {
 
 					}
 
-					for ( var i = 0, il = mipmaps.length; i < il; i ++ ) {
+					for ( i in 0...mipmaps.length ) {
 
 						mipmap = mipmaps[ i ];
 
@@ -923,7 +923,7 @@ class WebGLTextures {
 
 											var layerByteLength = getByteLength( mipmap.width, mipmap.height, texture.format, texture.type );
 
-											for ( var layerIndex of texture.layerUpdates ) {
+											for ( layerIndex in texture.layerUpdates ) {
 
 												var layerData = mipmap.data.subarray(
 													layerIndex * layerByteLength / mipmap.data.BYTES_PER_ELEMENT,
@@ -983,7 +983,7 @@ class WebGLTextures {
 
 					}
 
-					for ( var i = 0, il = mipmaps.length; i < il; i ++ ) {
+					for ( i in 0...mipmaps.length ) {
 
 						mipmap = mipmaps[ i ];
 
@@ -1049,7 +1049,7 @@ class WebGLTextures {
 
 							var layerByteLength = getByteLength( image.width, image.height, texture.format, texture.type );
 
-							for ( var layerIndex of texture.layerUpdates ) {
+							for ( layerIndex in texture.layerUpdates ) {
 
 								var layerData = image.data.subarray(
 									layerIndex * layerByteLength / image.data.BYTES_PER_ELEMENT,
@@ -1109,7 +1109,7 @@ class WebGLTextures {
 
 						var width = image.width, height = image.height;
 
-						for ( var i = 0; i < levels; i ++ ) {
+						for ( i in 0...levels ) {
 
 							state.texImage2D( _gl.TEXTURE_2D, i, glInternalFormat, width, height, 0, glFormat, glType, null );
 
@@ -1140,7 +1140,7 @@ class WebGLTextures {
 
 					}
 
-					for ( var i = 0, il = mipmaps.length; i < il; i ++ ) {
+					for ( i in 0...mipmaps.length ) {
 
 						mipmap = mipmaps[ i ];
 
@@ -1235,7 +1235,7 @@ class WebGLTextures {
 
 			var cubeImage = [];
 
-			for ( var i = 0; i < 6; i ++ ) {
+			for ( i = 0...6 ) {
 
 				if ( ! isCompressed && ! isDataTexture ) {
 
@@ -1273,11 +1273,11 @@ class WebGLTextures {
 
 				}
 
-				for ( var i = 0; i < 6; i ++ ) {
+				for ( i in 0...6 ) {
 
 					mipmaps = cubeImage[ i ].mipmaps;
 
-					for ( var j = 0; j < mipmaps.length; j ++ ) {
+					for ( j in 0...mipmaps.length ) {
 
 						var mipmap = mipmaps[ j ];
 
@@ -1345,7 +1345,7 @@ class WebGLTextures {
 
 				}
 
-				for ( var i = 0; i < 6; i ++ ) {
+				for ( i in 0...6 ) {
 
 					if ( isDataTexture ) {
 
@@ -1363,7 +1363,7 @@ class WebGLTextures {
 
 						}
 
-						for ( var j = 0; j < mipmaps.length; j ++ ) {
+						for ( j in 0...mipmaps.length ) {
 
 							var mipmap = mipmaps[ j ];
 							var mipmapImage = mipmap.image[ i ].image;
@@ -1400,7 +1400,7 @@ class WebGLTextures {
 
 						}
 
-						for ( var j = 0; j < mipmaps.length; j ++ ) {
+						for ( j in 0...mipmaps.length ) {
 
 							var mipmap = mipmaps[ j ];
 
@@ -1525,7 +1525,7 @@ class WebGLTextures {
 
 			var textures = renderTarget.textures;
 
-			for ( var i = 0; i < textures.length; i ++ ) {
+			for ( i in 0...textures.length ) {
 
 				var texture = textures[ i ];
 
@@ -1680,7 +1680,7 @@ class WebGLTextures {
 
 				renderTargetProperties.__webglDepthbuffer = [];
 
-				for ( var i = 0; i < 6; i ++ ) {
+				for ( i in 0...6 ) {
 
 					state.bindFramebuffer( _gl.FRAMEBUFFER, renderTargetProperties.__webglFramebuffer[ i ] );
 
@@ -1791,13 +1791,13 @@ class WebGLTextures {
 
 			renderTargetProperties.__webglFramebuffer = [];
 
-			for ( var i = 0; i < 6; i ++ ) {
+			for ( i in 0...6 ) {
 
 				if ( texture.mipmaps && texture.mipmaps.length > 0 ) {
 
 					renderTargetProperties.__webglFramebuffer[ i ] = [];
 
-					for ( var level = 0; level < texture.mipmaps.length; level ++ ) {
+					for ( level in 0...texture.mipmaps.length ) {
 
 						renderTargetProperties.__webglFramebuffer[ i ][ level ] = _gl.createFramebuffer();
 
@@ -1817,7 +1817,7 @@ class WebGLTextures {
 
 				renderTargetProperties.__webglFramebuffer = [];
 
-				for ( var level = 0; level < texture.mipmaps.length; level ++ ) {
+				for ( level in 0...texture.mipmaps.length ) {
 
 					renderTargetProperties.__webglFramebuffer[ level ] = _gl.createFramebuffer();
 
@@ -1831,7 +1831,7 @@ class WebGLTextures {
 
 			if ( isMultipleRenderTargets ) {
 
-				for ( var i = 0, il = textures.length; i < il; i ++ ) {
+				for ( i in 0...textures.length ) {
 
 					var attachmentProperties = properties.get( textures[ i ] );
 
@@ -1854,7 +1854,7 @@ class WebGLTextures {
 
 				state.bindFramebuffer( _gl.FRAMEBUFFER, renderTargetProperties.__webglMultisampledFramebuffer );
 
-				for ( var i = 0; i < textures.length; i ++ ) {
+				for ( i in 0...textures.length ) {
 
 					var texture = textures[ i ];
 					renderTargetProperties.__webglColorRenderbuffer[ i ] = _gl.createRenderbuffer();
@@ -1893,11 +1893,11 @@ class WebGLTextures {
 			state.bindTexture( _gl.TEXTURE_CUBE_MAP, textureProperties.__webglTexture );
 			setTextureParameters( _gl.TEXTURE_CUBE_MAP, texture );
 
-			for ( var i = 0; i < 6; i ++ ) {
+			for ( i in 0...6 ) {
 
 				if ( texture.mipmaps && texture.mipmaps.length > 0 ) {
 
-					for ( var level = 0; level < texture.mipmaps.length; level ++ ) {
+					for ( level in 0...texture.mipmaps.length ) {
 
 						setupFrameBufferTexture( renderTargetProperties.__webglFramebuffer[ i ][ level ], renderTarget, texture, _gl.COLOR_ATTACHMENT0, _gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, level );
 
@@ -1921,7 +1921,7 @@ class WebGLTextures {
 
 		} else if ( isMultipleRenderTargets ) {
 
-			for ( var i = 0, il = textures.length; i < il; i ++ ) {
+			for ( i in 0...textures.length ) {
 
 				var attachment = textures[ i ];
 				var attachmentProperties = properties.get( attachment );
@@ -1955,7 +1955,7 @@ class WebGLTextures {
 
 			if ( texture.mipmaps && texture.mipmaps.length > 0 ) {
 
-				for ( var level = 0; level < texture.mipmaps.length; level ++ ) {
+				for ( level in 0...texture.mipmaps.length ) {
 
 					setupFrameBufferTexture( renderTargetProperties.__webglFramebuffer[ level ], renderTarget, texture, _gl.COLOR_ATTACHMENT0, glTextureType, level );
 
@@ -1991,7 +1991,7 @@ class WebGLTextures {
 
 		var textures = renderTarget.textures;
 
-		for ( var i = 0, il = textures.length; i < il; i ++ ) {
+		for ( i in 0...textures.length ) {
 
 			var texture = textures[ i ];
 
@@ -2030,7 +2030,7 @@ class WebGLTextures {
 				// If MRT we need to remove FBO attachments
 				if ( isMultipleRenderTargets ) {
 
-					for ( var i = 0; i < textures.length; i ++ ) {
+					for ( i in 0...textures.length ) {
 
 						state.bindFramebuffer( _gl.FRAMEBUFFER, renderTargetProperties.__webglMultisampledFramebuffer );
 						_gl.framebufferRenderbuffer( _gl.FRAMEBUFFER, _gl.COLOR_ATTACHMENT0 + i, _gl.RENDERBUFFER, null );
@@ -2056,7 +2056,7 @@ class WebGLTextures {
 
 				}
 
-				for ( var i = 0; i < textures.length; i ++ ) {
+				for ( i in 0...textures.length ) {
 
 					if ( renderTarget.resolveDepthBuffer ) {
 
@@ -2107,7 +2107,7 @@ class WebGLTextures {
 				// If MRT since pre-blit we removed the FBO we need to reconstruct the attachments
 				if ( isMultipleRenderTargets ) {
 
-					for ( var i = 0; i < textures.length; i ++ ) {
+					for ( i in 0...textures.length ) {
 
 						state.bindFramebuffer( _gl.FRAMEBUFFER, renderTargetProperties.__webglMultisampledFramebuffer );
 						_gl.framebufferRenderbuffer( _gl.FRAMEBUFFER, _gl.COLOR_ATTACHMENT0 + i, _gl.RENDERBUFFER, renderTargetProperties.__webglColorRenderbuffer[ i ] );
@@ -2208,8 +2208,8 @@ class WebGLTextures {
 
 			// if intrinsic data are not available, fallback to width/height
 
-			_imageDimensions.width = image.naturalWidth || image.width;
-			_imageDimensions.height = image.naturalHeight || image.height;
+			_imageDimensions.width = image.naturalWidth ?? image.width;
+			_imageDimensions.height = image.naturalHeight ?? image.height;
 
 		} else if ( typeof VideoFrame != 'undefined' && image instanceof VideoFrame ) {
 
