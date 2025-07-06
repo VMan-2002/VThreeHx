@@ -118,6 +118,19 @@ class Common {
     public static function log(s:String) {
         trace("[LOG] "+s);
     }
+
+    @:deprecated("not actually needed")
+    public static function glsl(s:String) {
+        return s;
+    }
+
+    public static function isOfTypes(obj:Any, types:Array<Class<Any>>) {
+        for (thing in types) {
+            if (Std.isOfType(obj, thing))
+                return true;
+        }
+        return false;
+    }
 }
 
 /*#if lime

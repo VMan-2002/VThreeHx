@@ -918,6 +918,11 @@ class Color {
 	public static function nameToFlxColor(name:String) {
 		return flixel.util.FlxColor.fromInt(NAMES.get(name));
 	}
+
+	@:from
+	public static function castFromFlxColor(n:flixel.util.FlxColor) {
+		return new Color(n.redFloat, n.greenFloat, n.blueFloat);	
+	}
 	#end
 
     public function iterator() {

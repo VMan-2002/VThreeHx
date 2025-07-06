@@ -50,4 +50,4 @@ Required for example scene
 - WebGLRenderer //the boss fight
     - Frustum
 
-Welcome to [TypedArray](https://github.com/VMan-2002/VThreeHx/blob/main/vman2002/vthreehx/TypedArray.hx), a terrible (but hopefully compatible) implementation
+Welcome to [TypedArray](https://github.com/VMan-2002/VThreeHx/blob/main/src/vman2002/vthreehx/TypedArray.hx), a terrible (but hopefully compatible) implementation

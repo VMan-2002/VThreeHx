@@ -51,7 +51,8 @@ class WebGLTextures {
     }
 
 	var multisampledRTTExt = extensions.has( 'WEBGL_multisampled_render_to_texture' ) ? extensions.get( 'WEBGL_multisampled_render_to_texture' ) : null;
-	var supportsInvalidateFramebuffer = typeof navigator == 'undefined' ? false : ~/OculusBrowser/g.test( navigator.userAgent );
+	//var supportsInvalidateFramebuffer = typeof navigator == 'undefined' ? false : ~/OculusBrowser/g.test( navigator.userAgent );
+	var supportsInvalidateFramebuffer = false;
 
 	var _imageDimensions = new Vector2();
 	var _videoTextures = new WeakMap();
@@ -96,10 +97,10 @@ class WebGLTextures {
 
 			// only perform resize for certain image types
 
-			if ( ( typeof HTMLImageElement != 'undefined' && image instanceof HTMLImageElement ) ||
+			if ( /*( typeof HTMLImageElement != 'undefined' && image instanceof HTMLImageElement ) ||
 				( typeof HTMLCanvasElement != 'undefined' && image instanceof HTMLCanvasElement ) ||
 				( typeof ImageBitmap != 'undefined' && image instanceof ImageBitmap ) ||
-				( typeof VideoFrame != 'undefined' && image instanceof VideoFrame ) ) {
+				( typeof VideoFrame != 'undefined' && image instanceof VideoFrame )*/ false /* TODO: what*/ ) {
 
 				var width = Math.floor( scale * dimensions.width );
 				var height = Math.floor( scale * dimensions.height );

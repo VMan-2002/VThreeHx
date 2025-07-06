@@ -20,3 +20,5 @@ import vman2002.vthreehx.TypedArray.Uint8Array;
 import vman2002.vthreehx.TypedArray.Uint8ClampedArray;
 
 import lime.graphics.opengl.GL;
+
+import vman2002.vthreehx.Common.glsl;
