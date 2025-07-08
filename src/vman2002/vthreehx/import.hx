@@ -22,3 +22,6 @@ import vman2002.vthreehx.TypedArray.Uint8ClampedArray;
 import lime.graphics.opengl.GL;
 
 import vman2002.vthreehx.Common.glsl;
+
+import vman2002.vthreehx.interfaces.ToJson;
+import vman2002.vthreehx.interfaces.GetType;
