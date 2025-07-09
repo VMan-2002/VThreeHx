@@ -62,6 +62,7 @@ import vman2002.vthreehx.Utils.toNormalizedProjectionMatix;
 import vman2002.vthreehx.Utils.toReversedProjectionMatrix;
 //import { createCanvasElement, probeAsync, } from '../utils.js';
 import vman2002.vthreehx.materials.MeshStandardMaterial;
+import vman2002.vthreehx.core.Object3D;
 
 /**
  * This renderer uses WebGL 2 to display scenes.

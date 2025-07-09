@@ -137,7 +137,7 @@ class Frustum {
 	 */
 	public function intersectsObject( object:Object3D ) {
 
-		if ( object.boundingSphere != undefined ) {
+		if ( object.boundingSphere != null ) {
 
 			if ( object.boundingSphere == null ) object.computeBoundingSphere();
 

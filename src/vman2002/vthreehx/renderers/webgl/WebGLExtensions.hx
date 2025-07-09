@@ -9,7 +9,7 @@ class WebGLExtensions {
     //TODO: what type?
 	var extensions = new Map<String, Dynamic>();
 
-	function getExtension( name ) {
+	public function getExtension( name ) {
 
 		if ( extensions[ name ] != null ) {
 
@@ -44,13 +44,13 @@ class WebGLExtensions {
 
 	}
 
-    function has ( name ) {
+    public function has ( name ) {
 
         return getExtension( name ) != null;
 
     }
 
-    function init () {
+    public function init () {
 
         getExtension( 'EXT_color_buffer_float' );
         getExtension( 'WEBGL_clip_cull_distance' );
@@ -61,7 +61,7 @@ class WebGLExtensions {
 
     }
 
-    function get( name ) {
+    public function get( name ) {
 
         var extension = getExtension( name );
 

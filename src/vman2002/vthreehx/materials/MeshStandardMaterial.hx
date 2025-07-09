@@ -346,7 +346,7 @@ class MeshStandardMaterial extends Material {
 	 * in here. Color values can be passed any type of value accepted
 	 * by {@link Color#set}.
 	 */
-	public function new( parameters ) {
+	public function new( parameters:Dynamic ) {
 
 		super();
 
@@ -354,7 +354,7 @@ class MeshStandardMaterial extends Material {
 
 	}
 
-	public function ( source:Dynamic ):Dynamic {
+	public override function copy( source:Dynamic ):Dynamic {
 
 		super.copy( source );
 

@@ -1,0 +1,1 @@
+Contains the `.glsl.js` files from the ShaderChunk and ShaderLib files from three.js at https://github.com/mrdoob/three.js/tree/dev/src/renderers/shaders

@@ -36,7 +36,23 @@ import vman2002.vthreehx.Constants.UnsignedInt248Type;
 import vman2002.vthreehx.extras.TextureUtils.getByteLength;
 
 class WebGLTextures {
+
+	public var _gl:GL;
+	public var extensions:WebGLExtensions;
+	public var state:WebGLState;
+	public var properties:WebGLProperties;
+	public var capabilities:WebGLCapabilities;
+	public var utils:WebGLUtils;
+	public var info:WebGLInfo;
+
     public function new( _gl, extensions, state, properties, capabilities, utils, info ) {
+		this._gl = _gl;
+		this.extensions = extensions;
+		this.state = state;
+		this.properties = properties;
+		this.capabilities = capabilities;
+		this.utils = utils;
+		this.info = info;
 		/*try {
 
 			useOffscreenCanvas = typeof OffscreenCanvas != 'undefined'
@@ -405,7 +421,7 @@ class WebGLTextures {
 
 		var source = texture.source;
 		var webglTextures = _sources.get( source );
-		delete webglTextures[ textureProperties.__cacheKey ];
+		Reflect.deleteField(webglTextures, textureProperties.__cacheKey);
 
 		info.memory.textures --;
 
@@ -619,32 +635,32 @@ class WebGLTextures {
 
 	}
 
-	var wrappingToGL = {
-		[ RepeatWrapping ]: _gl.REPEAT,
-		[ ClampToEdgeWrapping ]: _gl.CLAMP_TO_EDGE,
-		[ MirroredRepeatWrapping ]: _gl.MIRRORED_REPEAT
-	};
+	var wrappingToGL = [
+		RepeatWrapping => _gl.REPEAT,
+		ClampToEdgeWrapping => _gl.CLAMP_TO_EDGE,
+		MirroredRepeatWrapping => _gl.MIRRORED_REPEAT
+	];
 
-	var filterToGL = {
-		[ NearestFilter ]: _gl.NEAREST,
-		[ NearestMipmapNearestFilter ]: _gl.NEAREST_MIPMAP_NEAREST,
-		[ NearestMipmapLinearFilter ]: _gl.NEAREST_MIPMAP_LINEAR,
+	var filterToGL = [
+		NearestFilter => _gl.NEAREST,
+		NearestMipmapNearestFilter => _gl.NEAREST_MIPMAP_NEAREST,
+		NearestMipmapLinearFilter => _gl.NEAREST_MIPMAP_LINEAR,
 
-		[ LinearFilter ]: _gl.LINEAR,
-		[ LinearMipmapNearestFilter ]: _gl.LINEAR_MIPMAP_NEAREST,
-		[ LinearMipmapLinearFilter ]: _gl.LINEAR_MIPMAP_LINEAR
-	};
+		LinearFilter => _gl.LINEAR,
+		LinearMipmapNearestFilter => _gl.LINEAR_MIPMAP_NEAREST,
+		LinearMipmapLinearFilter => _gl.LINEAR_MIPMAP_LINEAR
+	];
 
-	var compareToGL = {
-		[ NeverCompare ]: _gl.NEVER,
-		[ AlwaysCompare ]: _gl.ALWAYS,
-		[ LessCompare ]: _gl.LESS,
-		[ LessEqualCompare ]: _gl.LEQUAL,
-		[ EqualCompare ]: _gl.EQUAL,
-		[ GreaterEqualCompare ]: _gl.GEQUAL,
-		[ GreaterCompare ]: _gl.GREATER,
-		[ NotEqualCompare ]: _gl.NOTEQUAL
-	};
+	var compareToGL = [
+		NeverCompare => _gl.NEVER,
+		AlwaysCompare => _gl.ALWAYS,
+		LessCompare => _gl.LESS,
+		LessEqualCompare => _gl.LEQUAL,
+		EqualCompare => _gl.EQUAL,
+		GreaterEqualCompare => _gl.GEQUAL,
+		GreaterCompare => _gl.GREATER,
+		NotEqualCompare => _gl.NOTEQUAL
+	];
 
 	function setTextureParameters( textureType, texture ) {
 
@@ -1642,10 +1658,10 @@ class WebGLTextures {
 			// set up dispose listeners to track when the currently attached buffer is implicitly unbound
 			if ( depthTexture ) {
 
-				var disposeEvent = () => {
+				var disposeEvent = function() {
 
-					delete renderTargetProperties.__boundDepthTexture;
-					delete renderTargetProperties.__depthDisposeCallback;
+					Reflect.deleteField(renderTargetProperties, "__boundDepthTexture");
+					Reflect.deleteField(renderTargetProperties, "__depthDisposeCallback");
 					depthTexture.removeEventListener( 'dispose', disposeEvent );
 
 				};
@@ -2205,7 +2221,8 @@ class WebGLTextures {
 
 	function getDimensions( image ) {
 
-		if ( typeof HTMLImageElement != 'undefined' && image instanceof HTMLImageElement ) {
+		//TODO:
+		/*if ( typeof HTMLImageElement != 'undefined' && image instanceof HTMLImageElement ) {
 
 			// if intrinsic data are not available, fallback to width/height
 
@@ -2222,7 +2239,7 @@ class WebGLTextures {
 			_imageDimensions.width = image.width;
 			_imageDimensions.height = image.height;
 
-		}
+		}*/
 
 		return _imageDimensions;
 

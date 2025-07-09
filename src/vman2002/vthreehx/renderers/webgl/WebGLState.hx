@@ -427,17 +427,17 @@ class WebGLState {
 	var currentPolygonOffsetFactor = null;
 	var currentPolygonOffsetUnits = null;
 
-	var maxTextures = gl.getParameter( gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS );
+	var maxTextures = GL.getParameter( GL.MAX_COMBINED_TEXTURE_IMAGE_UNITS );
 
 	var lineWidthAvailable = false;
 	var version = 0;
-	var glVersion = gl.getParameter( gl.VERSION );
+	var glVersion = GL.getParameter( GL.VERSION );
 
 	var currentTextureSlot = null;
 	var currentBoundTextures = {};
 
-	var scissorParam = gl.getParameter( gl.SCISSOR_BOX );
-	var viewportParam = gl.getParameter( gl.VIEWPORT );
+	var scissorParam = GL.getParameter( GL.SCISSOR_BOX );
+	var viewportParam = GL.getParameter( GL.VIEWPORT );
 
 	var currentScissor = new Vector4().fromArray( scissorParam );
 	var currentViewport = new Vector4().fromArray( viewportParam );
@@ -445,21 +445,21 @@ class WebGLState {
 	function createTexture( type, target, count, dimensions ) {
 
 		var data = new Uint8Array( 4 ); // 4 is required to match default unpack alignment of 4.
-		var texture = gl.createTexture();
+		var texture = GL.createTexture();
 
-		gl.bindTexture( type, texture );
-		gl.texParameteri( type, gl.TEXTURE_MIN_FILTER, gl.NEAREST );
-		gl.texParameteri( type, gl.TEXTURE_MAG_FILTER, gl.NEAREST );
+		GL.bindTexture( type, texture );
+		GL.texParameteri( type, GL.TEXTURE_MIN_FILTER, GL.NEAREST );
+		GL.texParameteri( type, GL.TEXTURE_MAG_FILTER, GL.NEAREST );
 
 		for ( i in 0...count ) {
 
-			if ( type == gl.TEXTURE_3D || type == gl.TEXTURE_2D_ARRAY ) {
+			if ( type == GL.TEXTURE_3D || type == GL.TEXTURE_2D_ARRAY ) {
 
-				gl.texImage3D( target, 0, gl.RGBA, 1, 1, dimensions, 0, gl.RGBA, gl.UNSIGNED_BYTE, data );
+				GL.texImage3D( target, 0, GL.RGBA, 1, 1, dimensions, 0, GL.RGBA, GL.UNSIGNED_BYTE, data );
 
 			} else {
 
-				gl.texImage2D( target + i, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, data );
+				GL.texImage2D( target + i, 0, GL.RGBA, 1, 1, 0, GL.RGBA, GL.UNSIGNED_BYTE, data );
 
 			}
 
@@ -470,10 +470,10 @@ class WebGLState {
 	}
 
 	var emptyTextures:Map<Int, GLTexture> = [
-		gl.TEXTURE_2D => createTexture( gl.TEXTURE_2D, gl.TEXTURE_2D, 1 ),
-		gl.TEXTURE_CUBE_MAP => createTexture( gl.TEXTURE_CUBE_MAP, gl.TEXTURE_CUBE_MAP_POSITIVE_X, 6 ),
-		gl.TEXTURE_2D_ARRAY => createTexture( gl.TEXTURE_2D_ARRAY, gl.TEXTURE_2D_ARRAY, 1, 1 ),
-		gl.TEXTURE_3D => createTexture( gl.TEXTURE_3D, gl.TEXTURE_3D, 1, 1 )
+		GL.TEXTURE_2D => createTexture( GL.TEXTURE_2D, GL.TEXTURE_2D, 1 ),
+		GL.TEXTURE_CUBE_MAP => createTexture( GL.TEXTURE_CUBE_MAP, GL.TEXTURE_CUBE_MAP_POSITIVE_X, 6 ),
+		GL.TEXTURE_2D_ARRAY => createTexture( GL.TEXTURE_2D_ARRAY, GL.TEXTURE_2D_ARRAY, 1, 1 ),
+		GL.TEXTURE_3D => createTexture( GL.TEXTURE_3D, GL.TEXTURE_3D, 1, 1 )
 	];
 
 	//
@@ -482,7 +482,7 @@ class WebGLState {
 
 		if ( enabledCapabilities[ id ] != true ) {
 
-			gl.enable( id );
+			GL.enable( id );
 			enabledCapabilities[ id ] = true;
 
 		}
@@ -493,7 +493,7 @@ class WebGLState {
 
 		if ( enabledCapabilities[ id ] != false ) {
 
-			gl.disable( id );
+			GL.disable( id );
 			enabledCapabilities[ id ] = false;
 
 		}
@@ -504,21 +504,21 @@ class WebGLState {
 
 		if ( currentBoundFramebuffers[ target ] != framebuffer ) {
 
-			gl.bindFramebuffer( target, framebuffer );
+			GL.bindFramebuffer( target, framebuffer );
 
 			currentBoundFramebuffers[ target ] = framebuffer;
 
-			// gl.DRAW_FRAMEBUFFER is equivalent to gl.FRAMEBUFFER
+			// GL.DRAW_FRAMEBUFFER is equivalent to GL.FRAMEBUFFER
 
-			if ( target == gl.DRAW_FRAMEBUFFER ) {
+			if ( target == GL.DRAW_FRAMEBUFFER ) {
 
-				currentBoundFramebuffers[ gl.FRAMEBUFFER ] = framebuffer;
+				currentBoundFramebuffers[ GL.FRAMEBUFFER ] = framebuffer;
 
 			}
 
-			if ( target == gl.FRAMEBUFFER ) {
+			if ( target == GL.FRAMEBUFFER ) {
 
-				currentBoundFramebuffers[ gl.DRAW_FRAMEBUFFER ] = framebuffer;
+				currentBoundFramebuffers[ GL.DRAW_FRAMEBUFFER ] = framebuffer;
 
 			}
 
@@ -549,11 +549,11 @@ class WebGLState {
 
 			var textures = renderTarget.textures;
 
-			if ( drawBuffers.length != textures.length || drawBuffers[ 0 ] != gl.COLOR_ATTACHMENT0 ) {
+			if ( drawBuffers.length != textures.length || drawBuffers[ 0 ] != GL.COLOR_ATTACHMENT0 ) {
 
 				for ( i in 0...textures.length ) {
 
-					drawBuffers[ i ] = gl.COLOR_ATTACHMENT0 + i;
+					drawBuffers[ i ] = GL.COLOR_ATTACHMENT0 + i;
 
 				}
 
@@ -565,9 +565,9 @@ class WebGLState {
 
 		} else {
 
-			if ( drawBuffers[ 0 ] != gl.BACK ) {
+			if ( drawBuffers[ 0 ] != GL.BACK ) {
 
-				drawBuffers[ 0 ] = gl.BACK;
+				drawBuffers[ 0 ] = GL.BACK;
 
 				needsUpdate = true;
 
@@ -577,7 +577,7 @@ class WebGLState {
 
 		if ( needsUpdate ) {
 
-			gl.drawBuffers( drawBuffers );
+			GL.drawBuffers( drawBuffers );
 
 		}
 
@@ -587,7 +587,7 @@ class WebGLState {
 
 		if ( currentProgram != program ) {
 
-			gl.useProgram( program );
+			GL.useProgram( program );
 
 			currentProgram = program;
 
@@ -600,29 +600,29 @@ class WebGLState {
 	}
 
 	static var equationToGL:Map<Int, Int> = [
-		Constants.AddEquation => gl.FUNC_ADD,
-		Constants.SubtractEquation => gl.FUNC_SUBTRACT,
-		Constants.ReverseSubtractEquation => gl.FUNC_REVERSE_SUBTRACT,
-        Constants.MinEquation = gl.MIN,
-        Constants.MaxEquation = gl.MAX
+		Constants.AddEquation => GL.FUNC_ADD,
+		Constants.SubtractEquation => GL.FUNC_SUBTRACT,
+		Constants.ReverseSubtractEquation => GL.FUNC_REVERSE_SUBTRACT,
+        Constants.MinEquation = GL.MIN,
+        Constants.MaxEquation = GL.MAX
     ];
 
 	static var factorToGL:Map<Int, Int> = [
-		Constants.ZeroFactor => gl.ZERO,
-		Constants.OneFactor => gl.ONE,
-		Constants.SrcColorFactor => gl.SRC_COLOR,
-		Constants.SrcAlphaFactor => gl.SRC_ALPHA,
-		Constants.SrcAlphaSaturateFactor => gl.SRC_ALPHA_SATURATE,
-		Constants.DstColorFactor => gl.DST_COLOR,
-		Constants.DstAlphaFactor => gl.DST_ALPHA,
-		Constants.OneMinusSrcColorFactor => gl.ONE_MINUS_SRC_COLOR,
-		Constants.OneMinusSrcAlphaFactor => gl.ONE_MINUS_SRC_ALPHA,
-		Constants.OneMinusDstColorFactor => gl.ONE_MINUS_DST_COLOR,
-		Constants.OneMinusDstAlphaFactor => gl.ONE_MINUS_DST_ALPHA,
-		Constants.ConstantColorFactor => gl.CONSTANT_COLOR,
-		Constants.OneMinusConstantColorFactor => gl.ONE_MINUS_CONSTANT_COLOR,
-		Constants.ConstantAlphaFactor => gl.CONSTANT_ALPHA,
-		Constants.OneMinusConstantAlphaFactor => gl.ONE_MINUS_CONSTANT_ALPHA
+		Constants.ZeroFactor => GL.ZERO,
+		Constants.OneFactor => GL.ONE,
+		Constants.SrcColorFactor => GL.SRC_COLOR,
+		Constants.SrcAlphaFactor => GL.SRC_ALPHA,
+		Constants.SrcAlphaSaturateFactor => GL.SRC_ALPHA_SATURATE,
+		Constants.DstColorFactor => GL.DST_COLOR,
+		Constants.DstAlphaFactor => GL.DST_ALPHA,
+		Constants.OneMinusSrcColorFactor => GL.ONE_MINUS_SRC_COLOR,
+		Constants.OneMinusSrcAlphaFactor => GL.ONE_MINUS_SRC_ALPHA,
+		Constants.OneMinusDstColorFactor => GL.ONE_MINUS_DST_COLOR,
+		Constants.OneMinusDstAlphaFactor => GL.ONE_MINUS_DST_ALPHA,
+		Constants.ConstantColorFactor => GL.CONSTANT_COLOR,
+		Constants.OneMinusConstantColorFactor => GL.ONE_MINUS_CONSTANT_COLOR,
+		Constants.ConstantAlphaFactor => GL.CONSTANT_ALPHA,
+		Constants.OneMinusConstantAlphaFactor => GL.ONE_MINUS_CONSTANT_ALPHA
     ];
 
 	function setBlending( blending, blendEquation, blendSrc, blendDst, blendEquationAlpha, blendSrcAlpha, blendDstAlpha, blendColor, blendAlpha, premultipliedAlpha ) {
@@ -631,7 +631,7 @@ class WebGLState {
 
 			if ( currentBlendingEnabled == true ) {
 
-				disable( gl.BLEND );
+				disable( GL.BLEND );
 				currentBlendingEnabled = false;
 
 			}
@@ -642,7 +642,7 @@ class WebGLState {
 
 		if ( currentBlendingEnabled == false ) {
 
-			enable( gl.BLEND );
+			enable( GL.BLEND );
 			currentBlendingEnabled = true;
 
 		}
@@ -653,7 +653,7 @@ class WebGLState {
 
 				if ( currentBlendEquation != AddEquation || currentBlendEquationAlpha != AddEquation ) {
 
-					gl.blendEquation( gl.FUNC_ADD );
+					GL.blendEquation( GL.FUNC_ADD );
 
 					currentBlendEquation = AddEquation;
 					currentBlendEquationAlpha = AddEquation;
@@ -665,19 +665,19 @@ class WebGLState {
 					switch ( blending ) {
 
 						case NormalBlending:
-							gl.blendFuncSeparate( gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA );
+							GL.blendFuncSeparate( GL.ONE, GL.ONE_MINUS_SRC_ALPHA, GL.ONE, GL.ONE_MINUS_SRC_ALPHA );
 							break;
 
 						case AdditiveBlending:
-							gl.blendFunc( gl.ONE, gl.ONE );
+							GL.blendFunc( GL.ONE, GL.ONE );
 							break;
 
 						case SubtractiveBlending:
-							gl.blendFuncSeparate( gl.ZERO, gl.ONE_MINUS_SRC_COLOR, gl.ZERO, gl.ONE );
+							GL.blendFuncSeparate( GL.ZERO, GL.ONE_MINUS_SRC_COLOR, GL.ZERO, GL.ONE );
 							break;
 
 						case MultiplyBlending:
-							gl.blendFuncSeparate( gl.ZERO, gl.SRC_COLOR, gl.ZERO, gl.SRC_ALPHA );
+							GL.blendFuncSeparate( GL.ZERO, GL.SRC_COLOR, GL.ZERO, GL.SRC_ALPHA );
 							break;
 
 						default:

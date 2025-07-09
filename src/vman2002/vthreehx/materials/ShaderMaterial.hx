@@ -2,8 +2,7 @@ package vman2002.vthreehx.materials;
 
 import vman2002.vthreehx.renderers.shaders.UniformsUtils;
 
-import vman2002.vthreehx.renderers.shaders.shaderchunk.DefaultVertex;
-import vman2002.vthreehx.renderers.shaders.shaderchunk.DefaultFragment;
+import vman2002.vthreehx.renderers.shaders.ShaderChunk;
 
 /**
  * A material rendered with custom shaders. A shader is a small program written in GLSL.
@@ -119,14 +118,14 @@ class ShaderMaterial extends vman2002.vthreehx.materials.Material {
 		 *
 		 * @type {string}
 		 */
-		this.vertexShader = default_vertex;
+		this.vertexShader = ShaderChunk.default_vertex;
 
 		/**
 		 * Fragment shader GLSL code. This is the actual code for the shader.
 		 *
 		 * @type {string}
 		 */
-		this.fragmentShader = default_fragment;
+		this.fragmentShader = ShaderChunk.default_fragment;
 
 		/**
 		 * Controls line thickness or lines.

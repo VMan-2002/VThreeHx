@@ -26,7 +26,7 @@ class WebGLCapabilities {
 
 	function getMaxAnisotropy() {
 
-		if ( maxAnisotropy != undefined ) return maxAnisotropy;
+		if ( maxAnisotropy != null ) return maxAnisotropy;
 
 		if ( extensions.has( 'EXT_texture_filter_anisotropic' ) == true ) {
 
@@ -101,7 +101,7 @@ class WebGLCapabilities {
 
 	}
 
-	public var precision = parameters.precision != undefined ? parameters.precision : 'highp';
+	public var precision = parameters.precision != null ? parameters.precision : 'highp';
 	var maxPrecision = getMaxPrecision( precision );
 
 	public var logarithmicDepthBuffer = parameters.logarithmicDepthBuffer == true;
