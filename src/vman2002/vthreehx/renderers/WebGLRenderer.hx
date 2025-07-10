@@ -494,7 +494,7 @@ class WebGLRenderer {
 		animation.setAnimationLoop( onAnimationFrame );
 
         //TODO: what
-		/*if ( typeof self != 'null' )*/ animation.setContext( self );
+		/*if ( typeof self != 'null' )*/ animation.setContext( this );
 	}
 
     // xr

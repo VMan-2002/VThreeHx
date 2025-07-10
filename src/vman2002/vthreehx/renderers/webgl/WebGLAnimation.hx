@@ -3,7 +3,7 @@ package vman2002.vthreehx.renderers.webgl;
 class WebGLAnimation {
     public function new() {}
 
-	public var context = null;
+	public var context:WebGLRenderer = null;
 	public var isAnimating = false;
 	public var animationLoop = null;
 	public var requestId = null;

@@ -11,6 +11,7 @@ import vman2002.vthreehx.core.Layers;
 import vman2002.vthreehx.math.Matrix3;
 import vman2002.vthreehx.math.MathUtils.generateUUID in generateUUID;
 import haxe.Json in JSON;
+import vman2002.vthreehx.scenes.Scene;
 
 /** This is the base class for most objects in three.js and provides a set of properties and methods for manipulating objects in 3D space. **/
 class Object3D extends vman2002.vthreehx.core.EventDispatcher implements GetType {
@@ -1134,11 +1135,12 @@ class Object3D extends vman2002.vthreehx.core.EventDispatcher implements GetType
 		}
 
 		if ( Std.isOfType(this, Scene) ) {
-			if ( this.background ) {
-				if ( this.background.isColor ) {
-					object.background = this.background.toJSON();
-				} else if ( this.background.isTexture ) {
-					object.background = this.background.toJSON( meta ).uuid;
+			var sc:Scene = cast this;
+			if ( sc.background != null ) {
+				if ( sc.background.isColor ) {
+					object.background = sc.background.toJSON();
+				} else if ( sc.background.isTexture ) {
+					object.background = sc.background.toJSON( meta ).uuid;
 				}
 			}
 
